@@ -1,0 +1,111 @@
+---
+import { services } from "../../data/site";
+---
+
+<section id="services" class="section services">
+  <div class="shell">
+    <header class="services__head">
+      <div>
+        <p class="eyebrow" data-reveal>06 — Work with me</p>
+        <h2 class="h1 zh services__title" data-reveal style="--reveal-delay:60ms">
+          我們可以如何一起工作
+        </h2>
+      </div>
+      <div class="prose-zh services__intro" data-reveal style="--reveal-delay:120ms">
+        <p>每個團隊、每個問題適合的方式都不太一樣。</p>
+        <p>
+          有時候，我們需要重新回到使用者身上理解需求，有時候，其實團隊已經有很多資料，只是還沒有把散落一地的線索，重新組合在一起。
+        </p>
+      </div>
+    </header>
+
+    <ul class="services__grid">
+      {services.map((s, i) => (
+        <li class="card services__card" data-reveal style={`--reveal-delay:${(i % 2) * 90}ms`}>
+          <span class="services__no">{s.no}</span>
+          <h3 class="h3 zh services__card-title">{s.title}</h3>
+          <ul class="services__points">
+            {s.points.map((p) => <li>{p}</li>)}
+          </ul>
+        </li>
+      ))}
+    </ul>
+
+    <p class="services__closer" data-reveal>如果不確定什麼適合，可以先聊聊再一起決定。</p>
+  </div>
+</section>
+
+<style>
+  .services__head {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: clamp(28px, 5vw, 64px);
+    align-items: end;
+    padding-bottom: clamp(44px, 5.5vw, 72px);
+  }
+  .services__title { margin-top: 18px; }
+  .services__intro { max-width: 46ch; }
+
+  .services__grid {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(16px, 2vw, 24px);
+  }
+  .services__card {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    transition: border-color .3s ease;
+  }
+  .services__card:hover { border-color: var(--color-ink); }
+
+  .services__no {
+    font-family: var(--font-display);
+    font-weight: 300;
+    font-size: 0.9375rem;
+    letter-spacing: 0.1em;
+    color: var(--color-ash);
+  }
+  .services__card-title { color: var(--color-ink); }
+
+  .services__points {
+    list-style: none;
+    margin: 2px 0 0;
+    padding: 0;
+    display: grid;
+    gap: 12px;
+  }
+  .services__points li {
+    position: relative;
+    padding-left: 20px;
+    font-size: 0.9375rem;
+    line-height: 1.9;
+    letter-spacing: 0.04em;
+    color: var(--color-ash);
+  }
+  .services__points li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.9em;
+    width: 9px;
+    height: 1px;
+    background: var(--color-ash);
+  }
+
+  .services__closer {
+    margin-top: clamp(36px, 4.5vw, 52px);
+    font-size: clamp(1rem, 1.5vw, 1.125rem);
+    line-height: 1.85;
+    letter-spacing: 0.05em;
+    color: var(--color-ink);
+  }
+
+  @media (max-width: 820px) {
+    .services__head { grid-template-columns: 1fr; align-items: start; }
+    .services__grid { grid-template-columns: 1fr; }
+  }
+</style>

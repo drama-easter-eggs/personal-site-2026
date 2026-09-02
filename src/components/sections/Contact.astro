@@ -1,0 +1,90 @@
+---
+import { site } from "../../data/site";
+const socials = site.socials.filter((s) => s.url);
+---
+
+<!-- The page closes centred — every other section is left-aligned, so the
+     shift in axis reads as an ending. -->
+<section id="contact" class="section contact">
+  <div class="shell contact__inner">
+    <p class="eyebrow" data-reveal>08 — Contact</p>
+
+    <h2 class="display zh contact__title" data-reveal style="--reveal-delay:60ms">
+      聊聊你的問題，<br />提出合作需求
+    </h2>
+
+    <p class="lead contact__body" data-reveal style="--reveal-delay:120ms">
+      寫信和我分享你的需求，歡迎預約時間一起聊聊。
+    </p>
+
+    <div class="contact__actions" data-reveal style="--reveal-delay:180ms">
+      <a class="pill pill--solid" href={`mailto:${site.email}`}>
+        {site.email}
+        <span class="arrow" aria-hidden="true">→</span>
+      </a>
+      {site.bookingUrl && (
+        <a class="pill pill--ghost" href={site.bookingUrl} target="_blank" rel="noopener">
+          預約時間聊聊
+        </a>
+      )}
+    </div>
+
+    {socials.length > 0 && (
+      <div class="contact__socials" data-reveal>
+        <p class="caption">其他社群管道</p>
+        <ul>
+          {socials.map((s) => (
+            <li>
+              <a class="link" href={s.url} target="_blank" rel="noopener">{s.label}</a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    )}
+  </div>
+</section>
+
+<style>
+  .contact {
+    padding-block: clamp(88px, 12vw, 152px) clamp(64px, 8vw, 96px);
+  }
+  .contact__inner {
+    display: grid;
+    justify-items: center;
+    text-align: center;
+  }
+  .contact__title { margin-top: 22px; }
+  .contact__body { margin-top: 26px; max-width: 42ch; }
+  .contact__actions {
+    margin-top: 38px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+  }
+  .contact__socials {
+    width: 100%;
+    margin-top: clamp(56px, 7vw, 88px);
+    padding-top: clamp(24px, 3vw, 32px);
+    border-top: 1px solid var(--color-rule);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: center;
+    gap: 12px clamp(24px, 4vw, 40px);
+  }
+  .contact__socials ul {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: clamp(18px, 3vw, 32px);
+    margin: 0;
+    padding: 0;
+  }
+  .contact__socials a {
+    font-size: 0.9375rem;
+    letter-spacing: 0.05em;
+    color: var(--color-ink);
+  }
+</style>

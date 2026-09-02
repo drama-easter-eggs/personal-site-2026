@@ -1,0 +1,142 @@
+---
+import { site, nav } from "../data/site";
+---
+
+<header class="masthead">
+  <div class="shell masthead__inner">
+    <a href="#top" class="mark">Mei</a>
+    <p class="mark__role">獨立研究者 / 體驗策略顧問</p>
+  </div>
+</header>
+
+<!-- Floating pill nav: hidden until the hero scrolls away, so the first
+     screen stays a clean editorial spread. -->
+<nav class="pillnav" id="pillnav" aria-label="主要導覽">
+  <a href="#top" class="pillnav__mark">Mei</a>
+  <ul class="pillnav__list">
+    {nav.map((item) => (
+      <li><a href={item.href}>{item.label}</a></li>
+    ))}
+  </ul>
+  <a href="#contact" class="pillnav__cta">聯繫我</a>
+</nav>
+
+<style>
+  /* Static masthead — sits at the top of the page, no border, no sticky. */
+  .masthead {
+    padding-block: 26px 0;
+  }
+  .masthead__inner {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .mark {
+    font-family: var(--font-display);
+    font-weight: 300;
+    font-size: 1.375rem;
+    letter-spacing: 0.02em;
+    color: var(--color-ink);
+    text-decoration: none;
+  }
+  .mark__role {
+    font-size: 0.75rem;
+    font-weight: 400;
+    letter-spacing: 0.14em;
+    color: var(--color-ash);
+  }
+
+  /* --- Floating pill nav --- */
+  .pillnav {
+    position: fixed;
+    z-index: 50;
+    top: 20px;
+    left: 50%;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    max-width: calc(100vw - 32px);
+    padding: 7px 7px 7px 20px;
+    border: 1px solid var(--color-rule);
+    border-radius: var(--radius-pill);
+    background: color-mix(in srgb, #ffffff 82%, transparent);
+    backdrop-filter: blur(14px) saturate(140%);
+    -webkit-backdrop-filter: blur(14px) saturate(140%);
+    opacity: 0;
+    visibility: hidden;
+    transform: translate(-50%, -14px);
+    transition: opacity .35s ease, transform .35s ease, visibility .35s;
+  }
+  .pillnav.is-shown {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(-50%, 0);
+  }
+
+  .pillnav__mark {
+    font-family: var(--font-display);
+    font-weight: 300;
+    font-size: 1rem;
+    letter-spacing: 0.02em;
+    color: var(--color-ink);
+    text-decoration: none;
+    padding-right: 6px;
+  }
+
+  .pillnav__list {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .pillnav__list a {
+    display: block;
+    padding: 8px 13px;
+    border-radius: var(--radius-pill);
+    font-size: 0.875rem;
+    font-weight: 400;
+    letter-spacing: 0.05em;
+    color: var(--color-ash);
+    text-decoration: none;
+    transition: color .2s ease, background-color .2s ease;
+  }
+  .pillnav__list a:hover { color: var(--color-ink); background: #f0eeea; }
+
+  .pillnav__cta {
+    padding: 9px 20px;
+    border-radius: var(--radius-pill);
+    background: var(--color-ink);
+    color: var(--color-paper);
+    font-size: 0.875rem;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background-color .2s ease;
+  }
+  .pillnav__cta:hover { background: #000; }
+
+  /* Below the breakpoint the link row would wrap; keep only mark + CTA. */
+  @media (max-width: 900px) {
+    .pillnav__list { display: none; }
+    .pillnav { padding-left: 22px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .pillnav { transition: opacity .01s; }
+  }
+</style>
+
+<script>
+  const bar = document.getElementById("pillnav");
+  const hero = document.getElementById("hero");
+  if (bar && hero) {
+    const io = new IntersectionObserver(
+      ([entry]) => bar.classList.toggle("is-shown", !entry.isIntersecting),
+      { rootMargin: "-70% 0px 0px 0px" },
+    );
+    io.observe(hero);
+  }
+</script>
