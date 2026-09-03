@@ -687,10 +687,25 @@ mark.mark.is-marked { background-size: 100% .76em; }
 /* ============================================================
    08 CONTACT — the one loud surface
    ============================================================ */
+/* 這一節不再滿版出血：teal-deep 收進一塊圓角矩形，
+   讓最後一個動作在 cream 紙面上被「框」起來，
+   圓角沿用 .card / .sub-card 的 --r，維持同一套語彙。 */
 .contact {
-  background: var(--teal-deep);
   color: var(--white);
-  padding-block: clamp(76px, 10vw, 140px);
+  /* 07 的 section-y 底部 padding 在 sand 底色「裡面」，所以上緣得自己給距離，
+     不然 sand 色塊直接貼上 teal 面板。取比原本一半略多，留一道看得出來的 cream。 */
+  padding-block: clamp(28px, 3.4vw, 56px) clamp(22px, 2.6vw, 40px);
+}
+/* 這一節刻意不吃 --page 的 1200px 限制：面板幾乎滿版，只留一道窄邊
+   讓圓角看得出來，色塊的重量才撐得住整頁最後一個動作。 */
+.contact > .wrap {
+  max-width: none;
+  padding-inline: clamp(12px, 1.6vw, 24px);
+}
+.contact__panel {
+  background: var(--teal-deep);
+  border-radius: var(--r);
+  padding: clamp(40px, 5.6vw, 84px) clamp(24px, 3.6vw, 60px);
 }
 .eyebrow--inline {
   position: static;
@@ -813,6 +828,7 @@ mark.mark.is-marked { background-size: 100% .76em; }
   .card { border-radius: 34px; }
   .sub-card { border-radius: 34px; }
   .pull { border-radius: 34px; }
+  .contact__panel { border-radius: 34px; }
   .lens { grid-template-columns: minmax(0, 1fr); gap: 6px; }
   .lens__en { grid-row: auto; padding-top: 0; margin-bottom: 4px; }
   .cv__row, .talk { grid-template-columns: minmax(0, 1fr); gap: 6px; }
