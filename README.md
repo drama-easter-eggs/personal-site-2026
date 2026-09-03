@@ -9,7 +9,11 @@ index.html            首頁（01–08 全部區塊）
 assets/css/style.css  全站樣式
 assets/js/main.js     螢光筆標記、行動版選單、年份
 assets/favicon.svg
-docs/                 文案與內容規劃（不會部署）
+docs/                 規劃與規範（不會部署）
+  DESIGN.md             實作後的樣式規範，以這份為準
+  design-reference_v3.md 外部視覺參考（MindMarket）
+  website-plan.md        首頁文案與 section 順序
+  content-architecture.md 長期內容邏輯與三個 lenses
 ```
 
 ## 本機預覽
@@ -37,13 +41,15 @@ python3 -m http.server 4000
 | 次要文字 | `#5f615d`（v2 寫 `#80827f`，但那個灰在 Sandstone 上只有 2.85:1，讀不了） |
 | 細線 | `#b7b0a2`（v2 寫 `#d5d5d4`，冷灰，在 Sandstone 上 1.08:1 等於看不見） |
 | 重點色 | `#5cb2a0` Teal（螢光筆、結構線、按鈕圓點、logo）— 不做大面積填色 |
-| 大面積色 | `#2e9a82` Deep Teal（Contact 收尾帶、實心 CTA）— 上面放白字 |
-| 淺色底 | `#dcefe9` Teal Tint（電子報卡片這類閱讀面） |
+| 大面積色 | `#2e9a82` Deep Teal（Contact 收尾帶）— 上面放白字 |
+| 淺色底 | `#d3e6df` Teal Tint（電子報卡片這類閱讀面） |
+| 動作色 | `#e9c64e` Ochre — 只用在要讀者動作的地方，一個畫面最多一顆實心 CTA |
+| 強調底 | `#f8eec9` Ochre Tint — 全頁一塊（02 的引言），不放段落、不畫線 |
 | 拉丁字 | Inter 400 / 500 |
 | 漢字 | Noto Sans TC — 單一家族，**不使用明體** |
 | 漢字層級 | 內文 400 → 標題 700 → 大標 900 |
 
-色彩只有一個色相、三個階，沒有第二個彩色，也不用顏色表達成功／錯誤狀態。完整規範見 `docs/design-reference_v2.md`。
+色彩是兩個色相：teal 三階負責結構，ochre 只負責動作，全頁佔比壓在 5–8%（tag 外框刻意不染黃，tag 不是動作）。沒有第三個彩色，也不用顏色表達成功／錯誤狀態。實作後的完整規範見 `docs/DESIGN.md`（含對比實測與偏離理由），外部視覺參考見 `docs/design-reference_v3.md`。
 
 **簽名元素：螢光筆標記。** 在 HTML 裡把要標記的字包起來就好：
 

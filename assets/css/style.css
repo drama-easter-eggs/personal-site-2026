@@ -19,13 +19,22 @@
      （形同消失），在 cream 上也才 1.31:1。改成跟紙同一個暖色系並壓深一階。 */
   --hairline: #b7b0a2;
 
-  /* — the accent: one hue, three steps, nothing else —
+  /* — teal: the structural hue, three steps —
      teal      · strokes, borders, dots, small blocks — never large fills
-     teal-deep · large fills only (contact band, solid CTA) — white text on top
-     teal-tint · the only chromatic reading surface */
+     teal-deep · large fills only (contact band) — white text on top
+     teal-tint · the only chromatic reading surface (v3: #dcefe9 → #d3e6df) */
   --teal:      #5cb2a0;
   --teal-deep: #2e9a82;
-  --teal-tint: #dcefe9;
+  --teal-tint: #d3e6df;
+
+  /* — ochre: the action hue (v3) —
+     整頁只花在「要讀者動作」的地方，一個畫面最多一次實心填色。這裡是三處：
+     06 的「開始一段對話」實心 CTA、02 的引言色塊、Contact 帶上 email 的底線。
+     案例／經歷的 tag 外框刻意留在細線色——tag 不是動作，染黃會把訊號稀釋掉。
+     ochre-tint 對 cream 的明度差只有 1.04:1，靠色相不靠明度：只能做大色塊，
+     不能拿去畫線、做小標籤或當內文底以外的細節。 */
+  --ochre:      #e9c64e;
+  --ochre-tint: #f8eec9;
 
   /* — type — */
   /* Latin face first (no CJK coverage, so 漢字 fall through), CJK face second,
@@ -261,12 +270,13 @@ mark.mark.is-marked { background-size: 100% .76em; }
   width: 9px; height: 9px; border-radius: 50%;
   background: var(--teal); flex: none;
 }
-.btn__dot--light { background: var(--white); }
+.btn__dot--ink { background: var(--ink); }
 .btn--ghost { background: var(--cream); color: var(--ink); }
 .btn--ghost:hover { background: var(--sand); }
 .nav__cta { background: var(--cream); }
-.btn--solid { background: var(--teal-deep); color: var(--white); }
-.btn--solid:hover { background: #268a74; }
+/* 全站唯一一顆實心 CTA。ink on ochre = 8.26:1。 */
+.btn--ochre { background: var(--ochre); color: var(--ink); }
+.btn--ochre:hover { background: #ddb638; }
 
 /* ============================================================
    01 HERO
@@ -356,13 +366,16 @@ mark.mark.is-marked { background-size: 100% .76em; }
   border-top: 1px solid var(--hairline);
 }
 
+/* 全頁唯一的 highlight block：兩行以內的引言，不放段落。
+   色塊自己就是強調，所以不再加 teal 直線——一個元件只吃一個色相。 */
 .pull {
-  margin: clamp(28px, 3.5vw, 44px) 0;
-  padding-left: clamp(18px, 2vw, 26px);
-  border-left: 3px solid var(--teal);
+  margin: clamp(30px, 3.8vw, 48px) 0;
+  background: var(--ochre-tint);
+  border-radius: var(--r);
+  padding: clamp(24px, 2.8vw, 34px) clamp(26px, 3vw, 38px);
   font-family: var(--display);
   font-weight: 500;
-  font-size: clamp(20px, 2vw, 27px);
+  font-size: clamp(19px, 1.85vw, 25px);
   line-height: 1.72;
   letter-spacing: -.005em;
 }
@@ -711,7 +724,9 @@ mark.mark.is-marked { background-size: 100% .76em; }
   font-weight: 500;
   letter-spacing: -.035em;
   text-decoration: none;
-  border-bottom: 2px solid currentColor;
+  /* Deep Teal 帶上唯一的暖色標記，落在這一頁最後一個動作上。
+     ochre 對 deep teal 只有 2.09:1，所以線加粗到 3px 才站得住。 */
+  border-bottom: 3px solid var(--ochre);
   padding-bottom: 3px;
   word-break: break-word;
   transition: opacity .2s ease;
@@ -797,6 +812,7 @@ mark.mark.is-marked { background-size: 100% .76em; }
   .cards { grid-template-columns: minmax(0, 1fr); }
   .card { border-radius: 34px; }
   .sub-card { border-radius: 34px; }
+  .pull { border-radius: 34px; }
   .lens { grid-template-columns: minmax(0, 1fr); gap: 6px; }
   .lens__en { grid-row: auto; padding-top: 0; margin-bottom: 4px; }
   .cv__row, .talk { grid-template-columns: minmax(0, 1fr); gap: 6px; }
