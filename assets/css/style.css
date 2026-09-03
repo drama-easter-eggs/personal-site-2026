@@ -3,6 +3,8 @@
    Cream paper canvas · Inter (Latin) + Noto Sans TC (漢字)
    One family for 漢字 — hierarchy comes from weight (400 → 700 → 900), not
    from a second face. No 明體 anywhere.
+   級數以中文為基準（見 :root 的 --fs-*）：內文 18px、漢字最小 14px、
+   全部整數 px、漢字不吃負字距。負字距只給 var(--latin) 的四個元素。
    Signature: the highlighter mark (.mark)
    ============================================================ */
 
@@ -44,6 +46,38 @@
   --display: var(--sans);
   --latin: 'Inter', 'Helvetica Neue', Arial, sans-serif;
 
+  /* — 級數（中文優先）—
+     漢字筆畫密度比拉丁字高，同一個 px 值讀起來更吃力，所以整條梯子
+     比拉丁基準往上抬一階：內文 18px、次要 16px、小標下限 14px。
+     13px 以下的漢字會開始掉筆畫，所以 14px 是硬底線，只有 var(--latin)
+     的全大寫小標可以更小。全部落在整數 px——分數 px（12.5 / 13.5 / 15.5）
+     會讓漢字的橫豎筆在點陣上糊掉，拉丁字看不出來，漢字很明顯。
+     層級只有這幾階，靠「字重 + 級數落差」拉開，不靠第二支字體。 */
+  --fs-micro: 12px;                      /* 拉丁全大寫小標，僅限拉丁 */
+  --fs-meta:  14px;                      /* 漢字小標、tag、年份、註記 */
+  --fs-sm:    16px;                      /* 次要段落 */
+  --fs-body:  18px;                      /* 內文 */
+  --fs-lead:  clamp(19px, 1.6vw, 22px);  /* 段落引言 */
+  --fs-h4:    clamp(19px, 1.7vw, 22px);
+  --fs-h3:    clamp(20px, 1.9vw, 25px);
+  --fs-h2:    clamp(22px, 2.1vw, 28px);
+  --fs-d1:    clamp(23px, 2.7vw, 35px);  /* 大提問：案例、care thesis */
+  --fs-d2:    clamp(22px, 2.9vw, 40px);  /* hero 漢字 */
+  --fs-d3:    clamp(30px, 5vw, 62px);    /* contact 收尾大標 */
+
+  /* 行高：漢字塞滿整個字身框、沒有拉丁字那種上下留白，所以同一個
+     line-height 看起來比拉丁字擠一階。內文 1.95、標題不低於 1.55、
+     大標不低於 1.45。 */
+  --lh-body:    1.95;
+  --lh-head:    1.55;
+  --lh-display: 1.45;
+
+  /* 字距：漢字沒有左右側邊留白，負字距會讓相鄰兩字的筆畫直接相黏
+     （字重 900 的大標最明顯）。所以漢字一律 0 或正值，負字距只留給
+     var(--latin) 的元素——hero 英文、數字、email。 */
+  --track-zh:      .02em;
+  --track-zh-head: .01em;
+
   /* — rhythm — */
   --page: 1200px;
   --gutter-w: 178px;
@@ -68,9 +102,11 @@ body {
   color: var(--ink);
   font-family: var(--sans);
   font-weight: 400;
-  font-size: 17px;
-  line-height: 1.95;
-  letter-spacing: .015em;
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  letter-spacing: var(--track-zh);
+  /* 讓最後一行不要只剩一兩個漢字 */
+  text-wrap: pretty;
   /* CJK / Latin mixing niceties — progressive, ignored where unsupported */
   text-spacing-trim: space-first;
   text-autospace: normal;
@@ -148,16 +184,16 @@ mark.mark.is-marked { background-size: 100% .34em; }
 .eyebrow {
   position: sticky;
   top: 116px;
-  font-size: 13px;
-  line-height: 1.6;
+  font-size: var(--fs-meta);
+  line-height: 1.7;
   font-weight: 500;
   color: var(--stone);
-  letter-spacing: .02em;
+  letter-spacing: var(--track-zh);
 }
 .eyebrow > span {
   display: block;
   font-family: var(--latin);
-  font-size: 11px;
+  font-size: var(--fs-micro);
   font-weight: 500;
   letter-spacing: .19em;
   text-transform: uppercase;
@@ -181,7 +217,9 @@ mark.mark.is-marked { background-size: 100% .34em; }
 .lens > p,
 .lenses__foot,
 .contact__body { max-width: 34em; }
-.care__thesis { max-width: 22em; }
+/* 選擇器要比上面的 .col > p 更重，不然 34em 會蓋掉 22em——
+   這一行是字重 900 的宣言，行寬跟內文一樣長就撐不住。 */
+.col > p.care__thesis { max-width: 22em; }
 
 /* ============================================================
    NAV — floating white pill
@@ -229,7 +267,7 @@ mark.mark.is-marked { background-size: 100% .34em; }
 .nav__links a {
   display: block;
   padding: 8px 13px;
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 500;
   text-decoration: none;
   border-radius: var(--r);
@@ -264,7 +302,7 @@ mark.mark.is-marked { background-size: 100% .34em; }
   display: inline-flex; align-items: center; gap: 9px;
   padding: 11px 17px 11px 20px;
   border-radius: var(--r);
-  font-size: 15px; font-weight: 500;
+  font-size: var(--fs-sm); font-weight: 500;
   text-decoration: none;
   white-space: nowrap;
   transition: transform .2s ease, background-color .2s ease;
@@ -299,9 +337,9 @@ mark.mark.is-marked { background-size: 100% .34em; }
   display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 16px;
   margin-bottom: clamp(20px, 3vw, 34px);
 }
-.hero__hi { font-size: 17px; font-weight: 500; }
+.hero__hi { font-size: var(--fs-body); font-weight: 500; }
 .hero__role {
-  font-size: 13px; color: var(--stone); letter-spacing: .06em;
+  font-size: var(--fs-meta); color: var(--stone); letter-spacing: .06em;
 }
 
 .hero__display { grid-column: 1; font-weight: 400; }
@@ -317,9 +355,10 @@ mark.mark.is-marked { background-size: 100% .34em; }
   display: block;
   font-family: var(--display);
   font-weight: 900;
-  font-size: clamp(21px, 2.9vw, 40px);
-  line-height: 1.5;
-  letter-spacing: -.015em;
+  font-size: var(--fs-d2);
+  line-height: var(--lh-head);
+  letter-spacing: var(--track-zh-head);
+  text-wrap: balance;
   margin-top: clamp(18px, 2.4vw, 30px);
   max-width: 15em;
 }
@@ -327,8 +366,8 @@ mark.mark.is-marked { background-size: 100% .34em; }
 .hero__body {
   grid-column: 2;
   padding-bottom: .35em;
-  font-size: 16px;
-  line-height: 1.9;
+  font-size: var(--fs-sm);
+  line-height: var(--lh-body);
 }
 .hero__rule {
   max-width: var(--page);
@@ -354,16 +393,16 @@ mark.mark.is-marked { background-size: 100% .34em; }
    SHARED TEXT PIECES
    ============================================================ */
 .lead {
-  font-size: clamp(18px, 1.5vw, 21px);
-  line-height: 1.85;
+  font-size: var(--fs-lead);
+  line-height: 1.9;
   margin-bottom: clamp(32px, 4vw, 52px);
 }
 
 .sub {
   font-family: var(--display);
-  font-size: clamp(21px, 2vw, 27px);
+  font-size: var(--fs-h2);
   font-weight: 700;
-  line-height: 1.5;
+  line-height: var(--lh-head);
   margin-top: clamp(56px, 7vw, 88px);
   margin-bottom: 20px;
   padding-top: 20px;
@@ -379,16 +418,17 @@ mark.mark.is-marked { background-size: 100% .34em; }
   padding: clamp(24px, 2.8vw, 34px) clamp(26px, 3vw, 38px);
   font-family: var(--display);
   font-weight: 500;
-  font-size: clamp(19px, 1.85vw, 25px);
-  line-height: 1.72;
-  letter-spacing: -.005em;
+  font-size: var(--fs-h2);
+  line-height: 1.75;
+  letter-spacing: var(--track-zh-head);
+  text-wrap: balance;
 }
 
 .tags { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 16px; }
 .tags li {
-  font-size: 12.5px;
-  line-height: 1;
-  padding: 7px 12px;
+  font-size: var(--fs-meta);
+  line-height: 1.45;
+  padding: 5px 12px;
   border: 1px solid var(--hairline);
   border-radius: var(--r);
   color: var(--stone);
@@ -409,9 +449,10 @@ mark.mark.is-marked { background-size: 100% .34em; }
 .care__thesis {
   font-family: var(--display);
   font-weight: 900;
-  font-size: clamp(22px, 2.6vw, 34px);
-  line-height: 1.58;
-  letter-spacing: -.012em;
+  font-size: var(--fs-d1);
+  line-height: 1.6;
+  letter-spacing: var(--track-zh-head);
+  text-wrap: balance;
   margin-top: .5em;
 }
 
@@ -425,14 +466,15 @@ mark.mark.is-marked { background-size: 100% .34em; }
 }
 .threads h3 {
   font-family: var(--display);
-  font-size: clamp(19px, 1.8vw, 23px);
+  font-size: var(--fs-h3);
   font-weight: 700;
-  line-height: 1.5;
+  line-height: var(--lh-head);
 }
 .threads__sub {
   font-family: var(--sans);
-  font-size: 12px;
-  letter-spacing: .09em;
+  font-size: var(--fs-meta);
+  /* 疏排的小標。.09em 在 12px 上是刻意的，放到 14px 會散開，收一階。 */
+  letter-spacing: .06em;
   color: var(--stone);
   margin-top: 4px;
 }
@@ -451,7 +493,7 @@ mark.mark.is-marked { background-size: 100% .34em; }
 }
 .case__no {
   font-family: var(--latin);
-  font-size: 13px;
+  font-size: var(--fs-meta);
   font-weight: 500;
   letter-spacing: .06em;
   color: var(--stone);
@@ -459,10 +501,11 @@ mark.mark.is-marked { background-size: 100% .34em; }
 }
 .case__q {
   font-family: var(--display);
-  font-size: clamp(23px, 3vw, 38px);
+  font-size: var(--fs-d1);
   font-weight: 700;
-  line-height: 1.5;
-  letter-spacing: -.012em;
+  line-height: var(--lh-head);
+  letter-spacing: var(--track-zh-head);
+  text-wrap: balance;
   margin-bottom: 16px;
 }
 
@@ -493,8 +536,8 @@ mark.mark.is-marked { background-size: 100% .34em; }
 .counters__n span { color: var(--teal); }
 .counters dd {
   margin: 10px 0 0;
-  font-size: 13.5px;
-  line-height: 1.55;
+  font-size: var(--fs-meta);
+  line-height: 1.6;
   color: var(--stone);
 }
 
@@ -508,22 +551,22 @@ mark.mark.is-marked { background-size: 100% .34em; }
 }
 .cv__when {
   font-family: var(--latin);
-  font-size: 13px; font-weight: 500;
+  font-size: var(--fs-meta); font-weight: 500;
   letter-spacing: .04em;
   color: var(--stone);
   padding-top: .5em;
 }
 .cv__what h4 {
   font-family: var(--display);
-  font-size: clamp(18px, 1.7vw, 22px);
+  font-size: var(--fs-h4);
   font-weight: 700;
-  line-height: 1.55;
+  line-height: var(--lh-head);
   margin-bottom: 6px;
 }
 
 .about__note {
   margin-top: clamp(28px, 3.5vw, 40px);
-  font-size: 17px;
+  font-size: var(--fs-body);
 }
 
 .teach { margin-top: 8px; }
@@ -538,16 +581,17 @@ mark.mark.is-marked { background-size: 100% .34em; }
 .teach__no {
   grid-row: span 2;
   font-family: var(--display);
-  font-size: 24px;
+  /* 漢字序號當標記用：級數配 h4 的行首，行高刻意壓在 1.3 才對得上。 */
+  font-size: 26px;
   line-height: 1.3;
   color: var(--teal);
   font-weight: 900;
 }
 .teach h4 {
   font-family: var(--display);
-  font-size: clamp(17px, 1.6vw, 21px);
+  font-size: var(--fs-h4);
   font-weight: 700;
-  line-height: 1.55;
+  line-height: var(--lh-head);
 }
 
 .talks { border-top: 1px solid var(--hairline); }
@@ -558,9 +602,9 @@ mark.mark.is-marked { background-size: 100% .34em; }
   padding-block: clamp(22px, 2.6vw, 30px);
   border-bottom: 1px solid var(--hairline);
 }
-.talk__when { font-size: 13px; color: var(--stone); padding-top: .5em; }
-.talk h4 { font-family: var(--display); font-size: 20px; font-weight: 700; line-height: 1.55; }
-.talk .link { display: inline-block; margin-top: 10px; font-size: 14px; }
+.talk__when { font-size: var(--fs-meta); color: var(--stone); padding-top: .5em; }
+.talk h4 { font-family: var(--display); font-size: var(--fs-h4); font-weight: 700; line-height: var(--lh-head); }
+.talk .link { display: inline-block; margin-top: 10px; font-size: var(--fs-meta); }
 
 /* ============================================================
    05 WHEN TO REACH OUT
@@ -568,23 +612,24 @@ mark.mark.is-marked { background-size: 100% .34em; }
 .fit { display: grid; gap: clamp(40px, 5vw, 60px); }
 .fit__head {
   font-family: var(--display);
-  font-size: clamp(19px, 1.9vw, 25px);
+  font-size: var(--fs-h3);
   font-weight: 700;
   line-height: 1.6;
+  text-wrap: balance;
   margin-bottom: clamp(18px, 2vw, 26px);
 }
 .fit__list > li {
   position: relative;
   padding-left: 30px;
   padding-block: 11px;
-  line-height: 1.8;
+  line-height: var(--lh-body);
   border-bottom: 1px solid var(--hairline);
 }
 .fit__list > li:first-child { border-top: 1px solid var(--hairline); }
 .fit__list > li::before {
   content: "";
   position: absolute;
-  left: 0; top: 1.55em;
+  left: 0; top: 1.58em;
   width: 15px; height: 2px; border-radius: 2px;
 }
 /* no colour-coding here — teal is never a success/error state */
@@ -607,24 +652,25 @@ mark.mark.is-marked { background-size: 100% .34em; }
 }
 .card h3 {
   font-family: var(--display);
-  font-size: clamp(19px, 1.8vw, 24px);
+  font-size: var(--fs-h3);
   font-weight: 700;
-  line-height: 1.5;
+  line-height: var(--lh-head);
   margin-bottom: 14px;
 }
-.card p { font-size: 16px; line-height: 1.85; }
+.card p { font-size: var(--fs-sm); line-height: var(--lh-body); }
+/* 跟 .card p 同級數。漢字差 1px 看不出來，只會多出一階沒用的級數；
+   這一行的層級交給 stone 色與上緣細線。 */
 .card__how {
   margin-top: 12px;
   padding-top: 12px;
   border-top: 1px solid var(--hairline);
   color: var(--stone);
-  font-size: 15px;
 }
 
 .services__close {
   display: flex; flex-wrap: wrap; align-items: center; gap: 16px 22px;
   margin-top: clamp(32px, 4vw, 46px);
-  font-size: clamp(17px, 1.5vw, 20px);
+  font-size: var(--fs-lead);
 }
 
 /* ============================================================
@@ -641,23 +687,23 @@ mark.mark.is-marked { background-size: 100% .34em; }
 .lens__en {
   grid-row: span 3;
   font-family: var(--latin);
-  font-size: 11px; font-weight: 500;
+  font-size: var(--fs-micro); font-weight: 500;
   letter-spacing: .19em; text-transform: uppercase;
   color: var(--stone);
   padding-top: .9em;
 }
 .lens h3 {
   font-family: var(--display);
-  font-size: clamp(19px, 1.9vw, 25px);
+  font-size: var(--fs-h3);
   font-weight: 700;
-  line-height: 1.5;
+  line-height: var(--lh-head);
 }
 .lens__q { color: var(--ink); font-weight: 500; margin-top: 6px; }
-.lens > p:last-child { color: var(--stone); font-size: 16px; margin-top: 8px; }
+.lens > p:last-child { color: var(--stone); font-size: var(--fs-sm); margin-top: 8px; }
 
 .lenses__foot {
   margin-top: clamp(24px, 3vw, 34px);
-  font-size: 16px;
+  font-size: var(--fs-sm);
   color: var(--stone);
 }
 
@@ -671,19 +717,19 @@ mark.mark.is-marked { background-size: 100% .34em; }
 }
 .sub-card__label {
   font-family: var(--latin);
-  font-size: 11px; font-weight: 500;
+  font-size: var(--fs-micro); font-weight: 500;
   letter-spacing: .19em; text-transform: uppercase;
   color: var(--stone);
   margin-bottom: 10px;
 }
 .sub-card h3 {
   font-family: var(--display);
-  font-size: clamp(19px, 1.9vw, 25px);
+  font-size: var(--fs-h3);
   font-weight: 700;
-  line-height: 1.5;
+  line-height: var(--lh-head);
   margin-bottom: 8px;
 }
-.sub-card p { font-size: 15.5px; color: var(--stone); }
+.sub-card p { font-size: var(--fs-sm); color: var(--stone); }
 /* ghost pill sits on the teal tint — white reads cleaner than cream here */
 .sub-card .btn--ghost { background: var(--white); }
 .sub-card .btn--ghost:hover { background: var(--cream); }
@@ -724,16 +770,18 @@ mark.mark.is-marked { background-size: 100% .34em; }
 
 .contact__head {
   font-family: var(--display);
-  font-size: clamp(30px, 5.4vw, 68px);
+  font-size: var(--fs-d3);
   font-weight: 900;
-  line-height: 1.38;
-  letter-spacing: -.025em;
+  line-height: var(--lh-display);
+  letter-spacing: var(--track-zh-head);
 }
 .contact__body {
   margin-top: clamp(20px, 2.4vw, 28px);
-  font-size: clamp(17px, 1.5vw, 20px);
+  font-size: var(--fs-lead);
   font-weight: 500;
-  max-width: 44ch;
+  /* ch 是「0」的寬度（半形），量不到漢字：44ch 實際只有 22 個漢字寬。
+     全站的行寬一律用 em，1em = 1 個漢字。 */
+  max-width: 24em;
 }
 .contact__mail {
   display: inline-block;
@@ -761,7 +809,7 @@ mark.mark.is-marked { background-size: 100% .34em; }
   padding: 10px 19px;
   border: 1px solid rgba(255,255,255,.55);
   border-radius: var(--r);
-  font-size: 14.5px; font-weight: 500;
+  font-size: var(--fs-meta); font-weight: 500;
   text-decoration: none;
   transition: background-color .2s ease, color .2s ease;
 }
@@ -774,7 +822,7 @@ mark.mark.is-marked { background-size: 100% .34em; }
 .foot__in {
   display: flex; flex-wrap: wrap; gap: 10px 24px;
   justify-content: space-between; align-items: baseline;
-  font-size: 13px; color: var(--stone);
+  font-size: var(--fs-meta); color: var(--stone);
 }
 .foot__q {
   font-family: var(--latin);
@@ -790,7 +838,6 @@ mark.mark.is-marked { background-size: 100% .34em; }
 
 @media (max-width: 1080px) {
   :root { --gutter-w: 132px; }
-  .eyebrow { font-size: 12.5px; }
 }
 
 @media (max-width: 900px) {
@@ -805,7 +852,7 @@ mark.mark.is-marked { background-size: 100% .34em; }
   }
   .hero__grid { grid-template-columns: minmax(0, 1fr); gap: 0; }
   .hero__display, .hero__body { grid-column: 1; }
-  .hero__body { margin-top: clamp(32px, 6vw, 48px); max-width: 46ch; }
+  .hero__body { margin-top: clamp(32px, 6vw, 48px); max-width: 24em; }
 
   .nav__links {
     display: none;
@@ -820,14 +867,14 @@ mark.mark.is-marked { background-size: 100% .34em; }
   }
   .nav { position: relative; }
   .nav__links.is-open { display: flex; }
-  .nav__links a { padding: 13px 16px; font-size: 16px; }
+  .nav__links a { padding: 13px 16px; font-size: 17px; }
   .nav__links-cta { display: block; margin-top: 6px; padding-top: 6px; border-top: 1px solid var(--hairline); }
   .nav__toggle { display: grid; }
   .nav__cta { display: none; }
 }
 
 @media (max-width: 720px) {
-  body { font-size: 16px; line-height: 1.9; }
+  body { font-size: 17px; line-height: var(--lh-body); }
   .cards { grid-template-columns: minmax(0, 1fr); }
   .card { border-radius: 34px; }
   .sub-card { border-radius: 34px; }
