@@ -95,23 +95,27 @@ p + p { margin-top: 1.15em; }
 
 /* ============================================================
    THE SIGNATURE — highlighter mark
-   Two hand-drawn stroke shapes so repeats never look identical.
+   手繪感來自 SVG path：一條等距的正弦波帶（8 個週期、幅度 ±4/24
+   的帶高），上下緣同相位平移，所以厚度固定、只有整條筆觸在抖。
+   .mark / .mark--b 是同一條波相位差 180°，相鄰兩筆不會長得一樣。
    ============================================================ */
 mark.mark {
   color: inherit;
   background-color: transparent;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 40' preserveAspectRatio='none'%3E%3Cpath d='M3 31C58 25 118 35 178 28C228 22 268 31 297 24L296 8C250 14 200 5 150 10C100 15 48 7 4 12Z' fill='%235cb2a0'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 24' preserveAspectRatio='none'%3E%3Cpath d='M0 9.5C7 9.5 13 1.5 20 1.5S33 9.5 40 9.5S53 1.5 60 1.5S73 9.5 80 9.5S93 1.5 100 1.5S113 9.5 120 9.5S133 1.5 140 1.5S153 9.5 160 9.5S173 1.5 180 1.5S193 9.5 200 9.5S213 1.5 220 1.5S233 9.5 240 9.5S253 1.5 260 1.5S273 9.5 280 9.5S293 1.5 300 1.5S313 9.5 320 9.5L320 22.5C313 22.5 307 14.5 300 14.5S287 22.5 280 22.5S267 14.5 260 14.5S247 22.5 240 22.5S227 14.5 220 14.5S207 22.5 200 22.5S187 14.5 180 14.5S167 22.5 160 22.5S147 14.5 140 14.5S127 22.5 120 22.5S107 14.5 100 14.5S87 22.5 80 22.5S67 14.5 60 14.5S47 22.5 40 22.5S27 14.5 20 14.5S7 22.5 0 22.5Z' fill='%235cb2a0'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
-  background-position: 0 68%;
-  background-size: 0% .76em;
+  /* 螢光筆畫在文字下緣之外，只當底線用，不覆蓋字身 */
+  background-position: 0 100%;
+  background-size: 0% .34em;
   transition: background-size .75s cubic-bezier(.22,.61,.36,1);
   padding-inline: .06em;
+  padding-bottom: .16em;
 }
 mark.mark--b {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 40' preserveAspectRatio='none'%3E%3Cpath d='M4 26C52 33 112 20 168 27C218 34 262 21 296 27L297 12C256 6 208 17 158 11C108 5 54 14 3 10Z' fill='%235cb2a0'/%3E%3C/svg%3E");
-  background-position: 0 64%;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 24' preserveAspectRatio='none'%3E%3Cpath d='M0 1.5C7 1.5 13 9.5 20 9.5S33 1.5 40 1.5S53 9.5 60 9.5S73 1.5 80 1.5S93 9.5 100 9.5S113 1.5 120 1.5S133 9.5 140 9.5S153 1.5 160 1.5S173 9.5 180 9.5S193 1.5 200 1.5S213 9.5 220 9.5S233 1.5 240 1.5S253 9.5 260 9.5S273 1.5 280 1.5S293 9.5 300 9.5S313 1.5 320 1.5L320 14.5C313 14.5 307 22.5 300 22.5S287 14.5 280 14.5S267 22.5 260 22.5S247 14.5 240 14.5S227 22.5 220 22.5S207 14.5 200 14.5S187 22.5 180 22.5S167 14.5 160 14.5S147 22.5 140 22.5S127 14.5 120 14.5S107 22.5 100 22.5S87 14.5 80 14.5S67 22.5 60 22.5S47 14.5 40 14.5S27 22.5 20 22.5S7 14.5 0 14.5Z' fill='%235cb2a0'/%3E%3C/svg%3E");
+  background-position: 0 100%;
 }
-mark.mark.is-marked { background-size: 100% .76em; }
+mark.mark.is-marked { background-size: 100% .34em; }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
