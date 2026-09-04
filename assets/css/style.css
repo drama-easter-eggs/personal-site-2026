@@ -86,6 +86,16 @@
   --section-y: clamp(84px, 11vw, 156px);
   --r: 50px;
   --r-sm: 12px;
+
+  /* — motion —
+     一條曲線走完全站（沿用 hero 入場那條），長度只有三階：
+     tap 是手指按下去的即時回饋、ui 是元件狀態切換、rise 是 scroll reveal。
+     位移固定 14px，跟 hero 載入同一個數字——整頁只講一種進場語氣。 */
+  --ease:     cubic-bezier(.22,.61,.36,1);
+  --dur-tap:  .16s;
+  --dur-ui:   .26s;
+  --dur-rise: .62s;
+  --rise-y:   14px;
 }
 
 /* ---------- reset ---------- */
@@ -155,9 +165,122 @@ mark.mark.is-marked { background-size: 100% .34em; }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  mark.mark { transition: none; }
-  * { animation-duration: .001ms !important; animation-iteration-count: 1 !important; }
+  *, *::before, *::after {
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .001ms !important;
+    transition-delay: 0s !important;
+    scroll-behavior: auto !important;
+  }
 }
+
+/* ============================================================
+   MOTION — scroll reveal
+   捲到就上浮 14px 進場，跟 hero 載入同一個位移、同一條曲線：
+   整頁只有一種進場語氣，不另外加淡出、縮放、位移方向的變化。
+   規則只有兩條——
+   ① 一個區塊是一個手勢：段落、引言、卡片各自整塊進場，不逐字逐行拆
+   ② 列表交給每一列自己：案例、經歷、lenses 這種長列表由各列進場，
+      同時進到畫面的才錯開（錯開量由 JS 依「這一批有幾個」給，見 main.js），
+      慢慢捲的時候一列一列各自進場，不會有假的等待感
+   進場一次就不再收回（unobserve）。捲回去不會重播——重播會讓頁面顯得不安分。
+   ============================================================ */
+
+/* 初始狀態只在 .js 成立；沒有 JS 就是一頁正常的靜態網站。
+   :where() 裡的那一串是「交給列自己進場」的容器，容器本身不進場，
+   否則容器與列會疊成兩次動作。
+   ⚠️ 一定要用 :where() 不能用 :not(.a):not(.b)——後者每一個 :not() 都會
+   累加特異性（九個就是 0,10,0），會壓過下面的 .is-in，元素進場了也不會顯示。
+   :where() 的特異性是 0，這一整串維持在 0,2,0，跟 .is-in 同級，
+   .is-in 寫在後面所以贏。 */
+.js .eyebrow,
+.js .col > *:where(:not(.threads, .cases, .counters, .cv, .teach, .talks, .cards, .lenses, .fit)),
+.js .threads > *,
+.js .cases > *,
+.js .counters__item,
+.js .cv > *,
+.js .teach > *,
+.js .talks > *,
+.js .cards > *,
+.js .lenses > *,
+.js .fit__col > *:where(:not(.fit__list)),
+.js .fit__list > *,
+.js .contact__panel > * {
+  opacity: 0;
+  transform: translateY(var(--rise-y));
+  transition: opacity var(--dur-rise) var(--ease),
+              transform var(--dur-rise) var(--ease);
+}
+
+/* ⚠️ 這條一定要贏過上面所有的初始狀態，否則元素進場了也不會顯示。
+   上面每一條都刻意維持在 (0,2,0)：容器一律用 `> *` 而不是 `> li`
+   （元素選擇器會多 (0,0,1)），排除清單一律用 :where(:not(…))
+   （`:not(.a):not(.b)` 每一個都會累加，九個就是 (0,10,0)）。
+   這裡再用 :root 墊到 (0,3,0) 當保險：日後有人加了帶元素名的選擇器，
+   進場也不會整段消失。 */
+:root.js .is-in {
+  opacity: 1;
+  transform: none;
+}
+
+/* email 同時吃 reveal（opacity/transform）與自己的 hover（線的粗細）。
+   上面那條 reveal 的 transition 簡寫特異性比 .contact__mail 高，
+   不一起寫回來的話 hover 會沒有補間。 */
+.js .contact__panel > .contact__mail {
+  transition: opacity var(--dur-rise) var(--ease),
+              transform var(--dur-rise) var(--ease),
+              border-bottom-width var(--dur-ui) var(--ease),
+              padding-bottom var(--dur-ui) var(--ease);
+}
+
+/* Hero 不吃這套：它有自己的載入動畫，且不在 .col 裡。 */
+
+/* ---- 微互動只給真正可以按的東西 ----
+   案例、經歷、lenses 這些列不是連結，所以不給 hover 狀態：
+   對不能點的東西回應滑鼠，等於教使用者一個不存在的功能。
+   會動的部分全部包在 @media (hover: hover) 裡，觸控裝置點完不會卡住 hover 樣式。 */
+.nav__mark { transition: transform var(--dur-ui) var(--ease); }
+.btn__dot  { transition: transform var(--dur-ui) var(--ease); }
+.contact__social a { transition: background-color var(--dur-ui) ease, color var(--dur-ui) ease, transform var(--dur-ui) var(--ease); }
+
+@media (hover: hover) {
+  /* 品牌標是螢光筆的筆頭，hover 時像被拿起來一樣偏一點 */
+  .nav__brand:hover .nav__mark { transform: scale(1.08) rotate(-5deg); }
+  /* 按鈕右端那顆圓點是「可點性提示」，所以回應手勢的是它，不是整顆按鈕 */
+  .btn:hover .btn__dot { transform: scale(1.32); }
+  .contact__social a:hover { transform: translateY(-1px); }
+}
+/* 按下去要回到平面，手指才有「壓到」的感覺 */
+.btn:active { transform: translateY(0); }
+.btn:active .btn__dot { transform: scale(.92); }
+
+/* 導覽：捲到哪一節，那一項底下就有一道 teal 短線（JS 上 aria-current）。
+   用 ::after 而不是加粗或換底色，字才不會在捲動中跳動。 */
+.nav__links a { position: relative; }
+.nav__links a::after {
+  content: "";
+  position: absolute;
+  left: 13px; right: 13px; bottom: 5px;
+  height: 2px; border-radius: 2px;
+  background: var(--teal);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform var(--dur-ui) var(--ease);
+}
+.nav__links a[aria-current]::after { transform: none; }
+/* 桌機版看不到 .nav__links 裡的 Contact，所以由右端的 ghost CTA 接手指示 */
+.nav__cta { transition: background-color var(--dur-ui) ease; }
+.nav__cta[aria-current] { background: var(--sand); }
+
+/* 漢堡：三條線本來就變成 X，只是沒有補間 */
+.nav__bars,
+.nav__bars::before,
+.nav__bars::after {
+  transition: transform var(--dur-ui) var(--ease),
+              top var(--dur-ui) var(--ease),
+              background-color var(--dur-tap) linear;
+}
+
 
 /* ============================================================
    LAYOUT
@@ -794,11 +917,16 @@ mark.mark.is-marked { background-size: 100% .34em; }
   /* Deep Teal 帶上唯一的暖色標記，落在這一頁最後一個動作上。
      ochre 對 deep teal 只有 2.09:1，所以線加粗到 3px 才站得住。 */
   border-bottom: 3px solid var(--ochre);
-  padding-bottom: 3px;
+  padding-bottom: 6px;
   word-break: break-word;
-  transition: opacity .2s ease;
+  transition: border-bottom-width var(--dur-ui) var(--ease),
+              padding-bottom var(--dur-ui) var(--ease);
 }
-.contact__mail:hover { opacity: .62; }
+/* hover 時筆壓重一階（3 → 6px）。padding 同步減掉，總高不變，
+   下面的社群連結才不會被推動。不用淡出——ochre 是全站唯一的暖色標記。 */
+@media (hover: hover) {
+  .contact__mail:hover { border-bottom-width: 6px; padding-bottom: 3px; }
+}
 
 .contact__social {
   display: flex; flex-wrap: wrap; gap: 8px;
@@ -867,6 +995,21 @@ mark.mark.is-marked { background-size: 100% .34em; }
   }
   .nav { position: relative; }
   .nav__links.is-open { display: flex; }
+
+  /* 選單展開／收合都補間。display 用 allow-discrete + @starting-style 帶，
+     不支援的瀏覽器就是瞬間開關，功能不受影響。 */
+  .nav__links {
+    opacity: 0;
+    transform: translateY(-6px);
+    transform-origin: top center;
+    transition: opacity var(--dur-ui) var(--ease),
+                transform var(--dur-ui) var(--ease),
+                display var(--dur-ui) var(--ease) allow-discrete;
+  }
+  .nav__links.is-open { opacity: 1; transform: none; }
+  @starting-style {
+    .nav__links.is-open { opacity: 0; transform: translateY(-6px); }
+  }
   .nav__links a { padding: 13px 16px; font-size: 17px; }
   .nav__links-cta { display: block; margin-top: 6px; padding-top: 6px; border-top: 1px solid var(--hairline); }
   .nav__toggle { display: grid; }

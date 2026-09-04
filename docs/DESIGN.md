@@ -247,12 +247,87 @@ cream 底，13px stone，左邊版權、右邊 `What moves people?`。年份由 
 
 ## Motion
 
-克制到幾乎看不見，全部走 `cubic-bezier(.22,.61,.36,1)`。
+全部走一條曲線 `--ease`。**進場語氣只有一種：上浮 14px。**
+這個數字跟 hero 載入一樣，所以整頁從頭到尾是同一個手勢，不另外加淡出、縮放、
+左右滑入或方向變化。
 
-- Hero 載入：四個元素依序上浮 14px（.8s，delay .05/.13/.24/.34s）。**只有這一次入場動畫**
-- 螢光筆：捲到就畫出來，一次性（`unobserve`）
-- 按鈕 hover：上移 1px
-- `prefers-reduced-motion: reduce` 時全部關掉，螢光筆直接顯示，`scroll-behavior` 轉 auto
+> **2026-09-04：scroll reveal 是 Mei 指定的方向。**
+> 當天先做過另一版——把區塊的開場細線做成「由左往右畫出來」（呼應螢光筆，
+> 內容完全不動），Mei 看過後說「不需要畫線的動態，其實更偏好 scroll reveal 動態」，
+> 整版退回重做。**不要再把 scroll reveal 換成畫線，也不要因為它「常見」就拿掉。**
+
+### Tokens
+
+| 變數 | 值 | 用途 |
+|---|---|---|
+| `--ease` | `cubic-bezier(.22,.61,.36,1)` | 全站唯一一條曲線 |
+| `--dur-tap` | `.16s` | 按下去的即時回饋 |
+| `--dur-ui` | `.26s` | 元件狀態切換（hover、選單、導覽指示） |
+| `--dur-rise` | `.62s` | scroll reveal |
+| `--rise-y` | `14px` | 進場位移，與 hero 載入同值 |
+
+### Scroll reveal
+
+規則只有兩條：
+
+1. **一個區塊是一個手勢。** 段落、引言、卡片、newsletter 卡各自整塊進場，不逐字逐行拆
+2. **列表交給每一列自己。** `.threads` `.cases` `.counters` `.cv` `.teach` `.talks`
+   `.cards` `.lenses` `.fit__list` 這幾個容器**自己不進場**（CSS 裡用 `:not()` 排掉），
+   由裡面的每一列進場；容器與列都動會疊成兩次
+
+錯開量**不寫死在 `nth-child`**，而是由 JS 看「這一批同時進到畫面的有幾個」決定
+（55ms 一階，最多六階）。四張卡片一起進來就依序錯開；慢慢捲的時候每一列都是第一個，
+不會出現「明明已經看到了卻還在等」的假延遲。
+
+- 觸發：`threshold: 0`、`rootMargin` 底部 `-12%`
+- 進場一次就 `unobserve`，捲回去不重播——重播會讓頁面顯得不安分
+- Hero 不吃這套（它有自己的載入動畫，而且不在 `.col` 裡）
+- 選擇器同時寫在 `style.css` 的 MOTION 區塊與 `main.js` 的 `REVEAL`，**兩邊要一起改**
+
+#### ⚠️ 特異性：初始狀態不能贏過 `.is-in`
+
+這是這個做法唯一會出事的地方，實作時踩到兩次，兩次的症狀都是
+**元素明明掛上了 `.is-in`，畫面上還是空白**：
+
+| 寫法 | 特異性 | 結果 |
+|---|---|---|
+| `.js .col > *:not(.a):not(.b)…` | `(0,10,0)` | ❌ 每個 `:not()` 都累加 |
+| `.js .col > *:where(:not(.a, .b, …))` | `(0,2,0)` | ✅ `:where()` 是 0 |
+| `.js .cases > li` | `(0,2,1)` | ❌ 元素選擇器多 `(0,0,1)` |
+| `.js .cases > *` | `(0,2,0)` | ✅ |
+
+規則：**初始狀態一律維持 `(0,2,0)`**——容器用 `> *` 不用 `> li`，排除清單用
+`:where(:not(…))` 不用連續 `:not()`。顯示狀態再用 `:root.js .is-in` 墊到 `(0,3,0)`
+當保險，日後有人加了帶元素名的選擇器也不會整段消失。
+
+### 微互動
+
+**只給真正能按的東西。** 案例、經歷、lenses 這些列不是連結，所以不給 hover 狀態——
+對不能點的東西回應滑鼠，等於教使用者一個不存在的功能。
+會動的部分全部包在 `@media (hover: hover)` 裡，觸控裝置點完不會卡住 hover 樣式。
+
+| 元件 | 行為 |
+|---|---|
+| `.btn` | hover 上移 1px；右端那顆點 `scale(1.32)`（點本來就是可點性提示，回應手勢的是它）。`:active` 回到平面、點縮到 `.92` |
+| `.nav__brand` | hover 時筆頭 `scale(1.08) rotate(-5deg)` |
+| `.nav__links a` | hover 鋪 cream；**目前所在區塊**底下一道 teal 短線（`::after` `scaleX`，字不會跳動） |
+| `.nav__cta` | 桌機版 `.nav__links-cta` 是收起來的，所以捲到 Contact 時由它換成 sand 底接手指示 |
+| `.nav__toggle` | 三條線變 X 補間 `--dur-ui` |
+| 手機選單 | 開合都補間（`display` 走 `allow-discrete` + `@starting-style`，不支援就瞬間開關） |
+| `.contact__mail` | hover 時 ochre 底線 3 → 6px，`padding-bottom` 同步減掉所以總高不變、不會推動下面的社群連結。**不淡出**——ochre 是全站唯一的暖色標記 |
+| `.contact__social a` | hover 反白 + 上移 1px |
+
+導覽的區塊指示由 IntersectionObserver 判斷（視窗中線附近 5% 那一帶），
+命中的連結掛 `aria-current="location"`，讀屏軟體也讀得到。
+
+### 降級（這兩條是硬要求）
+
+- **沒有 JS**：`<head>` 的 inline script 掛不上 `.js`，所有 reveal 的初始狀態就不成立，
+  整頁正常顯示。initial state 絕對不能寫在沒有 `.js` 前綴的選擇器上，
+  否則沒有 JS 的人會看到一頁空白
+- **`prefers-reduced-motion: reduce`**：`transition-duration` 與 `animation-duration` 全部壓到
+  `.001ms`、`transition-delay` 歸零、`scroll-behavior` 轉 auto。JS 直接把 `.is-in` 補上，
+  不建 observer
 
 ---
 
@@ -308,6 +383,9 @@ cream 底，13px stone，左邊版權、右邊 `What moves people?`。年份由 
 - 不要在一個元件裡混兩個色相
 - 不要用直角（0–4px 圓角）
 - 不要加常見的 AI 感裝置：全部置中對齊、三欄圖示卡、emoji 圖示、捲動時跳動的數字 counter
+  （**scroll reveal 不在這張清單上**，見 Motion 的 2026-09-04 註記）
+- 不要給不能點的東西 hover 狀態
+- reveal 的初始狀態不要寫在沒有 `.js` 前綴的選擇器上
 
 ---
 
