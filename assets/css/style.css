@@ -55,19 +55,21 @@
      層級只有這幾階，靠「字重 + 級數落差」拉開，不靠第二支字體。 */
   --fs-micro: 12px;                      /* 拉丁全大寫小標，僅限拉丁 */
   --fs-meta:  14px;                      /* 漢字小標、tag、年份、註記 */
-  --fs-sm:    16px;                      /* 次要段落 */
+  --fs-sm:    16px;                      /* 次要段落、按鈕、nav */
   --fs-body:  18px;                      /* 內文 */
-  --fs-lead:  clamp(19px, 1.6vw, 22px);  /* 段落引言 */
-  --fs-h4:    clamp(19px, 1.7vw, 22px);
-  --fs-h3:    clamp(20px, 1.9vw, 25px);
-  --fs-h2:    clamp(22px, 2.1vw, 28px);
-  --fs-d1:    clamp(23px, 2.7vw, 35px);  /* 大提問：案例、care thesis */
+  /* 一個標題級就夠：h3（卡片／區塊）和 h4（cv / teach / talk 的項目）在 HTML
+     裡從來不會出現在同一層底下——h4 的上層永遠是 .sub，h3 的上層是 eyebrow。
+     不會並排就不必分階，合併成 --fs-head，八個地方共用。 */
+  --fs-head:  clamp(21px, 1.9vw, 25px);  /* 所有區塊與項目標題 */
+  --fs-sub:   clamp(22px, 2.1vw, 28px);  /* 章節小標 .sub、引言色塊 .pull */
+  --fs-display: clamp(23px, 2.7vw, 35px); /* 大提問（案例、care thesis）、email */
   /* hero 兩行同一級。問句現在佔整幅寬（不再讓右欄吃掉 330px），上限由最長那句
      （14 個字 = 14.14em）必須停成一行決定：可用寬 = min(1200px, 100vw) − 2×--pad-x，
      除以 14.14 之後各斷點換算出來的 vw 都落在 6.35–6.47 之間，取 6.05 留 3.5–7% 餘裕；
      上限 1104 ÷ 14.14 ≈ 78px，取 74px。實測見 docs/DESIGN.md。 */
   --fs-hero:  clamp(26px, 6.05vw, 74px);
-  --fs-d3:    clamp(30px, 5vw, 62px);    /* contact 收尾大標 */
+  --fs-mega:  clamp(30px, 5vw, 62px);    /* 整頁最大的兩個非 hero 物件：
+                                            contact 收尾大標、counters 數字 */
 
   /* 行高：漢字塞滿整個字身框、沒有拉丁字那種上下留白，所以同一個
      line-height 看起來比拉丁字擠一階。內文 1.95、標題不低於 1.55、
@@ -388,7 +390,7 @@ mark.mark.is-marked { background-size: 100% .34em; }
 }
 .nav__name {
   font-family: var(--latin);
-  font-size: 15px; font-weight: 500; letter-spacing: -.01em;
+  font-size: var(--fs-sm); font-weight: 500; letter-spacing: -.01em;
   white-space: nowrap;
 }
 .nav__links { display: flex; align-items: center; gap: 2px; }
@@ -396,7 +398,7 @@ mark.mark.is-marked { background-size: 100% .34em; }
 .nav__links a {
   display: block;
   padding: 8px 13px;
-  font-size: 15px;
+  font-size: var(--fs-sm);
   font-weight: 500;
   text-decoration: none;
   border-radius: var(--r);
@@ -569,14 +571,14 @@ html:not(.js) .hero__line:first-child {
    SHARED TEXT PIECES
    ============================================================ */
 .lead {
-  font-size: var(--fs-lead);
-  line-height: 1.9;
+  /* 級數和行高都跟內文一樣——引言的身分靠位置（每個 section 的第一段）
+     和下方那道 margin 撐，不靠大一號的字。 */
   margin-bottom: clamp(32px, 4vw, 52px);
 }
 
 .sub {
   font-family: var(--display);
-  font-size: var(--fs-h2);
+  font-size: var(--fs-sub);
   font-weight: 700;
   line-height: var(--lh-head);
   margin-top: clamp(56px, 7vw, 88px);
@@ -594,7 +596,7 @@ html:not(.js) .hero__line:first-child {
   padding: clamp(24px, 2.8vw, 34px) clamp(26px, 3vw, 38px);
   font-family: var(--display);
   font-weight: 500;
-  font-size: var(--fs-h2);
+  font-size: var(--fs-sub);
   line-height: 1.75;
   letter-spacing: var(--track-zh-head);
   text-wrap: balance;
@@ -625,7 +627,7 @@ html:not(.js) .hero__line:first-child {
 .care__thesis {
   font-family: var(--display);
   font-weight: 900;
-  font-size: var(--fs-d1);
+  font-size: var(--fs-display);
   line-height: 1.6;
   letter-spacing: var(--track-zh-head);
   text-wrap: balance;
@@ -642,7 +644,7 @@ html:not(.js) .hero__line:first-child {
 }
 .threads h3 {
   font-family: var(--display);
-  font-size: var(--fs-h3);
+  font-size: var(--fs-head);
   font-weight: 700;
   line-height: var(--lh-head);
 }
@@ -677,7 +679,7 @@ html:not(.js) .hero__line:first-child {
 }
 .case__q {
   font-family: var(--display);
-  font-size: var(--fs-d1);
+  font-size: var(--fs-display);
   font-weight: 700;
   line-height: var(--lh-head);
   letter-spacing: var(--track-zh-head);
@@ -704,7 +706,7 @@ html:not(.js) .hero__line:first-child {
 }
 .counters__n {
   font-family: var(--latin);
-  font-size: clamp(38px, 5.4vw, 68px);
+  font-size: var(--fs-mega);
   font-weight: 500;
   line-height: 1;
   letter-spacing: -.05em;
@@ -734,7 +736,7 @@ html:not(.js) .hero__line:first-child {
 }
 .cv__what h4 {
   font-family: var(--display);
-  font-size: var(--fs-h4);
+  font-size: var(--fs-head);
   font-weight: 700;
   line-height: var(--lh-head);
   margin-bottom: 6px;
@@ -757,15 +759,16 @@ html:not(.js) .hero__line:first-child {
 .teach__no {
   grid-row: span 2;
   font-family: var(--display);
-  /* 漢字序號當標記用：級數配 h4 的行首，行高刻意壓在 1.3 才對得上。 */
-  font-size: 26px;
+  /* 漢字序號當標記用：跟旁邊的標題同一級（原本寫死 26px，是梯子外的孤兒），
+     行高刻意壓在 1.3 才對得上行首。 */
+  font-size: var(--fs-head);
   line-height: 1.3;
   color: var(--teal);
   font-weight: 900;
 }
 .teach h4 {
   font-family: var(--display);
-  font-size: var(--fs-h4);
+  font-size: var(--fs-head);
   font-weight: 700;
   line-height: var(--lh-head);
 }
@@ -779,7 +782,7 @@ html:not(.js) .hero__line:first-child {
   border-bottom: 1px solid var(--hairline);
 }
 .talk__when { font-size: var(--fs-meta); color: var(--stone); padding-top: .5em; }
-.talk h4 { font-family: var(--display); font-size: var(--fs-h4); font-weight: 700; line-height: var(--lh-head); }
+.talk h4 { font-family: var(--display); font-size: var(--fs-head); font-weight: 700; line-height: var(--lh-head); }
 .talk .link { display: inline-block; margin-top: 10px; font-size: var(--fs-meta); }
 
 /* ============================================================
@@ -788,7 +791,7 @@ html:not(.js) .hero__line:first-child {
 .fit { display: grid; gap: clamp(40px, 5vw, 60px); }
 .fit__head {
   font-family: var(--display);
-  font-size: var(--fs-h3);
+  font-size: var(--fs-head);
   font-weight: 700;
   line-height: 1.6;
   text-wrap: balance;
@@ -828,7 +831,7 @@ html:not(.js) .hero__line:first-child {
 }
 .card h3 {
   font-family: var(--display);
-  font-size: var(--fs-h3);
+  font-size: var(--fs-head);
   font-weight: 700;
   line-height: var(--lh-head);
   margin-bottom: 14px;
@@ -846,7 +849,6 @@ html:not(.js) .hero__line:first-child {
 .services__close {
   display: flex; flex-wrap: wrap; align-items: center; gap: 16px 22px;
   margin-top: clamp(32px, 4vw, 46px);
-  font-size: var(--fs-lead);
 }
 
 /* ============================================================
@@ -870,7 +872,7 @@ html:not(.js) .hero__line:first-child {
 }
 .lens h3 {
   font-family: var(--display);
-  font-size: var(--fs-h3);
+  font-size: var(--fs-head);
   font-weight: 700;
   line-height: var(--lh-head);
 }
@@ -900,7 +902,7 @@ html:not(.js) .hero__line:first-child {
 }
 .sub-card h3 {
   font-family: var(--display);
-  font-size: var(--fs-h3);
+  font-size: var(--fs-head);
   font-weight: 700;
   line-height: var(--lh-head);
   margin-bottom: 8px;
@@ -946,14 +948,13 @@ html:not(.js) .hero__line:first-child {
 
 .contact__head {
   font-family: var(--display);
-  font-size: var(--fs-d3);
+  font-size: var(--fs-mega);
   font-weight: 900;
   line-height: var(--lh-display);
   letter-spacing: var(--track-zh-head);
 }
 .contact__body {
   margin-top: clamp(20px, 2.4vw, 28px);
-  font-size: var(--fs-lead);
   font-weight: 500;
   /* ch 是「0」的寬度（半形），量不到漢字：44ch 實際只有 22 個漢字寬。
      全站的行寬一律用 em，1em = 1 個漢字。 */
@@ -963,7 +964,7 @@ html:not(.js) .hero__line:first-child {
   display: inline-block;
   margin-top: clamp(30px, 4vw, 48px);
   font-family: var(--latin);
-  font-size: clamp(22px, 3.6vw, 46px);
+  font-size: var(--fs-display);
   font-weight: 500;
   letter-spacing: -.035em;
   text-decoration: none;
@@ -1070,7 +1071,9 @@ html:not(.js) .hero__line:first-child {
 }
 
 @media (max-width: 720px) {
-  body { font-size: 17px; line-height: var(--lh-body); }
+  /* 改的是 token 不是 body 的 font-size——.hero__id / .about__note 也吃
+     var(--fs-body)，只改 body 的話它們會卡在 18px 不跟著降。 */
+  :root { --fs-body: 17px; }
   .cards { grid-template-columns: minmax(0, 1fr); }
   .card { border-radius: 34px; }
   .sub-card { border-radius: 34px; }
