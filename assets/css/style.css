@@ -57,6 +57,10 @@
   --fs-meta:  14px;                      /* 漢字小標、tag、年份、註記 */
   --fs-sm:    16px;                      /* 次要段落、按鈕、nav */
   --fs-body:  18px;                      /* 內文 */
+  /* eyebrow 是沿著左欄一路跟著捲的區塊標籤，要能被一眼掃到，
+     所以比一般 meta 高一階（漢字 16px），拉丁全大寫跟著上到 13px。 */
+  --fs-eyebrow:       16px;
+  --fs-eyebrow-latin: 13px;
   /* 一個標題級就夠：h3（卡片／區塊）和 h4（cv / teach / talk 的項目）在 HTML
      裡從來不會出現在同一層底下——h4 的上層永遠是 .sub，h3 的上層是 eyebrow。
      不會並排就不必分階，合併成 --fs-head，八個地方共用。 */
@@ -315,7 +319,7 @@ mark.mark.is-marked { background-size: 100% .34em; }
 .eyebrow {
   position: sticky;
   top: 116px;
-  font-size: var(--fs-meta);
+  font-size: var(--fs-eyebrow);
   line-height: 1.7;
   font-weight: 500;
   color: var(--stone);
@@ -324,7 +328,7 @@ mark.mark.is-marked { background-size: 100% .34em; }
 .eyebrow > span {
   display: block;
   font-family: var(--latin);
-  font-size: var(--fs-micro);
+  font-size: var(--fs-eyebrow-latin);
   font-weight: 500;
   letter-spacing: .19em;
   text-transform: uppercase;
