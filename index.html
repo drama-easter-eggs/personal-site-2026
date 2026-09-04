@@ -64,9 +64,19 @@
       <span class="hero__role">獨立研究者 ／ 體驗策略顧問</span>
     </p>
 
+    <!-- 「人們為什麼」固定，後半句輪播。六句全寫在 DOM 裡疊成同一格（.hero__rotator 是 grid），
+         高度就是最高那一句的高度，換句不會把 Hero 頂上頂下。
+         沒有 JS 時顯示第一句（見 style.css），有 JS 才洗牌。 -->
     <h1 class="hero__display">
-      <span class="hero__en">What moves<br>people?</span>
-      <span class="hero__zh">人為什麼會被<mark class="mark" data-mark>某些東西</mark>打動？</span>
+      <span class="hero__fixed"><mark class="mark" data-mark>人們為什麼</mark></span>
+      <span class="hero__rotator" data-rotator>
+        <span class="hero__line" data-line>會被某些產品打動？</span>
+        <span class="hero__line" data-line>表面說的，和實際行為不同？</span>
+        <span class="hero__line" data-line>願意投入大量時間？</span>
+        <span class="hero__line" data-line>喜歡某個故事、品牌？</span>
+        <span class="hero__line" data-line>願意為某些東西付更多錢？</span>
+        <span class="hero__line" data-line>會因為一件事，突然改變想法？</span>
+      </span>
     </h1>
 
     <div class="hero__body">

@@ -1,5 +1,5 @@
 /* Mei-Ling Chen — site behaviour.
-   Five small jobs: 筆觸造型、螢光筆進場、scroll reveal、導覽區塊指示、
+   筆觸造型、螢光筆進場、scroll reveal、導覽區塊指示、Hero 問句輪播、
    手機選單、年份。 */
 
 (function () {
@@ -166,6 +166,109 @@
     }, { rootMargin: '-45% 0px -50% 0px', threshold: 0 });
 
     targets.forEach(function (el) { spy.observe(el); });
+  }
+
+  /* ---- 1e. Hero 問句輪播 ----
+     「人們為什麼」不動，只換後半句。六句都已經在 DOM 裡（.hero__rotator 是 grid，
+     六句疊在同一格），所以這裡只負責換 class，不碰文字、不量高度。
+
+     順序：每一輪把六句洗牌，照洗完的順序播一次，一輪之內不重複；
+     播完再洗下一輪，並確保新的第一句不等於上一輪的最後一句
+     （不然會看起來像卡住沒換）。
+
+     節奏：一句停 4.6 秒，換句是「舊的原地淡出 → 新的上浮 14px 淡入」，
+     跟全站同一個手勢。畫面看不到（捲走了、切到別的分頁）就停在當下這一句，
+     回來才繼續——不讓看不見的地方一直在動。 */
+
+  var rotator = document.querySelector('[data-rotator]');
+  var lines = rotator
+    ? Array.prototype.slice.call(rotator.querySelectorAll('[data-line]'))
+    : [];
+
+  if (lines.length > 1) {
+    var HOLD = 4600;                  /* 一句停留多久（讀完一句問題的時間） */
+    var OUT = reduced ? 0 : 620;      /* 淡出時間，對齊 CSS 的 --dur-rise */
+
+    var order = [], at = 0, prevLast = -1;
+    var current = null, timer = null, inView = true;
+
+    var shuffle = function () {
+      var i, j, t, n = lines.length;
+      order = [];
+      for (i = 0; i < n; i++) order.push(i);
+      for (i = n - 1; i > 0; i--) {
+        j = Math.floor(Math.random() * (i + 1));
+        t = order[i]; order[i] = order[j]; order[j] = t;
+      }
+      /* 跟上一輪的最後一句撞頭就換掉第一個位置 */
+      if (order[0] === prevLast) {
+        j = 1 + Math.floor(Math.random() * (n - 1));
+        t = order[0]; order[0] = order[j]; order[j] = t;
+      }
+      at = 0;
+    };
+
+    var idle = function () { return document.hidden || !inView; };
+
+    var stop = function () {
+      if (timer === null) return;
+      window.clearTimeout(timer);
+      timer = null;
+    };
+
+    var tick = function () {
+      timer = null;
+      if (idle()) return;             /* 停在目前這一句，resume() 會接回去 */
+
+      if (at >= order.length) {
+        prevLast = order[order.length - 1];
+        shuffle();
+      }
+
+      var next = lines[order[at]];
+      var out = current;
+      at += 1;
+
+      out.classList.remove('is-active');
+      out.classList.add('is-leaving');
+      /* 這兩個短 timer 不進 timer 變數：換句一旦開始就讓它換完，
+         中途被暫停也不會停在「舊的已淡出、新的還沒進場」的空白。 */
+      window.setTimeout(function () { out.classList.remove('is-leaving'); }, OUT + 80);
+      window.setTimeout(function () { next.classList.add('is-active'); }, OUT);
+
+      current = next;
+      timer = window.setTimeout(tick, OUT + HOLD);
+    };
+
+    var resume = function () {
+      if (idle() || timer !== null) return;
+      timer = window.setTimeout(tick, HOLD);
+    };
+
+    /* 第一句：先把 transition 關掉再上 is-active，
+       否則它會跟 .hero__rotator 的載入動畫疊成上浮兩次。 */
+    shuffle();
+    current = lines[order[0]];
+    at = 1;
+    current.style.transition = 'none';
+    current.classList.add('is-active');
+    void current.offsetWidth;
+    current.style.transition = '';
+
+    document.addEventListener('visibilitychange', function () {
+      if (document.hidden) stop();
+      else resume();
+    });
+
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(function (entries) {
+        inView = entries[0].isIntersecting;
+        if (inView) resume();
+        else stop();
+      }, { threshold: 0 }).observe(rotator);
+    }
+
+    resume();
   }
 
   /* ---- 2. Mobile menu ---- */

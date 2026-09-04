@@ -62,7 +62,10 @@
   --fs-h3:    clamp(20px, 1.9vw, 25px);
   --fs-h2:    clamp(22px, 2.1vw, 28px);
   --fs-d1:    clamp(23px, 2.7vw, 35px);  /* 大提問：案例、care thesis */
-  --fs-d2:    clamp(22px, 2.9vw, 40px);  /* hero 漢字 */
+  /* hero 兩行同一級。上限由最長那句（14 個字 = 14.14em）決定：它必須在 col 1 裡
+     停成一行。最窄的地方是 901px——兩欄還沒併、右欄卻已經吃掉 330px，col 1 只剩
+     445px，換算出來 vw 最多 3.49，所以取 3.4 留一點餘裕。實測見 docs/DESIGN.md。 */
+  --fs-hero:  clamp(21px, 3.4vw, 48px);
   --fs-d3:    clamp(30px, 5vw, 62px);    /* contact 收尾大標 */
 
   /* 行高：漢字塞滿整個字身框、沒有拉丁字那種上下留白，所以同一個
@@ -466,24 +469,71 @@ mark.mark.is-marked { background-size: 100% .34em; }
 }
 
 .hero__display { grid-column: 1; font-weight: 400; }
-.hero__en {
-  display: block;
-  font-family: var(--latin);
-  font-size: clamp(48px, 9.1vw, 124px);
-  font-weight: 500;
-  line-height: .93;
-  letter-spacing: -.055em;
-}
-.hero__zh {
+
+/* 兩行同一級、同一重、同一個行高，中間也不加 margin——這樣它讀起來是
+   「一句話換行」，不是「大標＋副標」。只有前半段包螢光筆（它是不動的那一半）。 */
+.hero__fixed {
   display: block;
   font-family: var(--display);
   font-weight: 900;
-  font-size: var(--fs-d2);
-  line-height: var(--lh-head);
+  font-size: var(--fs-hero);
+  line-height: var(--lh-display);
   letter-spacing: var(--track-zh-head);
-  text-wrap: balance;
-  margin-top: clamp(18px, 2.4vw, 30px);
+}
+
+/* 六句全寫在 DOM 裡、用 grid 疊在同一格（都是 1 / 1）。
+   列高由最高的那一句決定，所以不管換到哪一句、也不管某一句在窄螢幕折成兩行，
+   Hero 的高度都是固定的，不靠 JS 量測。max-width 取 15em：最長那句是 14 個字，
+   desktop / laptop 停在一行，mobile 折兩行也已經算進列高裡。 */
+.hero__rotator {
+  display: grid;
+  font-family: var(--display);
+  font-weight: 900;
+  font-size: var(--fs-hero);
+  line-height: var(--lh-display);
+  letter-spacing: var(--track-zh-head);
   max-width: 15em;
+}
+
+/* 進場跟全站同一個手勢：上浮 14px 淡入。
+   退場則是「原地淡出」（.is-leaving 把 transform 歸零）——兩句都在動會變成
+   跑馬燈，一進一靜才讀得出「換了一句」而不是「在跑畫面」。 */
+.hero__line {
+  grid-area: 1 / 1;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(var(--rise-y));
+  text-wrap: balance;
+  transition: opacity var(--dur-rise) var(--ease),
+              transform var(--dur-rise) var(--ease),
+              visibility 0s linear var(--dur-rise);
+}
+.hero__line.is-active {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  transition: opacity var(--dur-rise) var(--ease),
+              transform var(--dur-rise) var(--ease),
+              visibility 0s;
+}
+.hero__line.is-leaving {
+  opacity: 0;
+  visibility: hidden;
+  transform: none;
+}
+
+/* 沒有 JS 就不輪播，直接顯示第一句（而不是一排透明的字）。 */
+html:not(.js) .hero__line { display: none; }
+html:not(.js) .hero__line:first-child {
+  display: block;
+  opacity: 1; visibility: visible; transform: none;
+}
+
+/* 減少動態：拿掉位移，只剩下最簡單的文字切換。
+   （上面全站的 reduce 區塊已經把 transition-duration 歸零，這裡只需要把起點的
+   translateY 拿掉，否則它會變成一次瞬間的跳位。） */
+@media (prefers-reduced-motion: reduce) {
+  .hero__line { transform: none; }
 }
 
 .hero__body {
@@ -500,13 +550,13 @@ mark.mark.is-marked { background-size: 100% .34em; }
 }
 
 /* page-load: quiet, one gesture only */
-.hero__id, .hero__en, .hero__zh, .hero__body {
+.hero__id, .hero__fixed, .hero__rotator, .hero__body {
   animation: rise .8s cubic-bezier(.22,.61,.36,1) backwards;
 }
-.hero__id   { animation-delay: .05s; }
-.hero__en   { animation-delay: .13s; }
-.hero__zh   { animation-delay: .24s; }
-.hero__body { animation-delay: .34s; }
+.hero__id      { animation-delay: .05s; }
+.hero__fixed   { animation-delay: .14s; }
+.hero__rotator { animation-delay: .26s; }
+.hero__body    { animation-delay: .36s; }
 @keyframes rise {
   from { opacity: 0; transform: translateY(14px); }
   to   { opacity: 1; transform: none; }

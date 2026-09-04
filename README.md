@@ -7,7 +7,7 @@
 ```
 index.html            首頁（01–08 全部區塊）
 assets/css/style.css  全站樣式
-assets/js/main.js     螢光筆標記、行動版選單、年份
+assets/js/main.js     螢光筆標記、scroll reveal、hero 問句輪播、行動版選單、年份
 assets/favicon.svg
 docs/                 規劃與規範（不會部署）
   DESIGN.md             實作後的樣式規範，以這份為準
