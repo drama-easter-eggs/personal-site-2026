@@ -1,5 +1,5 @@
 /* Mei-Ling Chen — site behaviour.
-   scroll reveal、導覽區塊指示、Hero 問句輪播、手機選單、年份。
+   scroll reveal、導覽區塊指示、Hero 問句輪播、Hero 的貓、手機選單、年份。
    （螢光筆的波形與流動全在 style.css，不需要 JS。） */
 
 (function () {
@@ -208,6 +208,61 @@
     }
 
     resume();
+  }
+
+  /* ---- 1f. Hero 左下的貓 ----
+     lottie 引擎與動畫資料都是自己 host 的（assets/js/vendor/、assets/js/loader-cat.js），
+     沒有第三方 CDN，也因為資料是全域變數而不是 fetch 一支 json，
+     直接用瀏覽器打開 index.html 也會動。
+
+     跟問句輪播同一個原則：畫面看不到就不要動。捲走了、切到別的分頁就暫停在當下那一格，
+     回來才接著播；使用者若開啟「減少動態效果」，就只停在第一格當一張插圖。
+     兩個檔案任何一個沒載到（擋掉了、壞了）就什麼都不做——那格本來就是留白，
+     少了貓也只是回到原本的版面，不會破圖。 */
+
+  var catBox = document.querySelector('[data-cat]');
+
+  if (catBox && window.lottie && window.LOADER_CAT) {
+    var cat = window.lottie.loadAnimation({
+      container: catBox,
+      renderer: 'svg',
+      loop: true,
+      autoplay: false,
+      animationData: window.LOADER_CAT,
+      /* 原檔 280×200 的畫布四邊都留了空白，坐著的貓只佔 (102, 54) 起算的 105×108
+         （逐格量 getBBox 量出來的：這一塊在 32 格裡都不動，只有尾巴會甩出去）。
+         改 viewBox 只框這一塊，版面上的盒子才等於貓本身，貼齊左欄文字邊；
+         尾巴甩出框的部分靠 style.css 的 overflow: visible 照樣畫出來。
+         那邊的 aspect-ratio 用同一組數字，兩邊要一起改。 */
+      rendererSettings: { viewBoxSize: '102 54 105 108' }
+    });
+
+    /* 原檔是 25fps / 32 格 = 1.28 秒一圈，放大之後那個速度看起來太急躁。
+       0.5 再乘 0.75 = 0.375 倍速，約 3.4 秒一圈：貓在發呆，不是在跑迴圈。
+       只改播放速度，不動原始資料。 */
+    cat.setSpeed(0.375);
+
+    if (reduced) {
+      cat.goToAndStop(0, true);
+    } else {
+      var catInView = true;
+
+      var catSync = function () {
+        if (document.hidden || !catInView) cat.pause();
+        else cat.play();
+      };
+
+      document.addEventListener('visibilitychange', catSync);
+
+      if ('IntersectionObserver' in window) {
+        new IntersectionObserver(function (entries) {
+          catInView = entries[0].isIntersecting;
+          catSync();
+        }, { threshold: 0 }).observe(catBox);
+      }
+
+      catSync();
+    }
   }
 
   /* ---- 2. Mobile menu ---- */

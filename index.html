@@ -73,6 +73,11 @@
       </span>
     </h1>
 
+    <!-- 貓就放在 hero grid 本來就空著的左下那一格（第 2 列、左欄），
+         跟右欄的自我介紹同一列、共用同一條底線對齊，所以不會多長出一列，
+         排版高度不變。純裝飾，對輔助科技隱藏；沒有 JS 就是一格空白，跟原本一樣。 -->
+    <div class="hero__cat" data-cat aria-hidden="true"></div>
+
     <div class="hero__body">
       <p class="hero__id">Hi，我是 Mei，我是一位<span class="hero__role">獨立研究者／體驗策略顧問</span>。</p>
       <p>我持續透過實際觀察、研究，理解人們真正重視什麼、實際如何行動，以及分析那些看似矛盾的行為模式。</p>
@@ -416,6 +421,8 @@
   </div>
 </footer>
 
+<script src="assets/js/vendor/lottie_light.min.js" defer></script>
+<script src="assets/js/loader-cat.js" defer></script>
 <script src="assets/js/main.js" defer></script>
 </body>
 </html>

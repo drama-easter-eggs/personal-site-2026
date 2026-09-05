@@ -362,6 +362,39 @@ cream 底，13px stone，左邊版權、右邊 `What moves people?`。年份由 
 `:where(:not(…))` 不用連續 `:not()`。顯示狀態再用 `:root.js .is-in` 墊到 `(0,3,0)`
 當保險，日後有人加了帶元素名的選擇器也不會整段消失。
 
+### Hero 的貓（Lottie）
+
+> **2026-09-05：Mei 指定把 `reference/Loader cat.json` 放到 hero 問句下方偏左。**
+
+`<div class="hero__cat" data-cat aria-hidden="true">`，在 index.html 裡排在 `</h1>` 之後。
+
+- **放在哪：** hero grid 第 2 列的左欄。那一格本來就是空的——問句吃掉整幅寬
+  （`grid-column: 1 / -1`），右欄的自我介紹掉到第二列，左下的留白是刻意留的。
+  貓是填進這塊留白，不是插進版面：`align-items: end` 讓兩欄齊底，列高仍由右欄那三段
+  文字決定（貓最高 108px，矮得多），**Hero 的總高度沒有變**
+- **裁切：** 原檔畫布 280×200，坐著的貓只佔 `(102, 54)` 起算的 105×108（逐格取
+  `getBBox` 量的：這一塊 32 格都不動，只有尾巴會甩出去到 x=240 / y=193）。
+  用 lottie 的 `rendererSettings.viewBoxSize: '102 54 105 108'` 框住這一塊，版面上的
+  盒子才等於貓本身，能真的貼齊左欄的文字邊；甩出框的尾巴靠 `.hero__cat svg
+  { overflow: visible }` 照樣畫出來（SVG 根元素預設會裁掉 viewBox 以外的內容）。
+  **`.hero__cat` 的 `aspect-ratio: 105 / 108` 跟 viewBoxSize 是同一組數字，要一起改**
+- **尺寸：** `clamp(80px, 7.3vw, 105px)`。`margin-bottom: .6em` 補掉右欄最後一行字
+  下方的 padding 與行距，貓的腳底才跟那行字收在同一條線
+- **≤900px：** 單欄之後貓變成夾在問句與自我介紹中間的一列，改成 `margin-top:
+  clamp(26px, 5vw, 40px)`、不再齊底
+- **進場：** 吃 hero 那組 `rise`，`animation-delay: .42s` 排在自我介紹（.3s）之後——
+  先讀完字，貓才出現
+- **看不到就停：** 跟問句輪播同一個原則，捲離 hero 或切到別的分頁就 `pause()`
+- **`prefers-reduced-motion`：** `goToAndStop(0)`，只當一張插圖
+- **沒有 JS（或兩支檔案沒載到）：** 那一格回到原本的留白，不會破圖
+- **檔案：** 引擎 `assets/js/vendor/lottie_light.min.js`（自己 host，沒有 CDN）、
+  資料 `assets/js/loader-cat.js`。資料包成 `.js` 全域變數而不是 `.json`，是因為
+  `file://` 下 fetch 一支 json 會被擋掉，而這個站要能直接打開 `index.html` 預覽。
+  原檔留在 `reference/Loader cat.json`
+- **⚠️ 顏色：** 這隻貓是冷藍灰（`#212432` 身體 / `#d9deed` 肚子 / `#9999c2` 尾巴陰影），
+  不在全站的 teal + ochre 兩色相裡。尺寸小、深色部分接近 ink 所以衝突不明顯，
+  但嚴格說它是第三個色相——要收回規範內就得改寫 lottie 資料裡的色值
+
 ### 微互動
 
 **只給真正能按的東西。** 案例、經歷、lenses 這些列不是連結，所以不給 hover 狀態——

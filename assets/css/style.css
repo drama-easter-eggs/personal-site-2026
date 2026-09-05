@@ -579,6 +579,41 @@ html:not(.js) .hero__line:first-child {
 }
 /* 頭銜是一個詞，不能被那條斜線拆成兩行（12 字 ≈ 216px，最窄的欄位也放得下） */
 .hero__role { white-space: nowrap; }
+/* 左下的貓。放在 hero grid 第 2 列的左欄——那格本來就是空的（見上面 .hero__display
+   的註解），所以它是填進留白，不是插進版面：列高仍然由右欄的那三段自我介紹決定
+   （貓最高 171px，比那一欄的 ~265px 矮一截），Hero 的總高度不會被它推高。
+
+   裁切：原檔的畫布是 280×200，但坐著的貓只佔到 (102, 54) 起算 105×108 的那一塊，
+   四邊都是空白。實際的裁切在 main.js 用 lottie 的 viewBoxSize 做掉，所以這個盒子
+   就等於貓本身——它才會真的貼齊左欄的文字邊，而不是浮在一塊看不見的空白中間。
+   甩尾巴的那幾格會畫到盒子外面（svg 的 overflow 開著），那是刻意的：尾巴只要能甩
+   出去，盒子就可以縮到「坐著的貓」這個尺寸，對齊才有一條穩定的基準。甩到最遠時
+   往右超出 38% 盒寬、往下超出 36% 盒高（逐段解貝茲極值算出來的）：桌機下方還有
+   hero 的 padding 接得住，單欄時下溢 47px 大於貓與自我介紹之間的 32px，尾巴會掃過
+   「Hi，我是 Mei」那一行——已知且接受，之後換圖時一併處理。 */
+.hero__cat {
+  grid-column: 1;
+  width: clamp(126px, 11.5vw, 166px);
+  aspect-ratio: 105 / 108;   /* 裁切後那塊畫布的比例，先卡住高度，載入時就不會跳動 */
+  /* align-items: end 只讓兩欄的盒子齊底，但右欄最後一行字的下方還有 padding
+     跟行距。補回這一段，貓的腳底才跟那行字收在同一條線上。 */
+  margin-bottom: .6em;
+}
+/* 尾巴要能甩到盒子外面：SVG 根元素預設會裁掉 viewBox 以外的東西。
+   scaleX(-1) 是左右鏡像，讓貓面向版面內側而不是頁面外側。
+   鏡像放在 svg 上、不放在 .hero__cat 上：外層那個盒子的 transform 已經被
+   入場動畫 rise 佔用了，寫在外層會在那 0.8 秒裡被 keyframes 蓋掉、動畫結束才
+   突然翻面。
+   !important 是必要的：lottie 會在 svg 根元素上寫行內的
+   style.transform = translate3d(0,0,0)（它的 GPU 合成提示），行內樣式贏過樣式表，
+   不加就完全沒作用。順手把那個 translate3d 接回來，別把它的提示弄丟。
+   （另外五個 !important 在 prefers-reduced-motion 那一區，用途不同。） */
+.hero__cat svg {
+  display: block;
+  overflow: visible;
+  transform: scaleX(-1) translate3d(0, 0, 0) !important;
+}
+
 .hero__rule {
   max-width: var(--page);
   margin: clamp(56px, 7vw, 92px) auto 0;
@@ -587,13 +622,14 @@ html:not(.js) .hero__line:first-child {
 }
 
 /* page-load: quiet, one gesture only */
-.hero__kicker, .hero__fixed, .hero__rotator, .hero__body {
+.hero__kicker, .hero__fixed, .hero__rotator, .hero__body, .hero__cat {
   animation: rise .8s cubic-bezier(.22,.61,.36,1) backwards;
 }
 .hero__kicker  { animation-delay: 0s; }
 .hero__fixed   { animation-delay: .06s; }
 .hero__rotator { animation-delay: .18s; }
 .hero__body    { animation-delay: .3s; }
+.hero__cat     { animation-delay: .42s; }   /* 排在最後：先讀完字，貓才出現 */
 @keyframes rise {
   from { opacity: 0; transform: translateY(14px); }
   to   { opacity: 1; transform: none; }
@@ -1065,8 +1101,14 @@ html:not(.js) .hero__line:first-child {
     border-bottom: 0; padding-bottom: 0; margin-bottom: 0;
   }
   .hero__grid { grid-template-columns: minmax(0, 1fr); row-gap: 0; }
-  .hero__display, .hero__body { grid-column: 1; }
+  .hero__display, .hero__cat, .hero__body { grid-column: 1; }
   .hero__body { margin-top: clamp(32px, 6vw, 48px); max-width: 24em; }
+  /* 單欄之後貓變成夾在問句與自我介紹中間的一列。這裡不再需要跟右欄齊底，
+     改成自己撐開一段呼吸——它只是一個小小的停頓，不要變成一個區塊。 */
+  .hero__cat {
+    margin-top: clamp(26px, 5vw, 40px);
+    margin-bottom: 0;
+  }
 
   .nav__links {
     display: none;
