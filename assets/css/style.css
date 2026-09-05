@@ -153,27 +153,42 @@ p + p { margin-top: 1.15em; }
 
 /* ============================================================
    THE SIGNATURE — highlighter mark
-   手繪感來自 SVG path：一條等距的正弦波帶（8 個週期、幅度 ±4/24
-   的帶高），上下緣同相位平移，所以厚度固定、只有整條筆觸在抖。
+   手繪感來自 SVG path：一條等距的正弦波帶，上下緣同相位平移，所以厚度固定、
+   只有整條筆觸在抖。這裡的 SVG 只畫「一個週期」，橫向靠 repeat-x 鋪滿，
+   而 background-size 的寬度寫成 1em ⇒ 波長恆等於一個漢字，跟著字級縮放，
+   不管畫在四個字還是二十個字上，抖動的疏密都一樣。
+   波不是「畫進來」的，是一直在流：animation 讓底圖每 --mark-wave 秒橫移
+   一個波長。linear ＋ 首尾同高同切線（波峰對波峰）＝ 無縫循環，所以看不到
+   起點也沒有折返的頓點。速度刻意壓在 2–5px/s，比眼睛掃字慢一個量級，
+   是餘光才會注意到的呼吸，不會把視線從句子上拉走。
    .mark / .mark--b 是同一條波相位差 180°，相鄰兩筆不會長得一樣。
    ============================================================ */
 mark.mark {
+  --mark-wave: 5s;
   color: inherit;
   background-color: transparent;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 24' preserveAspectRatio='none'%3E%3Cpath d='M0 9.5C7 9.5 13 1.5 20 1.5S33 9.5 40 9.5S53 1.5 60 1.5S73 9.5 80 9.5S93 1.5 100 1.5S113 9.5 120 9.5S133 1.5 140 1.5S153 9.5 160 9.5S173 1.5 180 1.5S193 9.5 200 9.5S213 1.5 220 1.5S233 9.5 240 9.5S253 1.5 260 1.5S273 9.5 280 9.5S293 1.5 300 1.5S313 9.5 320 9.5L320 22.5C313 22.5 307 14.5 300 14.5S287 22.5 280 22.5S267 14.5 260 14.5S247 22.5 240 22.5S227 14.5 220 14.5S207 22.5 200 22.5S187 14.5 180 14.5S167 22.5 160 22.5S147 14.5 140 14.5S127 22.5 120 22.5S107 14.5 100 14.5S87 22.5 80 22.5S67 14.5 60 14.5S47 22.5 40 22.5S27 14.5 20 14.5S7 22.5 0 22.5Z' fill='%235cb2a0'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 40 24%27 preserveAspectRatio=%27none%27%3E%3Cpath d=%27M0 9.5C7 9.5 13 1.5 20 1.5S33 9.5 40 9.5L40 22.5C33 22.5 27 14.5 20 14.5S7 22.5 0 22.5Z%27 fill=%27%235cb2a0%27/%3E%3C/svg%3E");
+  background-repeat: repeat-x;
   /* 螢光筆畫在文字下緣之外，只當底線用，不覆蓋字身 */
   background-position: 0 100%;
-  background-size: 0% .34em;
-  transition: background-size .75s cubic-bezier(.22,.61,.36,1);
+  background-size: 1em .34em;
+  animation: mark-wave var(--mark-wave) linear infinite;
   padding-inline: .06em;
   padding-bottom: .16em;
 }
 mark.mark--b {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 24' preserveAspectRatio='none'%3E%3Cpath d='M0 1.5C7 1.5 13 9.5 20 9.5S33 1.5 40 1.5S53 9.5 60 9.5S73 1.5 80 1.5S93 9.5 100 9.5S113 1.5 120 1.5S133 9.5 140 9.5S153 1.5 160 1.5S173 9.5 180 9.5S193 1.5 200 1.5S213 9.5 220 9.5S233 1.5 240 1.5S253 9.5 260 9.5S273 1.5 280 1.5S293 9.5 300 9.5S313 1.5 320 1.5L320 14.5C313 14.5 307 22.5 300 22.5S287 14.5 280 14.5S267 22.5 260 22.5S247 14.5 240 14.5S227 22.5 220 22.5S207 14.5 200 14.5S187 22.5 180 22.5S167 14.5 160 14.5S147 22.5 140 22.5S127 14.5 120 14.5S107 22.5 100 22.5S87 14.5 80 14.5S67 22.5 60 22.5S47 14.5 40 14.5S27 22.5 20 22.5S7 14.5 0 14.5Z' fill='%235cb2a0'/%3E%3C/svg%3E");
-  background-position: 0 100%;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 40 24%27 preserveAspectRatio=%27none%27%3E%3Cpath d=%27M0 1.5C7 1.5 13 9.5 20 9.5S33 1.5 40 1.5L40 14.5C33 14.5 27 22.5 20 22.5S7 14.5 0 14.5Z%27 fill=%27%235cb2a0%27/%3E%3C/svg%3E");
 }
-mark.mark.is-marked { background-size: 100% .34em; }
+
+/* 同一個 duration 在不同字級上是不同的視覺速度（位移量是 em）。
+   字級大的兩處把時間一起放大，讓全站每一筆都維持在 2–5px/s。 */
+.hero__fixed mark.mark   { --mark-wave: 14s; }
+.care__thesis mark.mark  { --mark-wave: 8s; }
+
+@keyframes mark-wave {
+  from { background-position-x: 0; }
+  to   { background-position-x: -1em; }
+}
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
@@ -472,6 +487,18 @@ mark.mark.is-marked { background-size: 100% .34em; }
    讓那句大提問先講完話，介紹才接著小聲說。 */
 .hero__display { grid-column: 1 / -1; font-weight: 400; }
 
+/* 大提問前面的引子：級數壓到 eyebrow 那一階、字重退回 500、顏色退成 stone，
+   才不會跟下面 74px 的問句搶——它是說話前的吸氣，不是第二個標題。 */
+.hero__kicker {
+  display: block;
+  font-size: var(--fs-eyebrow);
+  line-height: 1.7;
+  font-weight: 500;
+  letter-spacing: var(--track-zh);
+  color: var(--stone);
+  margin-bottom: clamp(8px, .9vw, 14px);
+}
+
 /* 兩行同一級、同一重、同一個行高，中間也不加 margin——這樣它讀起來是
    「一句話換行」，不是「大標＋副標」。只有前半段包螢光筆（它是不動的那一半）。 */
 .hero__fixed {
@@ -560,9 +587,10 @@ html:not(.js) .hero__line:first-child {
 }
 
 /* page-load: quiet, one gesture only */
-.hero__fixed, .hero__rotator, .hero__body {
+.hero__kicker, .hero__fixed, .hero__rotator, .hero__body {
   animation: rise .8s cubic-bezier(.22,.61,.36,1) backwards;
 }
+.hero__kicker  { animation-delay: 0s; }
 .hero__fixed   { animation-delay: .06s; }
 .hero__rotator { animation-delay: .18s; }
 .hero__body    { animation-delay: .3s; }
