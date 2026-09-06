@@ -887,17 +887,99 @@ html:not(.js) .hero__line:first-child {
   line-height: var(--lh-head);
 }
 
-.talks { border-top: 1px solid var(--hairline); }
+/* 跟 .cv / .teach 同一條列表節奏（細線分隔、同一組 padding），差別在三欄：
+   封面 · 講題 · meta+外連。meta 欄寬 148px 跟 .cv__when 對齊，
+   整個 About 區只有一條垂直軸。 */
+.talks { border-top: 1px solid var(--hairline); margin-top: 8px; }
 .talk {
   display: grid;
-  grid-template-columns: 148px minmax(0, 1fr);
-  gap: 4px clamp(12px, 2vw, 24px);
+  grid-template-columns: clamp(150px, 17vw, 200px) minmax(0, 1fr) 148px;
+  gap: 8px clamp(16px, 2.2vw, 28px);
+  align-items: start;
   padding-block: clamp(22px, 2.6vw, 30px);
   border-bottom: 1px solid var(--hairline);
 }
-.talk__when { font-size: var(--fs-meta); color: var(--stone); padding-top: .5em; }
-.talk h4 { font-family: var(--display); font-size: var(--fs-head); font-weight: 700; line-height: var(--lh-head); }
-.talk .link { display: inline-block; margin-top: 10px; font-size: var(--fs-meta); }
+
+/* 封面固定 2:1，四張一致——來源比例不同的圖靠 object-fit 置中裁掉，
+   不讓列高被某一張圖撐開。圓角用 --r-sm：這是縮圖不是卡片，
+   吃 --r 的 50px 會跟 .card 搶同一個語彙。 */
+.talk__cover {
+  display: block;
+  aspect-ratio: 2 / 1;
+  border-radius: var(--r-sm);
+  overflow: hidden;
+  background: var(--sand);
+  /* 白底的簡報截圖直接貼在 cream 上會浮起來，用一道細線收邊。 */
+  box-shadow: inset 0 0 0 1px var(--hairline);
+}
+.talk__cover img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  transition: transform var(--dur-ui) var(--ease);
+}
+/* 觸控裝置點完會卡住 hover 樣式，所以位移一律關在 hover: hover 裡
+   ——沿用 .nav / .card 那幾處的同一個做法。 */
+@media (hover: hover) {
+  .talk:hover .talk__cover img { transform: scale(1.03); }
+}
+
+/* 還沒有封面的那幾場：sand 色塊 + 年份，讀起來是刻意留白不是破圖。
+   放年份而不是形式字樣——「講座分享」在右邊 20px 處已經寫過一次了。
+   之後補上截圖就換成 <a class="talk__cover"><img></a>。 */
+.talk__cover--none {
+  display: grid;
+  place-items: center;
+  font-family: var(--latin);
+  font-size: var(--fs-head);
+  font-weight: 500;
+  letter-spacing: .04em;
+  color: var(--hairline);
+}
+
+.talk h4 {
+  font-family: var(--display);
+  font-size: var(--fs-head);
+  font-weight: 700;
+  line-height: var(--lh-head);
+  letter-spacing: var(--track-zh-head);
+  text-wrap: pretty;
+}
+.talk__where {
+  margin-top: 6px;
+  font-size: var(--fs-meta);
+  line-height: 1.6;
+  color: var(--stone);
+}
+
+/* 右欄兩行：日期在上、外連在下。日期吃 --latin（負字距、數字等寬對齊）。
+   行高壓到 1.5、padding-top .3em，是為了讓日期的第一行字頂對上左欄標題的
+   第一行字頂——兩欄字級不同，靠 half-leading 相減補出來的值。 */
+.talk__meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  line-height: 1.5;
+}
+.talk__when {
+  font-family: var(--latin);
+  font-size: var(--fs-meta);
+  font-weight: 500;
+  letter-spacing: .04em;
+  color: var(--stone);
+  padding-top: .3em;
+}
+/* 箭頭跟文字一起吃 .link 的底線，是「這個連結會離站」的訊號。
+   不做 hover 位移——底線在，位移會讓箭頭飄出線外。 */
+.talk__link {
+  font-size: var(--fs-meta);
+  white-space: nowrap;
+}
+.talk__arrow { margin-left: .4em; }
+
+@media (prefers-reduced-motion: reduce) {
+  .talk:hover .talk__cover img { transform: none; }
+}
 
 /* ============================================================
    05 WHEN TO REACH OUT
@@ -1201,8 +1283,18 @@ html:not(.js) .hero__line:first-child {
   .contact__panel { border-radius: 34px; }
   .lens { grid-template-columns: minmax(0, 1fr); gap: 6px; }
   .lens__en { grid-row: auto; padding-top: 0; margin-bottom: 4px; }
-  .cv__row, .talk { grid-template-columns: minmax(0, 1fr); gap: 6px; }
-  .cv__when, .talk__when { padding-top: 0; }
+  .cv__row { grid-template-columns: minmax(0, 1fr); gap: 6px; }
+  .cv__when { padding-top: 0; }
+  /* 窄螢幕：封面留在左邊（它是這一列的辨識點），meta 掉到講題下方橫排一行。 */
+  .talk {
+    grid-template-columns: clamp(110px, 30vw, 150px) minmax(0, 1fr);
+    gap: 10px clamp(14px, 4vw, 20px);
+  }
+  .talk__meta {
+    grid-column: 2;
+    flex-direction: row; align-items: baseline; gap: 16px;
+  }
+  .talk__when { padding-top: 0; }
   .case { grid-template-columns: minmax(0, 1fr); gap: 8px; }
   .case__no { padding-top: 0; }
   .counters { grid-template-columns: minmax(0, 1fr); }
