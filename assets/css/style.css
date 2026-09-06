@@ -564,20 +564,29 @@ html:not(.js) .hero__line:first-child {
   .hero__line { transform: none; }
 }
 
+/* 這三段是整個 hero 唯一在說「我是誰」的地方，讀完問句就會落到這裡，
+   所以它是內文、不是註記——級數用 --fs-body（18px）跟全站內文同一階，
+   不再退到 --fs-sm。右欄最寬 330px，18px 下一行約 18 個漢字，最長的
+   那一段仍然只折成兩行，列高不變。 */
 .hero__body {
   grid-column: 2;
   padding-bottom: .35em;
-  font-size: var(--fs-sm);
+  font-size: var(--fs-body);
   line-height: var(--lh-body);
   color: var(--stone);
 }
-/* 自我介紹是右欄的開頭，字重與顏色各抬一階，後面兩段才退成註解的語氣 */
+/* 自我介紹的第一行再抬一階到 --fs-head（21–25px）——它是右欄真正的開頭，
+   跟字重、顏色一起把「我是誰」拉到後兩段之前。行高同時換成 --lh-head：
+   --lh-body 的 1.95 是給 18px 內文的，套在這一級上會鬆成兩個段落。 */
 .hero__id {
-  font-size: var(--fs-body);
+  font-size: var(--fs-head);
+  line-height: var(--lh-head);
   font-weight: 500;
   color: var(--ink);
 }
-/* 頭銜是一個詞，不能被那條斜線拆成兩行（12 字 ≈ 216px，最窄的欄位也放得下） */
+/* 頭銜是一個詞，不能被那條斜線拆成兩行。抬到 --fs-head 之後最寬的情況是
+   12 字 × 25px ≈ 306px，右欄固定 330px（左欄是 minmax(0,1fr) 會先讓）放得下；
+   單欄時字級落回下限 21px ≈ 257px，320px 的視窗也還有餘裕。 */
 .hero__role { white-space: nowrap; }
 /* 左下的貓。放在 hero grid 第 2 列的左欄——那格本來就是空的（見上面 .hero__display
    的註解），所以它是填進留白，不是插進版面：列高仍然由右欄的那三段自我介紹決定
@@ -1182,7 +1191,7 @@ html:not(.js) .hero__line:first-child {
 }
 
 @media (max-width: 720px) {
-  /* 改的是 token 不是 body 的 font-size——.hero__id / .about__note 也吃
+  /* 改的是 token 不是 body 的 font-size——.hero__body / .about__note 也吃
      var(--fs-body)，只改 body 的話它們會卡在 18px 不跟著降。 */
   :root { --fs-body: 17px; }
   .cards { grid-template-columns: minmax(0, 1fr); }
