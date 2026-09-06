@@ -98,29 +98,45 @@ CSS 變數名以實作為準（短名），右欄是 v3 規範裡的對應名稱
 
 ### 中文行高拉開
 
-內文 18px / **1.95**，`letter-spacing: .02em`；≤720px 收到 17px（行高不變）。
-規範給的 1.5 是拉丁字的數字，漢字字面率高，1.5 會擠。
-行長用 `max-width: 34em` 控制（約 34 個漢字），寫在 em 上所以會跟著字級縮放。
+內文 17px / **1.78**，`letter-spacing: .02em`（各斷點同值）。
+規範給的 1.5 是拉丁字的數字，漢字字面率高，1.5 會擠；1.78 是中文長文的常見下緣，
+再低相鄰兩行的漢字會開始黏。
+行長用 `max-width: 32em` 控制（約 32 個漢字），寫在 em 上所以會跟著字級縮放。
+
+> **2026-09-06 的密度調整。** 原本是 18px / **1.95** / 34em。1.95 在 18px 上的行距是 17px，
+> 快等於一整個字高——Mei 的原話是「文字好像有點大、資訊密度略為稀疏」。這次把行高、
+> 級距、間距各收一階，並把版面空掉的寬度還給內容，總頁高從 10363px 降到 7328px（−29%），
+> 內容沒有刪掉任何一句。詳細對照見本節與下面 Spacing、Layout 三處的註記。
 
 ### Type Scale（實作值）
 
 **9 階，每一階都有 token。** `clamp()` 的欄位列 min → max（max 在視窗約 1300px 以上生效）。
 
+`clamp()` 的 vw 係數是**反推出來的**：要讓上限在 1300px 左右就到頂，1440 這種最常見的桌機寬度
+才會落在整數 px 上。曾經因為係數配太小，`--fs-head` 在 1440 算出 20.88px——分數 px 會讓漢字的
+橫豎筆在點陣上糊掉（見下面第 1 條硬規則）。改係數時記得回頭驗一次 1440 與 1280 兩個寬度。
+
 只有兩處寫死 px，都是斷點微調而不是新的階：`.nav__links a` 在 ≤900px 的下拉選單放大到 17px
-（觸控目標），`.nav__name` 在 ≤400px 收到 14px。內文在 ≤720px 降到 17px 是改 `--fs-body`
-這個 token 本身，不是覆寫 `body`——這樣 `.hero__id`、`.about__note` 這些直接吃 token 的元素才會跟著降。
+（觸控目標），`.nav__name` 在 ≤400px 收到 14px。`--fs-body` 各斷點同值（2026-09-06 起基準就是
+17px，原本 ≤720px 那條降到 17px 的覆寫變成沒有作用的重複，已拿掉）。真要再為手機降一階，
+改的仍然是 token 本身而不是 `body` 的 `font-size`——`.hero__id`、`.about__note` 這些直接吃
+token 的元素才會跟著降。
 
 | Token | 角色 / class | 字級 | 字重 | 行高 | 字距 |
 |-------|--------------|------|------|------|------|
-| `--fs-hero` | hero 問句（兩行同級）`.hero__fixed` / `.hero__rotator` | 26 → 74px | 900 | 1.4 | .01em |
-| `--fs-mega` | Contact 大標 `.contact__head`、數字 `.counters__n` | 30 → 62px | 900 / 500 (latin) | 1.45 / 1 | .01em / -.05em |
-| `--fs-display` | 論點句 `.care__thesis`、案例提問 `.case__q`、email `.contact__mail` | 23 → 35px | 900 / 700 / 500 | 1.6 / 1.55 / — | .01em / -.035em (latin) |
-| `--fs-sub` | 章節小標 `.sub`、引言色塊 `.pull` | 22 → 28px | 700 / 500 | 1.55 / 1.75 | — / .01em |
-| `--fs-head` | 所有區塊與項目標題 `.threads h3` / `.card h3` / `.lens h3` / `.sub-card h3` / `.fit__head` / `.cv__what h4` / `.teach h4` / `.talk h4` | 21 → 25px | 700 | 1.55 | — |
-| `--fs-body` | 內文 `body`、`.hero__id`、`.about__note`，以及導言 `.lead`、`.services__close`、`.contact__body`（繼承） | 18px（≤720px 降 17px） | 400 / 500 | 1.95 | .02em |
-| `--fs-sm` | 次要段落、按鈕、nav `.btn` / `.card p` / `.hero__body` / `.nav__links a` | 16px | 400 / 500 | 1.95 | .02em |
+| `--fs-hero` | hero 問句（兩行同級）`.hero__fixed` / `.hero__rotator` | 25 → 60px（4.65vw） | 900 | 1.4 | .01em |
+| `--fs-mega` | Contact 大標 `.contact__head`、數字 `.counters__n` | 28 → 46px（3.6vw） | 900 / 500 (latin) | 1.32 / 1 | .01em / -.05em |
+| `--fs-display` | 論點句 `.care__thesis`、案例提問 `.case__q`、email `.contact__mail` | 21 → 28px（2.2vw） | 900 / 700 / 500 | 1.6 / 1.45 / — | .01em / -.035em (latin) |
+| `--fs-sub` | 章節小標 `.sub`、引言色塊 `.pull` | 20 → 24px（1.9vw） | 700 / 500 | 1.45 / 1.75 | — / .01em |
+| `--fs-head` | 所有區塊與項目標題 `.threads h3` / `.card h3` / `.lens h3` / `.sub-card h3` / `.fit__head` / `.cv__what h4` / `.teach h4` / `.talk h4` | 19 → 21px（1.65vw） | 700 | 1.45 | — |
+| `--fs-body` | 內文 `body`、`.hero__id`、`.about__note`，以及導言 `.lead`、`.services__close`、`.contact__body`（繼承） | 17px | 400 / 500 | 1.78 | .02em |
+| `--fs-sm` | 次要段落、按鈕、nav `.btn` / `.card p` / `.nav__links a` | 15px | 400 / 500 | 1.78 | .02em |
 | `--fs-meta` | 漢字小標、tag、年份、註記 | 14px | 400 / 500 | 1.45–1.7 | .02em |
-| `--fs-micro` | eyebrow 拉丁全大寫 `.eyebrow > span` / `.lens__en` / `.sub-card__label` | 12px | 500 | — | .19em, uppercase |
+| `--fs-micro` | 拉丁全大寫小標 `.lens__en` / `.sub-card__label`；`--fs-eyebrow-latin` 同值 12px | 12px | 500 | — | .19em, uppercase |
+
+（另有 `--fs-eyebrow` 15px / `--fs-eyebrow-latin` 12px 兩個 token 專供 `.eyebrow`。
+2026-09-06 之前是 16 / 13px；`--fs-eyebrow-latin` 現在與 `--fs-micro` 同值，
+留著兩個名字是因為它們的**角色**不同，改其中一個不該連動另一個。）
 
 三條硬規則：
 
@@ -140,23 +156,43 @@ CSS 變數名以實作為準（短名），右欄是 v3 規範裡的對應名稱
 - **68px（數字）→ `--fs-mega` 62px。** 和 contact 大標同屬「一個巨大的物件」，差 6px 只是沒對齊。手機下限一併從 38px 收到 30px——`1000+` 在 375px 的三欄格線裡放不下 38px。
 - **26px（`.teach__no` 的一二三）→ `--fs-head`。** 它的註解本來就寫「級數配 h4」，但寫死成 26px 之後就跟著 h4 的變動脫鉤了。改吃 token，註解才是真的。
 
-`--fs-sub`（22 → 28px）留著的理由：它是 `--fs-head` 那些項目標題的**上層**（`.sub` → `.cv__what h4`），
-併進 `--fs-head` 會變成父子同級。但兩者在手機端只差 1px（22 vs 21），那個「上層」的關係在小螢幕上讀不出來——
-真要再收一次，該做的是把 `--fs-sub` 的下限抬到 24px，不是合併。
+`--fs-sub`（20 → 24px）留著的理由：它是 `--fs-head` 那些項目標題的**上層**（`.sub` → `.cv__what h4`），
+併進 `--fs-head` 會變成父子同級。但兩者在手機端只差 1px（20 vs 19），那個「上層」的關係在小螢幕上讀不出來——
+真要再收一次，該做的是把 `--fs-sub` 的下限抬起來，不是合併。
+
+#### 2026-09-06：整套級距降一階
+
+級數不是等比例縮的，是**先看哪一階撐不住自己的角色**：
+
+- **項目標題 25 → 21px。** 八個地方共用這一階，而內文只有 18px——1.39× 的落差讓它「不夠像標題，
+  卻很佔空間」。降到 21px 之後對 17px 的落差是 1.24×，層級改由字重（700 vs 400）與行高扛，
+  這本來就是這套系統的設計（一支字體、靠字重分層）。
+- **案例提問 35 → 28px、章節小標 28 → 24px、Contact 大標與數字 62 → 46px。** 這幾階原本是
+  「大標」的量體，但它們一頁出現七、八次，重複的巨大字反而讓每一次都不特別。
+- **Hero 60px（原 74px）。** 唯一保留巨大量體的地方——它是整站的 core question，
+  也是唯一該有的一次衝擊。原本的算式（最長那句 14.14em 必須停成一行）在 60px 下餘裕從 5% 拉到 23%。
+- **內文 18 → 17px、次要 16 → 15px。** 漢字 17px 在 1440 螢幕上是編輯排版的常見尺寸；
+  15px 讓 `--fs-sm` 與內文重新拉開 2px 的差（原本 16 vs 18 也是 2px，但兩者都偏大）。
+- **不動的兩階：`--fs-meta` 14px（漢字下限）、`--fs-micro` 12px（只給拉丁全大寫）。**
+  它們是規則的邊界，不是可調的刻度。
 
 ---
 
 ## Tokens — Spacing & Shapes
 
-**Base unit:** 4px　**Density:** comfortable（長文閱讀，留白偏寬）
+**Base unit:** 4px　**Density:** compact-editorial（長文閱讀，但留白是為了分組，不是為了空）
+
+段距是 `p + p { margin-top: .85em }`（原本 1.15em）。各元件的 `padding-block` 在 2026-09-06
+一併收了約 25–30%：列表列 clamp(24–34) → clamp(18–26) 這種幅度。**收的是元件內部與元件之間，
+沒有動區塊底色的交替**——那個交替是唯一的區塊節奏（見 Layout）。
 
 | 變數 | 值 | 用途 |
 |------|-----|------|
 | `--page` | 1200px | 版心上限 |
-| `--gutter-w` | 178px（≤1080px 收成 132px） | 左側 eyebrow 欄 |
-| `--gutter-gap` | clamp(28, 4vw, 76) | 兩欄間距 |
+| `--gutter-w` | 140px（≤1080px 收成 116px） | 左側 eyebrow 欄 |
+| `--gutter-gap` | clamp(22, 2.8vw, 48) | 兩欄間距 |
 | `--pad-x` | clamp(20, 5vw, 48) | 版心左右留白 |
-| `--section-y` | clamp(84, 11vw, 156) | 區塊上下留白 |
+| `--section-y` | clamp(60, 6.6vw, 96) | 區塊上下留白 |
 | `--r` | 50px | 卡片、按鈕、導覽、tag、引言色塊 |
 | `--r-sm` | 12px | skip link 這類小元件 |
 
@@ -167,7 +203,15 @@ CSS 變數名以實作為準（短名），右欄是 v3 規範裡的對應名稱
 
 ## Layout
 
-版型是**兩欄**：左邊 178px 的 eyebrow 欄，右邊內容欄（`max-width: 800px`，內文再收到 34em）。
+版型是**兩欄**：左邊 140px 的 eyebrow 欄，右邊內容欄（不設容器上限，1200px 版心下約 924px；
+段落再各自收到 32em ≈ 544px）。
+
+> **2026-09-06：把空掉的寬度還給內容。** 原本是 178px 的 gutter ＋ `max-width: 800px` 的內容欄，
+> 而內文自己只有 34em ≈ 612px——1200px 的版心裡有 434px（36%）是**永遠空白**的，
+> 所有內容擠成一根 612px 的縱列。這是「資訊密度稀疏」的主因，比字級大得多。
+> 現在的做法是**窄段落配寬列表**：段落 544px（可讀行長），列表／卡片／格線吃滿 924px。
+> 兩者的寬窄差本身就是版面的疏密節奏；讓它們都停在 800px 只會讓整頁變成一根麵條。
+> 三處「一則佔一整列、右邊全空」的長列表也改成橫向利用寬度（見 Components 的分行列表）。
 
 - eyebrow 是 `position: sticky`（top: 116px），捲動時停在畫面上，所以任何時候都知道自己在哪一節
 - ≤900px 兩欄併成一欄，eyebrow 變成一行「英文標籤＋中文標籤」水平排列
@@ -217,7 +261,7 @@ CSS 變數名以實作為準（短名），右欄是 v3 規範裡的對應名稱
 ### Floating Pill Navigation
 `--white` 底、50px 圓角，`position: fixed` 浮在畫布上，左右留 `--pad-x`。
 品牌標是 22px 圓角方塊（teal 底＋ink 橫線）＋ 15px/500 拉丁字。
-連結 14px/500，hover 鋪 cream。右端是 ghost CTA「聊聊」。
+連結 15px/500（`--fs-sm`），hover 鋪 cream。右端是 ghost CTA「聊聊」。
 ≤900px 連結收進漢堡選單：40px teal 圓鈕，展開成白色圓角面板，
 `aria-expanded` / `aria-label` 由 JS 同步，Esc 與點外面都會關。
 
@@ -230,7 +274,9 @@ CSS 變數名以實作為準（短名），右欄是 v3 規範裡的對應名稱
 - 沒有 Deep Teal 實心按鈕。Deep Teal 只做 Contact 那條帶——一個大面積色在一頁裡出現一次就夠
 
 ### Eyebrow（區塊標籤）
-上排 11px 拉丁大寫、字距 .19em、ink 色，下面一條 hairline；下排 13px 中文、stone 色。sticky。
+上排 12px 拉丁大寫、字距 .19em、ink 色，下面一條 hairline；下排 15px 中文、stone 色。sticky。
+gutter 收到 140px 之後，較長的標籤（`WHAT I CARE ABOUT`、`QUESTIONS I EXPLORE`）折成兩行，
+這是可接受的——它是側欄的定位標，不是要一眼讀完的句子。
 
 ### Highlight Block（`.pull`）
 ochre-tint 底、50px 圓角、內距 clamp(24–34) / clamp(26–38)。**兩行以內**，不放段落。
@@ -238,29 +284,47 @@ ochre-tint 底、50px 圓角、內距 clamp(24–34) / clamp(26–38)。**兩行
 
 ### 分行列表（cases / cv / teach / talks / lenses / fit）
 沒有卡片，用 hairline 分行 + 左欄編號或年份的 grid。這是全站的主要內容形式。
-左欄 74–148px，≤720px 併成單欄。編號用 `--latin` 或漢字數字，teal 色。
+左欄 56–132px，≤720px 併成單欄。編號用 `--latin` 或漢字數字，teal 色。
+
+**每一列都要橫向用掉版面的寬度**，不要讓一列只放一個左欄標籤加一段文字、右邊三分之一空著。
+三種現行做法（2026-09-06 起）：
+
+| 列表 | 桌機（≥901px） | 為什麼 |
+|------|----------------|--------|
+| `.threads`（02 三則關心的事）、`.teach`（04 三個教學主題） | **三欄並排**，`grid-template-rows: subgrid` 讓三欄的小標與內文落在同一條基線上；欄與欄之間垂直 hairline | 三則是**並列**的，不是有先後的清單——單欄時橫線會把它們讀成順序 |
+| `.talk`（04 演講）、`.lens`（07 三種視角） | **一列三欄**：縮圖／標籤 · 標題＋提問 · meta 或說明 | 一則的內容天然分成三塊，攤成一列比堆成三、四列省一半高度，右邊那三分之一也真的裝了東西 |
+| `.cv`（04 兩段經歷）、`.case`（03 三則案例） | 維持左欄年份／編號 ＋ 右欄敘事 | 只有兩、三筆，而且右欄是敘事段落，切欄會把句子切碎 |
+
+`.lens` 的三欄只在 ≥901px 套用：≤900px 版面本來就併成一欄，這時三欄會把每欄擠到 15 個漢字以下。
 
 ### Stat Block（`.counters`）
 三欄，上緣一條 ink 實線，欄與欄之間 hairline。
-數字 38–68px 拉丁 500，`+` 號是 teal；說明 13.5px stone。**捲動時不要做數字跳動的 counter 動畫。**
+數字 28–46px 拉丁 500，`+` 號是 teal；說明 14px stone。**捲動時不要做數字跳動的 counter 動畫。**
 
 ### Tag Pill
-hairline 描邊、不填色、12.5px stone、膠囊形。分類資訊不是強調，所以不給顏色。
+hairline 描邊、不填色、14px stone、膠囊形。分類資訊不是強調，所以不給顏色。
 
 ### Content Card（`.card`）
 white 底、50px 圓角、無描邊無陰影，2 欄網格（≤720px 收成 1 欄）。
-標題 19–24px/700，內文 16px，最後一行「怎麼做」用 hairline 上線分隔並轉 stone。
+標題 19–21px/700，內文 15px，最後一行「怎麼做」用 hairline 上線分隔並轉 stone。
 
 ### Newsletter Card（`.sub-card`）
 teal-tint 底、50px 圓角，左文右按鈕的橫向卡。唯一的彩色閱讀面。
 
 ### Contact Band
-滿版 `--teal-deep`，白字，上下留白 clamp(76–140)。
-大標 30–68px/900，email 22–46px 拉丁 500 配 3px ochre 底線，社群連結是白色描邊膠囊。
+接近滿版的 `--teal-deep` 圓角面板，白字，內距 clamp(36–64) / clamp(24–52)。
+大標 28–46px/900，email 21–28px 拉丁 500 配 3px ochre 底線，社群連結是白色描邊膠囊。
 **不要改成亮色收尾**——整頁節奏是安靜的紙 → 一路的螢光筆重點 → 深色收合。
 
+**≥901px 分兩欄**：左邊「說什麼」（標籤 · 大標 · 說明），右邊「怎麼找我」（email · 社群）。
+單欄時大標只用掉這塊 1300px 面板的三成寬、其餘全空，而它是整頁最後一個動作，空掉收尾就鬆了。
+email 用 `align-self: end` 貼著大標那一列的下緣、社群用 `align-self: start` 貼著下一列的上緣，
+兩者跨過列界靠在一起，讀起來是同一組入口。
+⚠️ `.eyebrow--inline` 是 `display: inline-block`，進了 grid 會變成拉伸的格子項，
+那道 hairline 會橫跨整個左欄——所以要補 `justify-self: start`。
+
 ### Footer
-cream 底，13px stone，左邊版權、右邊 `What moves people?`。年份由 JS 帶入。
+cream 底，14px stone，左邊版權、右邊 `What moves people?`。年份由 JS 帶入。
 
 ---
 
@@ -462,7 +526,8 @@ cream 底，13px stone，左邊版權、右邊 `What moves people?`。年份由 
 ### Do
 - 用 `#f6f2e8` 當頁面畫布，純白只留給卡片與導覽
 - 卡片、按鈕、導覽一律 50px 圓角（≤720px 收 34px）
-- 漢字內文行高 1.9–1.95，行長 34em 以內
+- 漢字內文行高 1.75–1.8，行長 32em 以內
+- 每一列都要橫向用掉版面的寬度；一列只放左欄標籤＋一段文字、右邊三分之一空著的，改成三欄
 - teal 只做線與小面積，大面積填色只有 Contact 那條帶
 - ochre 只出現在要讀者動作的地方，一個畫面最多一次實心填色
 - 螢光筆畫片語不畫整句，一個區塊最多一處
@@ -477,6 +542,7 @@ cream 底，13px stone，左邊版權、右邊 `What moves people?`。年份由 
 - 不要用陰影或漸層做層次
 - 不要在一個元件裡混兩個色相
 - 不要用直角（0–4px 圓角）
+- 不要為了「留白」讓內容欄停在版心的一半——留白要用來分組，不是用來填滿沒安排的地方
 - 不要加常見的 AI 感裝置：全部置中對齊、三欄圖示卡、emoji 圖示、捲動時跳動的數字 counter
   （**scroll reveal 不在這張清單上**，見 Motion 的 2026-09-04 註記）
 - 不要給不能點的東西 hover 狀態
