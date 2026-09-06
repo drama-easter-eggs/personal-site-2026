@@ -726,6 +726,43 @@ html:not(.js) .hero__line:first-child {
 }
 .threads > li > p:last-child { margin-top: 12px; }
 
+/* 桌面版轉成三直欄。三則關心的事是並列的，不是有先後的清單——
+   單欄時橫線把它們讀成順序，並排之後改用直線分隔，語意才對。
+   li 用 subgrid 借外層的三條 row：標題不管折成一行還是兩行，
+   三欄的小標與內文都會落在同一條基線上。 */
+@media (min-width: 901px) {
+  .threads {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    /* h3 / __sub / 內文，三列讓 li 用 subgrid 對齊 */
+    grid-template-rows: auto auto auto;
+    border-top: 1px solid var(--ink);
+    max-width: none;
+  }
+  /* .col 的 800px 是給單欄長文的行寬上限。三欄並排時每欄只分到它的三分之一，
+     這條規則反而在扣寬度，所以 care 這一節放掉容器上限，撐滿 .layout 右欄
+     （1200px 頁寬下是 850px）。上方那幾段內文各自有 34em／22em 的行寬上限，
+     不會跟著變長；左緣仍與整欄對齊，版面軸線不動。 */
+  #care .col { max-width: none; }
+  .threads > li {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: span 3;
+    border-bottom: 0;
+    padding-block: clamp(26px, 3vw, 34px) 0;
+    /* 欄間留白收到 20px：直線已經在分欄了，不需要再靠大留白分。
+       最後一欄不留右內距，讓文字一路走到版心邊。 */
+    padding-right: clamp(12px, 1.6vw, 20px);
+  }
+  .threads > li:last-child { padding-right: 0; }
+  .threads > li + li {
+    border-left: 1px solid var(--hairline);
+    padding-left: clamp(12px, 1.6vw, 20px);
+  }
+  /* 34em 是內文的行寬上限，三欄下不會生效，但留著會讓人以為還有第二層限制。 */
+  .threads > li > p { max-width: none; }
+}
+
 /* ============================================================
    03 SELECTED WORK
    ============================================================ */
