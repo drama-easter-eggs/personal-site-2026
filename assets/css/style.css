@@ -3,7 +3,7 @@
    Cream paper canvas · Inter (Latin) + Noto Sans TC (漢字)
    One family for 漢字 — hierarchy comes from weight (400 → 700 → 900), not
    from a second face. No 明體 anywhere.
-   級數以中文為基準（見 :root 的 --fs-*）：內文 17px、漢字最小 14px、
+   級數以中文為基準（見 :root 的 --fs-*）：內文 16px、漢字最小 14px、
    全部整數 px、漢字不吃負字距。負字距只給 var(--latin) 的四個元素。
    Signature: the highlighter mark (.mark)
    ============================================================ */
@@ -11,12 +11,12 @@
 :root {
   /* — ink & paper — */
   --cream:    #f6f2e8;   /* page canvas */
-  --sand:     #e3dcd0;   /* recessed sections, ghost-button hover */
+  --sand:     #efede6;   /* recessed sections, ghost-button hover */
   --white:    #ffffff;   /* elevated cards, nav pill */
   --ink:      #2c2e2a;
   /* 次要文字。v2 給的 #80827f 在 Sandstone 上只有 2.85:1，讀不了；
      壓深到這一階後，cream / sandstone / white / teal-tint 四個底色全部 ≥4.5:1。 */
-  --stone:    #5f615d;
+  --stone:    #50554f;
   /* 分行細線。v2 的 Hairline Mist #d5d5d4 是冷灰，在 Sandstone 上只有 1.08:1
      （形同消失），在 cream 上也才 1.31:1。改成跟紙同一個暖色系並壓深一階。 */
   --hairline: #b7b0a2;
@@ -46,58 +46,44 @@
   --display: var(--sans);
   --latin: 'Inter', 'Helvetica Neue', Arial, sans-serif;
 
-  /* — 級數（中文優先）—
-     漢字筆畫密度比拉丁字高，同一個 px 值讀起來更吃力，所以整條梯子
-     比拉丁基準往上抬一階：內文 17px、次要 15px、小標下限 14px。
-     13px 以下的漢字會開始掉筆畫，所以 14px 是硬底線，只有 var(--latin)
-     的全大寫小標可以更小。全部落在整數 px——分數 px（12.5 / 13.5 / 15.5）
-     會讓漢字的橫豎筆在點陣上糊掉，拉丁字看不出來，漢字很明顯。
-     層級只有這幾階，靠「字重 + 級數落差」拉開，不靠第二支字體。 */
-  --fs-micro: 12px;                      /* 拉丁全大寫小標，僅限拉丁 */
-  --fs-meta:  14px;                      /* 漢字小標、tag、年份、註記 */
-  --fs-sm:    15px;                      /* 次要段落、按鈕、nav */
-  --fs-body:  17px;                      /* 內文 */
-  /* eyebrow 是沿著左欄一路跟著捲的區塊標籤，要能被一眼掃到，
-     所以比一般 meta 高一階（漢字 16px），拉丁全大寫跟著上到 13px。 */
-  --fs-eyebrow:       15px;
-  --fs-eyebrow-latin: 12px;
-  /* 一個標題級就夠：h3（卡片／區塊）和 h4（cv / teach / talk 的項目）在 HTML
-     裡從來不會出現在同一層底下——h4 的上層永遠是 .sub，h3 的上層是 eyebrow。
-     不會並排就不必分階，合併成 --fs-head，八個地方共用。 */
-  --fs-head:  clamp(19px, 1.65vw, 21px); /* 所有區塊與項目標題 */
-  --fs-sub:   clamp(20px, 1.9vw, 24px);  /* 章節小標 .sub、引言色塊 .pull */
-  --fs-display: clamp(21px, 2.2vw, 28px); /* 大提問（案例、care thesis）、email */
-  /* hero 兩行同一級。問句現在佔整幅寬（不再讓右欄吃掉 330px），上限由最長那句
-     （14 個字 = 14.14em）必須停成一行決定：可用寬 = min(1200px, 100vw) − 2×--pad-x，
-     除以 14.14 之後各斷點換算出來的 vw 都落在 6.35–6.47 之間，取 6.05 留 3.5–7% 餘裕；
-     上限 1104 ÷ 14.14 ≈ 78px。2026-09-06 為了收密度整套級距降一階，這裡取 60px，
-     離那個上限還有 23% 餘裕，所以更不可能折行。實測見 docs/DESIGN.md。 */
-  --fs-hero:  clamp(25px, 4.65vw, 60px);
-  --fs-mega:  clamp(28px, 3.6vw, 46px);  /* 整頁最大的兩個非 hero 物件：
-                                            contact 收尾大標、counters 數字 */
+  /* 文字層級：16px 內文、19–21px 項目標題，大字留給首頁與核心提問。
+     中文保留非負字距，以行高、字重及群組間距建立閱讀層次。 */
+  --fs-micro: 12px;
+  --fs-meta: 14px;
+  --fs-sm: 15px;
+  --fs-body: 16px;
+  --fs-eyebrow: 17px;
+  --fs-eyebrow-latin: 14px;
+  --fs-head: clamp(19px, 1.5vw, 21px);
+  --fs-sub: clamp(21px, 1.8vw, 24px);
+  --fs-display: clamp(23px, 2.1vw, 29px);
+  --fs-hero: clamp(26px, 4.8vw, 60px);
+  --fs-mega: clamp(30px, 3.5vw, 44px);
 
-  /* 行高：漢字塞滿整個字身框、沒有拉丁字那種上下留白，所以同一個
-     line-height 看起來比拉丁字擠一階。2026-09-06 從 1.95 / 1.55 / 1.45 各收一階
-     ——1.95 的行距快等於一整個字高，是整頁讀起來稀疏的主因之一。
-     內文 1.78 是中文長文的常見下緣，再低漢字會開始黏。 */
-  --lh-body:    1.78;
-  --lh-head:    1.45;
-  --lh-display: 1.32;
-  --lh-hero:    1.4;      /* hero 問句專用：這一級用 1.45 會鬆掉，但低於 1.4 螢光筆
-                           的波形就會壓到下一行的字頭（筆觸本身往下探 .16em）。 */
+  --lh-body: 1.8;
+  --lh-compact: 1.7;
+  --lh-head: 1.5;
+  --lh-display: 1.4;
+  --lh-hero: 1.4;
 
   /* 字距：漢字沒有左右側邊留白，負字距會讓相鄰兩字的筆畫直接相黏
      （字重 900 的大標最明顯）。所以漢字一律 0 或正值，負字距只留給
      var(--latin) 的元素——hero 英文、數字、email。 */
-  --track-zh:      .02em;
+  --track-zh:      .015em;
   --track-zh-head: .01em;
+
+  /* — reading rhythm — */
+  --measure: 36em;
+  --space-paragraph: 1em;
+  --space-related: 8px;
+  --space-group: clamp(22px, 2.4vw, 30px);
 
   /* — rhythm — */
   --page: 1200px;
-  --gutter-w: 140px;
-  --gutter-gap: clamp(22px, 2.8vw, 48px);
+  --gutter-w: 178px;
+  --gutter-gap: clamp(28px, 4vw, 76px);
   --pad-x: clamp(20px, 5vw, 48px);
-  --section-y: clamp(60px, 6.6vw, 96px);
+  --section-y: clamp(52px, 6vw, 88px);
   --r: 50px;
   --r-sm: 12px;
 
@@ -115,7 +101,7 @@
 /* ---------- reset ---------- */
 *, *::before, *::after { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
-body, h1, h2, h3, h4, p, ul, ol, dl, dd, figure, blockquote { margin: 0; padding: 0; }
+body, h1, h2, h3, h4, h5, p, ul, ol, dl, dd, figure, blockquote { margin: 0; padding: 0; }
 ul, ol { list-style: none; }
 img, svg { display: block; max-width: 100%; }
 a { color: inherit; }
@@ -138,7 +124,7 @@ body {
   overflow-x: hidden;
 }
 
-p + p { margin-top: .85em; }
+p + p { margin-top: var(--space-paragraph); }
 
 .skip {
   position: absolute; left: -9999px;
@@ -223,12 +209,14 @@ mark.mark--b {
    :where() 的特異性是 0，這一整串維持在 0,2,0，跟 .is-in 同級，
    .is-in 寫在後面所以贏。 */
 .js .eyebrow,
-.js .col > *:where(:not(.threads, .cases, .counters, .cv, .teach, .talks, .cards, .lenses, .fit)),
+.js .col > *:where(:not(.threads, .cases, .counters, .cv, .teach, .talks, .cards, .lenses, .fit, .teaching)),
 .js .threads > *,
 .js .cases > *,
 .js .counters__item,
 .js .cv > *,
-.js .teach > *,
+.js .teaching__header,
+.js .teaching__topics > *,
+.js .teaching__examples-head,
 .js .talks > *,
 .js .cards > *,
 .js .lenses > *,
@@ -338,43 +326,40 @@ mark.mark--b {
   top: 116px;
   font-size: var(--fs-eyebrow);
   line-height: 1.7;
-  font-weight: 500;
-  color: var(--stone);
+  font-weight: 600;
+  color: var(--ink);
   letter-spacing: var(--track-zh);
 }
 .eyebrow > span {
   display: block;
   font-family: var(--latin);
   font-size: var(--fs-eyebrow-latin);
-  font-weight: 500;
-  letter-spacing: .19em;
+  font-weight: 600;
+  letter-spacing: .08em;
   text-transform: uppercase;
   color: var(--ink);
-  padding-bottom: 10px;
+  padding-bottom: 12px;
   margin-bottom: 10px;
   border-bottom: 1px solid var(--hairline);
 }
 
-/* 這一欄不再自己設上限——行寬由段落的 32em 管，列表／卡片／格線則吃滿
-   .layout 的右欄（1200px 版心下約 916px）。窄段落配寬列表，是版面的疏密節奏；
-   讓兩者都停在 800px 只會讓整頁變成一根縱列，右側白掉三分之一。 */
-.col { max-width: none; }
+.col { min-width: 0; max-width: 800px; }
 
 /* Prose measure — capped in em so it tracks the font size and lands at
-   roughly 32 漢字 per line at every step of the scale. */
+   roughly 36 漢字 per line at every step of the scale. */
 .lead,
 .col > p,
 .pull,
 .threads > li > p,
 .case__body > p,
 .cv__what > p,
-.about__note,
+.care__note,
 .lens > p,
 .lenses__foot,
-.contact__body { max-width: 32em; }
-/* 選擇器要比上面的 .col > p 更重，不然 32em 會蓋掉 20em——
+.contact__body { max-width: var(--measure); }
+/* 選擇器要比上面的 .col > p 更重，不然內文行寬會蓋掉 22em——
    這一行是字重 900 的宣言，行寬跟內文一樣長就撐不住。 */
-.col > p.care__thesis { max-width: 20em; }
+.col > p.care__thesis { max-width: 22em; }
 
 /* ============================================================
    NAV — floating white pill
@@ -478,13 +463,13 @@ mark.mark--b {
 /* ============================================================
    01 HERO
    ============================================================ */
-.hero { padding-block: clamp(104px, 10vw, 128px) clamp(44px, 4.6vw, 64px); }
+.hero { padding-block: clamp(112px, 10vw, 144px) 0; }
 
 .hero__grid {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(210px, 330px);
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 390px);
   column-gap: clamp(30px, 4vw, 76px);
-  row-gap: clamp(36px, 5vw, 68px);
+  row-gap: clamp(28px, 3vw, 40px);
   align-items: end;
 }
 
@@ -493,7 +478,7 @@ mark.mark--b {
 .hero__display { grid-column: 1 / -1; font-weight: 400; }
 
 /* 大提問前面的引子：級數壓到 eyebrow 那一階、字重退回 500、顏色退成 stone，
-   才不會跟下面 60px 的問句搶——它是說話前的吸氣，不是第二個標題。 */
+   才不會跟下面 74px 的問句搶——它是說話前的吸氣，不是第二個標題。 */
 .hero__kicker {
   display: block;
   font-size: var(--fs-eyebrow);
@@ -569,10 +554,7 @@ html:not(.js) .hero__line:first-child {
   .hero__line { transform: none; }
 }
 
-/* 這三段是整個 hero 唯一在說「我是誰」的地方，讀完問句就會落到這裡，
-   所以它是內文、不是註記——級數用 --fs-body（17px）跟全站內文同一階，
-   不再退到 --fs-sm。右欄最寬 330px，17px 下一行約 19 個漢字，最長的
-   那一段仍然只折成兩行，列高不變。 */
+/* 首頁短介紹與內文同級；桌面欄寬 390px，減少不必要的斷行。 */
 .hero__body {
   grid-column: 2;
   padding-bottom: .35em;
@@ -580,31 +562,17 @@ html:not(.js) .hero__line:first-child {
   line-height: var(--lh-body);
   color: var(--stone);
 }
-/* 自我介紹的第一行再抬一階到 --fs-head（21–25px）——它是右欄真正的開頭，
-   跟字重、顏色一起把「我是誰」拉到後兩段之前。行高同時換成 --lh-head：
-   --lh-body 的 1.78 是給 17px 內文的，套在這一級上會鬆成兩個段落。 */
+/* 自我介紹以項目標題級數與深色字建立開頭層次。 */
 .hero__id {
   font-size: var(--fs-head);
   line-height: var(--lh-head);
   font-weight: 500;
   color: var(--ink);
 }
-/* 頭銜是一個詞，不能被那條斜線拆成兩行。抬到 --fs-head 之後最寬的情況是
-   12 字 × 25px ≈ 306px，右欄固定 330px（左欄是 minmax(0,1fr) 會先讓）放得下；
-   單欄時字級落回下限 21px ≈ 257px，320px 的視窗也還有餘裕。 */
-.hero__role { white-space: nowrap; }
-/* 左下的貓。放在 hero grid 第 2 列的左欄——那格本來就是空的（見上面 .hero__display
-   的註解），所以它是填進留白，不是插進版面：列高仍然由右欄的那三段自我介紹決定
-   （貓最高 171px，比那一欄的 ~265px 矮一截），Hero 的總高度不會被它推高。
-
-   裁切：原檔的畫布是 280×200，但坐著的貓只佔到 (102, 54) 起算 105×108 的那一塊，
-   四邊都是空白。實際的裁切在 main.js 用 lottie 的 viewBoxSize 做掉，所以這個盒子
-   就等於貓本身——它才會真的貼齊左欄的文字邊，而不是浮在一塊看不見的空白中間。
-   甩尾巴的那幾格會畫到盒子外面（svg 的 overflow 開著），那是刻意的：尾巴只要能甩
-   出去，盒子就可以縮到「坐著的貓」這個尺寸，對齊才有一條穩定的基準。甩到最遠時
-   往右超出 38% 盒寬、往下超出 36% 盒高（逐段解貝茲極值算出來的）：桌機下方還有
-   hero 的 padding 接得住，單欄時下溢 47px 大於貓與自我介紹之間的 32px，尾巴會掃過
-   「Hi，我是 Mei」那一行——已知且接受，之後換圖時一併處理。 */
+/* 頭銜優先整組換行，放大文字後仍可在組內換行。 */
+.hero__role { display: inline-block; max-width: 100%; }
+.hero__body > p + p { margin-top: 1em; }
+/* 桌面貓與介紹齊底；尾巴可超出 SVG，底部分隔線預留 48px。 */
 .hero__cat {
   grid-column: 1;
   width: clamp(126px, 11.5vw, 166px);
@@ -630,7 +598,7 @@ html:not(.js) .hero__line:first-child {
 
 .hero__rule {
   max-width: var(--page);
-  margin: clamp(40px, 4.4vw, 60px) auto 0;
+  margin: clamp(32px, 4vw, 48px) auto 0;
   height: 1px;
   background: var(--hairline);
 }
@@ -655,7 +623,7 @@ html:not(.js) .hero__line:first-child {
 .lead {
   /* 級數和行高都跟內文一樣——引言的身分靠位置（每個 section 的第一段）
      和下方那道 margin 撐，不靠大一號的字。 */
-  margin-bottom: clamp(22px, 2.4vw, 32px);
+  margin-bottom: clamp(24px, 2.8vw, 36px);
 }
 
 .sub {
@@ -663,7 +631,7 @@ html:not(.js) .hero__line:first-child {
   font-size: var(--fs-sub);
   font-weight: 700;
   line-height: var(--lh-head);
-  margin-top: clamp(40px, 4.4vw, 60px);
+  margin-top: clamp(36px, 4vw, 52px);
   margin-bottom: 16px;
   padding-top: 16px;
   border-top: 1px solid var(--hairline);
@@ -672,7 +640,7 @@ html:not(.js) .hero__line:first-child {
 /* 全頁唯一的 highlight block：兩行以內的引言，不放段落。
    色塊自己就是強調，所以不再加 teal 直線——一個元件只吃一個色相。 */
 .pull {
-  margin: clamp(24px, 2.8vw, 36px) 0;
+  margin: clamp(30px, 3.8vw, 48px) 0;
   background: var(--ochre-tint);
   border-radius: var(--r);
   padding: clamp(24px, 2.8vw, 34px) clamp(26px, 3vw, 38px);
@@ -717,11 +685,11 @@ html:not(.js) .hero__line:first-child {
 }
 
 .threads {
-  margin-top: clamp(30px, 3.2vw, 44px);
+  margin-top: clamp(28px, 3vw, 40px);
   border-top: 1px solid var(--hairline);
 }
 .threads > li {
-  padding-block: clamp(20px, 2.2vw, 28px);
+  padding-block: clamp(20px, 2vw, 26px);
   border-bottom: 1px solid var(--hairline);
 }
 .threads h3 {
@@ -736,15 +704,16 @@ html:not(.js) .hero__line:first-child {
   /* 疏排的小標。.09em 在 12px 上是刻意的，放到 14px 會散開，收一階。 */
   letter-spacing: .06em;
   color: var(--stone);
-  margin-top: 4px;
+  margin-top: 8px;
+  line-height: 1.65;
 }
-.threads > li > p:last-child { margin-top: 12px; }
+.threads > li > p:last-child { margin-top: 16px; line-height: var(--lh-compact); }
 
 /* 桌面版轉成三直欄。三則關心的事是並列的，不是有先後的清單——
    單欄時橫線把它們讀成順序，並排之後改用直線分隔，語意才對。
    li 用 subgrid 借外層的三條 row：標題不管折成一行還是兩行，
    三欄的小標與內文都會落在同一條基線上。 */
-@media (min-width: 901px) {
+@media (min-width: 1101px) {
   .threads {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -753,12 +722,17 @@ html:not(.js) .hero__line:first-child {
     border-top: 1px solid var(--ink);
     max-width: none;
   }
+  /* .col 的 800px 是給單欄長文的行寬上限。三欄並排時每欄只分到它的三分之一，
+     這條規則反而在扣寬度，所以 care 這一節放掉容器上限，撐滿 .layout 右欄
+     （1200px 頁寬下是 850px）。上方那幾段內文各自有 36em／22em 的行寬上限，
+     不會跟著變長；左緣仍與整欄對齊，版面軸線不動。 */
+  #care .col { max-width: none; }
   .threads > li {
     display: grid;
     grid-template-rows: subgrid;
     grid-row: span 3;
     border-bottom: 0;
-    padding-block: clamp(20px, 2.2vw, 28px) 0;
+    padding-block: clamp(20px, 2vw, 26px) 0;
     /* 欄間留白收到 20px：直線已經在分欄了，不需要再靠大留白分。
        最後一欄不留右內距，讓文字一路走到版心邊。 */
     padding-right: clamp(12px, 1.6vw, 20px);
@@ -768,7 +742,7 @@ html:not(.js) .hero__line:first-child {
     border-left: 1px solid var(--hairline);
     padding-left: clamp(12px, 1.6vw, 20px);
   }
-  /* 32em 是內文的行寬上限，三欄下不會生效，但留著會讓人以為還有第二層限制。 */
+  /* 36em 是內文的行寬上限，三欄下不會生效，但留著會讓人以為還有第二層限制。 */
   .threads > li > p { max-width: none; }
 }
 
@@ -778,9 +752,9 @@ html:not(.js) .hero__line:first-child {
 .cases { border-top: 1px solid var(--hairline); }
 .case {
   display: grid;
-  grid-template-columns: 74px minmax(0, 1fr);
+  grid-template-columns: 48px minmax(0, 1fr);
   gap: 0 clamp(12px, 2vw, 24px);
-  padding-block: clamp(24px, 2.6vw, 34px);
+  padding-block: clamp(24px, 2.8vw, 32px);
   border-bottom: 1px solid var(--hairline);
 }
 .case__no {
@@ -798,7 +772,7 @@ html:not(.js) .hero__line:first-child {
   line-height: var(--lh-head);
   letter-spacing: var(--track-zh-head);
   text-wrap: balance;
-  margin-bottom: 12px;
+  margin-bottom: 16px;
 }
 
 
@@ -812,7 +786,7 @@ html:not(.js) .hero__line:first-child {
   margin-bottom: 0;
 }
 .counters__item {
-  padding: clamp(16px, 2vw, 24px) clamp(10px, 1.6vw, 20px) clamp(18px, 2.2vw, 26px) 0;
+  padding: clamp(20px, 2.6vw, 30px) clamp(10px, 1.6vw, 20px) clamp(22px, 3vw, 32px) 0;
 }
 .counters__item + .counters__item {
   border-left: 1px solid var(--hairline);
@@ -836,9 +810,9 @@ html:not(.js) .hero__line:first-child {
 .cv { border-top: 1px solid var(--hairline); }
 .cv__row {
   display: grid;
-  grid-template-columns: 132px minmax(0, 1fr);
+  grid-template-columns: 148px minmax(0, 1fr);
   gap: 4px clamp(12px, 2vw, 24px);
-  padding-block: clamp(18px, 2vw, 26px);
+  padding-block: clamp(20px, 2.2vw, 28px);
   border-bottom: 1px solid var(--hairline);
 }
 .cv__when {
@@ -853,82 +827,61 @@ html:not(.js) .hero__line:first-child {
   font-size: var(--fs-head);
   font-weight: 700;
   line-height: var(--lh-head);
-  margin-bottom: 6px;
+  margin-bottom: var(--space-related);
 }
 
-.about__note {
-  margin-top: clamp(20px, 2.2vw, 28px);
+.care__note {
+  margin-top: clamp(28px, 3.5vw, 40px);
   font-size: var(--fs-body);
 }
 
-.teach { margin-top: 8px; }
-.teach > li {
-  display: grid;
-  grid-template-columns: 44px minmax(0, 1fr);
-  gap: 2px clamp(10px, 1.6vw, 18px);
-  padding-block: clamp(16px, 1.8vw, 22px);
-  border-bottom: 1px solid var(--hairline);
+/* 教學主題與其實例共用同一個容器，實例標題低於區塊標題一級。 */
+.teaching {
+  margin-top: clamp(36px, 4vw, 52px);
+  scroll-margin-top: 104px;
 }
-.teach > li:first-child { border-top: 1px solid var(--hairline); }
-.teach__no {
-  grid-row: span 2;
-  align-self: start;
-  font-family: var(--display);
-  /* 漢字序號當標記用：跟旁邊的標題同一級（原本寫死 26px，是梯子外的孤兒），
-     行高刻意壓在 1.3 才對得上行首。 */
-  font-size: var(--fs-head);
-  line-height: 1.3;
-  color: var(--teal);
-  font-weight: 900;
-}
-.teach h4 {
-  font-family: var(--display);
-  font-size: var(--fs-head);
-  font-weight: 700;
+.teaching__header h3 {
+  font-size: var(--fs-sub);
   line-height: var(--lh-head);
+  font-weight: 700;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--hairline);
+  margin-bottom: 16px;
 }
-
-/* 三個教學主題是並列的，不是有先後的清單——單欄時橫線會把它們讀成順序。
-   跟 .threads 用同一套 subgrid：三欄借外層的三條 row（序號 / 標題 / 說明），
-   標題折成一行或兩行，三欄的說明都會落在同一條基線上。 */
-@media (min-width: 901px) {
-  .teach {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    grid-template-rows: auto auto auto;
-    gap: 6px 0;
-    border-top: 1px solid var(--hairline);
-    margin-top: 0;
-  }
-  .teach > li {
-    grid-template-rows: subgrid;
-    grid-row: span 3;
-    grid-template-columns: minmax(0, 1fr);
-    gap: 0;
-    border-bottom: 0;
-    padding-block: clamp(18px, 2vw, 24px) 0;
-    padding-right: clamp(12px, 1.6vw, 20px);
-  }
-  .teach > li:first-child { border-top: 0; }
-  .teach > li:last-child { padding-right: 0; }
-  .teach > li + li {
-    border-left: 1px solid var(--hairline);
-    padding-left: clamp(12px, 1.6vw, 20px);
-  }
-  /* 序號改成標題上方的一小行（不再是左側欄），三欄才有足夠的字寬 */
-  .teach__no { grid-row: auto; line-height: 1.2; }
+.teaching__header p { max-width: var(--measure); }
+.teaching__topics {
+  display: grid;
+  gap: 20px;
+  padding-block: 24px;
+  margin-top: 4px;
+}
+.teaching__topics h4 { font-size: 18px; line-height: 1.5; font-weight: 700; }
+.teaching__topics p { font-size: var(--fs-sm); line-height: var(--lh-compact); color: var(--stone); margin-top: 8px; }
+.teaching__examples-head { padding-top: 20px; border-top: 1px solid var(--hairline); }
+.teaching__examples-head h4 { font-size: 16px; line-height: 1.5; font-weight: 700; }
+.teaching__examples-head p { margin-top: 6px; font-size: var(--fs-meta); color: var(--stone); }
+.teaching .talks { border-top: 0; margin-top: 8px; }
+.teaching .talk:last-child { border-bottom: 0; padding-bottom: 0; }
+.talk__topic { font-size: var(--fs-meta); line-height: 1.5; color: var(--stone); margin-bottom: 6px; }
+@media (min-width: 1101px) {
+  .teaching__topics { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+  .teaching__topics > li + li { border-left: 1px solid var(--hairline); padding-left: 16px; }
+}
+@media (min-width: 721px) {
+  .teaching .talk { grid-template-columns: 128px minmax(0, 1fr); }
+  .teaching .talk__cover { grid-row: span 2; }
+  .teaching .talk__meta { grid-column: 2; flex-direction: row; flex-wrap: wrap; gap: 12px 20px; }
 }
 
 /* 跟 .cv / .teach 同一條列表節奏（細線分隔、同一組 padding），差別在三欄：
-   封面 · 講題 · meta+外連。meta 欄寬 148px 跟 .cv__when 對齊，
-   整個 About 區只有一條垂直軸。 */
+   封面 · 講題 · meta+外連。meta 欄寬 112px，留出更多空間給長講題。 */
 .talks { border-top: 1px solid var(--hairline); margin-top: 8px; }
 .talk {
   display: grid;
-  grid-template-columns: clamp(150px, 16vw, 190px) minmax(0, 1fr) 132px;
+  grid-template-columns: clamp(140px, 14vw, 168px) minmax(0, 1fr) 112px;
   gap: 8px clamp(16px, 2.2vw, 28px);
   align-items: start;
-  padding-block: clamp(16px, 1.9vw, 24px);
+  padding-block: clamp(18px, 2vw, 26px);
   border-bottom: 1px solid var(--hairline);
 }
 
@@ -965,10 +918,10 @@ html:not(.js) .hero__line:first-child {
   font-size: var(--fs-head);
   font-weight: 500;
   letter-spacing: .04em;
-  color: var(--hairline);
+  color: var(--stone);
 }
 
-.talk h4 {
+.talk h5 {
   font-family: var(--display);
   font-size: var(--fs-head);
   font-weight: 700;
@@ -1016,18 +969,18 @@ html:not(.js) .hero__line:first-child {
 /* ============================================================
    05 WHEN TO REACH OUT
    ============================================================ */
-.fit { display: grid; gap: clamp(30px, 3.4vw, 44px); }
+.fit { display: grid; gap: clamp(40px, 5vw, 60px); }
 .fit__head {
   font-family: var(--display);
   font-size: var(--fs-head);
   font-weight: 700;
   line-height: 1.6;
   text-wrap: balance;
-  margin-bottom: clamp(14px, 1.6vw, 20px);
+  margin-bottom: clamp(18px, 2vw, 26px);
 }
 .fit__list > li {
   position: relative;
-  padding-left: 28px;
+  padding-left: 30px;
   padding-block: 9px;
   line-height: var(--lh-body);
   border-bottom: 1px solid var(--hairline);
@@ -1036,7 +989,7 @@ html:not(.js) .hero__line:first-child {
 .fit__list > li::before {
   content: "";
   position: absolute;
-  left: 0; top: 1.45em;
+  left: 0; top: calc(9px + .9em);
   width: 15px; height: 2px; border-radius: 2px;
 }
 /* no colour-coding here — teal is never a success/error state */
@@ -1055,20 +1008,20 @@ html:not(.js) .hero__line:first-child {
 .card {
   background: var(--white);
   border-radius: var(--r);
-  padding: clamp(22px, 2.4vw, 30px) clamp(22px, 2.4vw, 30px) clamp(24px, 2.6vw, 32px);
+  padding: clamp(24px, 2.4vw, 30px);
 }
 .card h3 {
   font-family: var(--display);
   font-size: var(--fs-head);
   font-weight: 700;
   line-height: var(--lh-head);
-  margin-bottom: 10px;
+  margin-bottom: 14px;
 }
-.card p { font-size: var(--fs-sm); line-height: var(--lh-body); }
+.card p { font-size: var(--fs-sm); line-height: var(--lh-compact); }
 /* 跟 .card p 同級數。漢字差 1px 看不出來，只會多出一階沒用的級數；
    這一行的層級交給 stone 色與上緣細線。 */
 .card__how {
-  margin-top: 12px;
+  margin-top: 16px;
   padding-top: 12px;
   border-top: 1px solid var(--hairline);
   color: var(--stone);
@@ -1076,7 +1029,7 @@ html:not(.js) .hero__line:first-child {
 
 .services__close {
   display: flex; flex-wrap: wrap; align-items: center; gap: 16px 22px;
-  margin-top: clamp(24px, 2.6vw, 34px);
+  margin-top: clamp(32px, 4vw, 46px);
 }
 
 /* ============================================================
@@ -1084,10 +1037,10 @@ html:not(.js) .hero__line:first-child {
    ============================================================ */
 .lenses { display: grid; gap: 0; border-top: 1px solid var(--ink); }
 .lens {
-  padding-block: clamp(20px, 2.3vw, 28px);
+  padding-block: clamp(20px, 2.2vw, 28px);
   border-bottom: 1px solid var(--hairline);
   display: grid;
-  grid-template-columns: 116px minmax(0, 1fr);
+  grid-template-columns: 128px minmax(0, 1fr);
   gap: 4px clamp(14px, 2vw, 26px);
 }
 .lens__en {
@@ -1104,35 +1057,20 @@ html:not(.js) .hero__line:first-child {
   font-weight: 700;
   line-height: var(--lh-head);
 }
-.lens__q { color: var(--ink); font-weight: 500; margin-top: 4px; }
-.lens > p:last-child { color: var(--stone); font-size: var(--fs-sm); margin-top: 6px; }
-
-/* 桌機：一列三欄（英文標籤 · 提問 · 說明）。跟 .talk 是同一種列式三欄——
-   說明段落搬到右邊那欄之後，一則 lens 從四列縮成兩列，
-   右側原本空著的三分之一也真的裝了東西。
-   ≤900px 版面已經併成一欄，這時三欄會把每欄擠到 15 個漢字以下，所以不套用。 */
-@media (min-width: 901px) {
-  .lens {
-    grid-template-columns: 116px minmax(0, 1fr) minmax(0, 1.15fr);
-    grid-template-rows: auto auto;
-  }
-  .lens__en { grid-column: 1; grid-row: 1 / span 2; }
-  .lens h3  { grid-column: 2; grid-row: 1; }
-  .lens__q  { grid-column: 2; grid-row: 2; margin-top: 4px; }
-  .lens > p:last-child { grid-column: 3; grid-row: 1 / span 2; margin-top: 0; }
-}
+.lens__q { color: var(--ink); font-weight: 500; margin-top: 6px; }
+.lens > p:last-child { color: var(--stone); font-size: var(--fs-sm); margin-top: 8px; }
 
 .lenses__foot {
-  margin-top: clamp(18px, 2vw, 26px);
+  margin-top: clamp(24px, 3vw, 34px);
   font-size: var(--fs-sm);
   color: var(--stone);
 }
 
 .sub-card {
-  margin-top: clamp(30px, 3.4vw, 44px);
+  margin-top: clamp(28px, 3vw, 40px);
   background: var(--teal-tint);
   border-radius: var(--r);
-  padding: clamp(24px, 2.6vw, 32px) clamp(24px, 2.6vw, 32px);
+  padding: clamp(24px, 2.6vw, 32px);
   display: flex; flex-wrap: wrap; align-items: center;
   justify-content: space-between; gap: 22px;
 }
@@ -1176,12 +1114,12 @@ html:not(.js) .hero__line:first-child {
 .contact__panel {
   background: var(--teal-deep);
   border-radius: var(--r);
-  padding: clamp(36px, 4.4vw, 64px) clamp(24px, 3.2vw, 52px);
+  padding: clamp(40px, 5.6vw, 84px) clamp(24px, 3.6vw, 60px);
 }
 .eyebrow--inline {
   position: static;
   display: inline-block;
-  margin-bottom: clamp(20px, 2.4vw, 30px);
+  margin-bottom: clamp(26px, 3.4vw, 40px);
   color: var(--white);
 }
 .eyebrow--inline > span {
@@ -1197,7 +1135,7 @@ html:not(.js) .hero__line:first-child {
   letter-spacing: var(--track-zh-head);
 }
 .contact__body {
-  margin-top: clamp(16px, 1.8vw, 22px);
+  margin-top: clamp(20px, 2.4vw, 28px);
   font-weight: 500;
   /* ch 是「0」的寬度（半形），量不到漢字：44ch 實際只有 22 個漢字寬。
      全站的行寬一律用 em，1em = 1 個漢字。 */
@@ -1205,7 +1143,7 @@ html:not(.js) .hero__line:first-child {
 }
 .contact__mail {
   display: inline-block;
-  margin-top: clamp(24px, 2.8vw, 36px);
+  margin-top: clamp(30px, 4vw, 48px);
   font-family: var(--latin);
   font-size: var(--fs-display);
   font-weight: 500;
@@ -1225,29 +1163,9 @@ html:not(.js) .hero__line:first-child {
   .contact__mail:hover { border-bottom-width: 6px; padding-bottom: 3px; }
 }
 
-/* 桌機兩欄：左邊「說什麼」（標籤 · 大標 · 說明），右邊「怎麼找我」（email · 社群）。
-   這塊面板幾乎滿版 1300px，單欄時大標只用掉三成寬、其餘全空——
-   它是整頁最後一個動作，空掉的話收尾會鬆。分成兩欄之後，
-   讀者的視線從左邊的邀請直接落到右邊的入口，不必再往下捲一段。 */
-@media (min-width: 901px) {
-  .contact__panel {
-    display: grid;
-    grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
-    column-gap: clamp(40px, 5vw, 90px);
-  }
-  /* inline-block 進了 grid 就變成拉伸的格子項，那道底線會橫跨整個左欄 */
-  .eyebrow--inline { grid-area: 1 / 1; justify-self: start; }
-  .contact__head   { grid-area: 2 / 1; }
-  .contact__body   { grid-area: 3 / 1; align-self: start; }
-  /* email 貼著大標那一列的下緣、社群貼著下一列的上緣，兩者跨過列界靠在一起，
-     讀起來是同一組「怎麼找我」，而不是散在右欄的兩個東西。 */
-  .contact__mail   { grid-area: 2 / 2; margin-top: 0; align-self: end; justify-self: start; }
-  .contact__social { grid-area: 3 / 2; margin-top: clamp(16px, 1.8vw, 22px); align-self: start; }
-}
-
 .contact__social {
   display: flex; flex-wrap: wrap; gap: 8px;
-  margin-top: clamp(26px, 3vw, 38px);
+  margin-top: clamp(34px, 4.4vw, 52px);
 }
 .contact__social a {
   display: block;
@@ -1277,16 +1195,16 @@ html:not(.js) .hero__line:first-child {
 /* ============================================================
    RESPONSIVE
    ============================================================ */
-@media (min-width: 860px) {
+@media (min-width: 1101px) {
   .fit { grid-template-columns: 1.35fr 1fr; gap: clamp(32px, 4vw, 56px); }
 }
 
 @media (max-width: 1080px) {
-  :root { --gutter-w: 116px; }
+  :root { --gutter-w: 132px; }
 }
 
 @media (max-width: 900px) {
-  .layout { grid-template-columns: minmax(0, 1fr); gap: 22px; }
+  .layout { grid-template-columns: minmax(0, 1fr); gap: 18px; }
   .col { max-width: none; }
   .eyebrow {
     position: static;
@@ -1295,16 +1213,11 @@ html:not(.js) .hero__line:first-child {
   .eyebrow > span {
     border-bottom: 0; padding-bottom: 0; margin-bottom: 0;
   }
-  .hero__grid { grid-template-columns: minmax(0, 1fr); row-gap: 0; }
-  .hero__display, .hero__cat, .hero__body { grid-column: 1; }
-  .hero__body { margin-top: clamp(32px, 6vw, 48px); max-width: 24em; }
-  /* 單欄之後貓變成夾在問句與自我介紹中間的一列。這裡不再需要跟右欄齊底，
-     改成自己撐開一段呼吸——它只是一個小小的停頓，不要變成一個區塊。 */
-  .hero__cat {
-    margin-top: clamp(26px, 5vw, 40px);
-    margin-bottom: 0;
-  }
-
+  .hero__grid { grid-template-columns: 100px minmax(0, 1fr); gap: 28px; }
+  .hero__display { grid-column: 1 / -1; }
+  .hero__cat { grid-column: 1; width: 84px; margin: 0 0 24px; }
+  .hero__body { grid-column: 2; }
+  .hero__body { margin-top: 0; max-width: 28em; }
   .nav__links {
     display: none;
     position: absolute;
@@ -1340,10 +1253,8 @@ html:not(.js) .hero__line:first-child {
 }
 
 @media (max-width: 720px) {
-  /* 這裡原本把 --fs-body 從 18px 降到 17px。2026-09-06 全站基準已經就是 17px，
-     那條覆寫變成沒有作用的重複，所以拿掉。真要再為手機降一階，改的仍然是 token
-     本身而不是 body 的 font-size——.hero__body / .about__note 直接吃
-     var(--fs-body)，只改 body 的話它們不會跟著降。 */
+  /* 手機維持 16px 內文，密度由欄數與間距調整。 */
+  :root { --fs-body: 16px; }
   .cards { grid-template-columns: minmax(0, 1fr); }
   .card { border-radius: 34px; }
   .sub-card { border-radius: 34px; }
@@ -1359,6 +1270,7 @@ html:not(.js) .hero__line:first-child {
     gap: 10px clamp(14px, 4vw, 20px);
   }
   .talk__meta {
+    flex-wrap: wrap;
     grid-column: 2;
     flex-direction: row; align-items: baseline; gap: 16px;
   }
@@ -1374,6 +1286,64 @@ html:not(.js) .hero__line:first-child {
   .nav { padding-left: 16px; }
 }
 
+/* 縮圖與日期先讓出空間，保持講題的閱讀寬度。 */
+@media (min-width: 721px) and (max-width: 1100px) {
+  .talk { grid-template-columns: 150px minmax(0, 1fr); }
+  .talk__cover { grid-row: span 2; }
+  .talk__meta { grid-column: 2; flex-direction: row; flex-wrap: wrap; gap: 12px 20px; }
+  .talk__when { padding-top: 0; }
+}
+
+@media (max-width: 540px) {
+  .talk { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+  .talk__cover { width: min(200px, 100%); }
+  .talk__meta { grid-column: 1; gap: 12px 20px; }
+  .talk h5 { max-width: 24em; }
+}
+
 @media (max-width: 400px) {
   .nav__name { font-size: 14px; }
+}
+
+/* 手機首頁仍保留貓，但用較小尺寸縮短介紹之前的空白。 */
+@media (max-width: 540px) {
+  .hero__grid { grid-template-columns: minmax(0, 1fr); row-gap: 0; }
+  .hero__cat { grid-column: 1; width: 76px; margin: 20px 0 38px; }
+  .hero__body { grid-column: 1; }
+}
+
+/* 短數據能並排比較，不必各佔一整列。320px 保留原本直排。 */
+@media (min-width: 380px) and (max-width: 720px) {
+  .counters { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .counters__item { padding: 20px 8px 20px 0; }
+  .counters__item + .counters__item {
+    border-top: 0;
+    border-left: 1px solid var(--hairline);
+    padding-left: 10px;
+  }
+  .counters__n { font-size: 30px; }
+}
+
+/* 產業軌道：靜態清單為基底，有 JS 才複製並啟動無縫流動。 */
+.industries { margin-top: clamp(28px, 3vw, 40px); min-width: 0; }
+.industries__head { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 12px; }
+.industries__head p { font-size: var(--fs-meta); color: var(--stone); font-weight: 500; }
+.industries__group { margin-top: 0; gap: 10px; }
+.industries__group li { background: var(--cream); padding: 7px 14px; }
+.industries.is-ready .industries__viewport {
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  overscroll-behavior-x: contain;
+  cursor: grab;
+}
+.industries__viewport::-webkit-scrollbar { display: none; }
+.industries__viewport.is-dragging { cursor: grabbing; user-select: none; }
+.industries.is-ready .industries__track { display: flex; width: max-content; }
+.industries.is-ready .industries__group { flex-wrap: nowrap; flex-shrink: 0; min-width: var(--rail-width); justify-content: space-around; padding-right: 10px; }
+@media (prefers-reduced-motion: reduce) {
+  .industries.is-ready .industries__track { width: auto; display: block; }
+  .industries.is-ready .industries__group { min-width: 0; padding-right: 0; justify-content: flex-start; flex-wrap: wrap; }
+  .industries__group[aria-hidden="true"] { display: none; }
+  .industries.is-ready .industries__viewport { cursor: auto; }
 }

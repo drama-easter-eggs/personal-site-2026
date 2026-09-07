@@ -20,7 +20,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/style.css">
+<link rel="stylesheet" href="assets/css/style.css?v=20260907-rail-scroll2">
 </head>
 <body>
 
@@ -98,7 +98,7 @@
 
       <p>我們常需要在有限的時間裡，快速理解市場與受眾。但當我們太快把人壓縮成標籤時，那些真正影響行為的因素，反而無法被看見。</p>
 
-      <p>而我關心：</p>
+      <p class="care__turn">而我關心：</p>
 
 
       <p class="care__thesis"><mark class="mark mark--b" data-mark>理性與感性</mark>，如何驅動我們的行為與選擇</p>
@@ -121,6 +121,21 @@
           <p>當答案越來越容易透過 AI 取得，什麼會留在我們的腦中</p>
         </li>
       </ol>
+
+      <div class="industries" data-industry-rail>
+        <div class="industries__head">
+          <p id="industries-label">研究走過的領域</p>
+        </div>
+        <div class="industries__viewport" role="region" aria-labelledby="industries-label" tabindex="0">
+          <div class="industries__track">
+            <ul class="tags industries__group" aria-labelledby="industries-label"><li>金融</li><li>數位實體服務串接</li><li>電商</li><li>文化內容</li><li>媒體</li><li>教育</li><li>公共服務</li><li>ESG</li></ul>
+          </div>
+        </div>
+      </div>
+
+      <p class="care__note">
+        多年跨產業研究之後，我發現讓我真正感興趣的並非在同個產業中深度鑽研，而是跨入不同領域當中，快速進到陌生情境裡，找到人們真正重視、卻不一定說得清楚的那些事情。而我有個癖好是，<mark class="mark" data-mark>在跨領域的產業中，看見共同的人性需求</mark>。
+      </p>
     </div>
   </div>
 </section>
@@ -133,11 +148,10 @@
     </div>
 
     <div class="col">
-      <p class="lead">
-       「原來顧客真的跟我們想像的不一樣，沒有訪談還真的不知道」合作夥伴常這樣說。
-研究中，最讓我上癮的，就是找到那個<mark class="mark" data-mark>顛覆原本想像的翻轉</mark>，再把這些意料之外的發現，整理成下一步的策略方向。</br>
-        
-      </p>
+      <div class="lead">
+       <p>「原來顧客真的跟我們想像的不一樣，沒有訪談還真的不知道」合作夥伴常這樣說。</p>
+        <p>研究中，最讓我上癮的，就是找到那個<mark class="mark" data-mark>顛覆原本想像的翻轉</mark>，再把這些意料之外的發現，整理成下一步的策略方向。</p>
+      </div>
 
       <ol class="cases">
         <li class="case">
@@ -211,35 +225,37 @@
           <div class="cv__what">
             <h4>UX 研究員／研究副總監</h4>
             <p>曾任體驗顧問公司研究副總監，參與並帶領跨產業研究與策略專案。</p>
-            <ul class="tags"><li>金融</li><li>數位實體服務串接</li><li>電商</li><li>文化內容</li><li>媒體</li><li>教育</li><li>公共服務</li><li>ESG</li></ul>
           </div>
         </li>
       </ol>
 
-      <p class="about__note">
-        多年跨產業研究之後，我發現讓我真正感興趣的並非在同個產業中深度鑽研，而是跨入不同領域當中，快速進到陌生情境裡，找到人們真正重視、卻不一定說得清楚的那些事情。而我有個癖好是，<mark class="mark" data-mark>在跨領域的產業中，看見共同的人性需求</mark>。
-      </p>
+      <section class="teaching" id="teaching" aria-labelledby="teaching-title">
+        <header class="teaching__header">
+          <h3 id="teaching-title">教學與分享</h3>
+          <p>除了研究與顧問，我也透過演講、工作坊與教學，把研究過程中累積的方法與觀察整理出來，和不同領域的人一起交流。</p>
+        </header>
 
-      <h3 class="sub">教學經驗</h3>
-      <p>除了研究與顧問，我也透過演講、工作坊與教學，把研究過程中累積的方法與觀察整理出來，和不同領域的人一起交流。</p>
+        <ul class="teaching__topics" aria-label="教學主題">
+          <li><h4>使用者研究與訪談</h4><p>研究問題、訪談技巧、質性研究與洞察形成。</p></li>
+          <li><h4>AI × Research</h4><p>AI 如何參與研究、資料整理與分析，同時保留身為人類的判斷。</p></li>
+          <li><h4>從洞察到商業價值</h4><p>如何讓 Findings 不只停在報告，而是進入產品、策略與決策。</p></li>
+        </ul>
 
-      <ol class="teach">
-        <li><span class="teach__no" aria-hidden="true">一</span><h4>使用者研究與訪談</h4><p>研究問題、訪談技巧、質性研究與洞察形成。</p></li>
-        <li><span class="teach__no" aria-hidden="true">二</span><h4>AI × Research</h4><p>AI 如何參與研究、資料整理與分析，同時保留身為人類的判斷。</p></li>
-        <li><span class="teach__no" aria-hidden="true">三</span><h4>從洞察到商業價值</h4><p>如何讓 Findings 不只停在報告，而是進入產品、策略與決策。</p></li>
-      </ol>
-
-      <h3 class="sub">精選演講與課程</h3>
+        <div class="teaching__examples-head">
+          <h4 id="teaching-examples">精選教學實例</h4>
+          <p>透過演講與課程，分享這些主題的方法與實務。</p>
+        </div>
 
       <!-- 三欄：封面、講題、meta+外連。封面是重複連結，對輔助科技隱藏、
            不進 tab 順序——右欄那個帶文字的連結才是可讀的入口。 -->
-      <ol class="talks">
+      <ol class="talks" aria-labelledby="teaching-examples">
         <li class="talk">
           <a class="talk__cover" href="https://www.accupass.com/event/2505050844451226821613" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true">
             <img src="assets/img/talks/ai-customer-insight.jpg" alt="講座主視覺：AI × 顧客洞察升級指南" width="512" height="256" loading="lazy" decoding="async">
           </a>
           <div class="talk__body">
-            <h4>AI × 顧客洞察升級指南：從提問到洞察，全面掌握 AI 研究力</h4>
+            <p class="talk__topic">AI × Research</p>
+            <h5>AI × 顧客洞察升級指南：從提問到洞察，全面掌握 AI 研究力</h5>
             <p class="talk__where">線上講座</p>
           </div>
           <p class="talk__meta">
@@ -253,7 +269,8 @@
             <img src="assets/img/talks/interview-skills.jpg" alt="課程頁封面：UX 訪談技巧實戰課" width="512" height="256" loading="lazy" decoding="async">
           </a>
           <div class="talk__body">
-            <h4>訪談技巧實戰課</h4>
+            <p class="talk__topic">使用者研究與訪談</p>
+            <h5>訪談技巧實戰課</h5>
             <p class="talk__where">實體課程</p>
           </div>
           <p class="talk__meta">
@@ -265,7 +282,8 @@
         <li class="talk">
           <span class="talk__cover talk__cover--none" aria-hidden="true">2025</span>
           <div class="talk__body">
-            <h4>從訪談到商業價值，UX 研究如何助攻產品成長</h4>
+            <p class="talk__topic">從洞察到商業價值</p>
+            <h5>從訪談到商業價值，UX 研究如何助攻產品成長</h5>
             <p class="talk__where">講座分享</p>
           </div>
           <p class="talk__meta">
@@ -277,7 +295,8 @@
         <li class="talk">
           <span class="talk__cover talk__cover--none" aria-hidden="true">2024</span>
           <div class="talk__body">
-            <h4>人機協作：點燃 AI 與 UX 研究碰撞的火花</h4>
+            <p class="talk__topic">AI × Research</p>
+            <h5>人機協作：點燃 AI 與 UX 研究碰撞的火花</h5>
             <p class="talk__where">講座分享</p>
           </div>
           <p class="talk__meta">
@@ -286,6 +305,7 @@
           </p>
         </li>
       </ol>
+      </section>
     </div>
   </div>
 </section>
@@ -451,6 +471,6 @@
 
 <script src="assets/js/vendor/lottie_light.min.js" defer></script>
 <script src="assets/js/loader-cat.js" defer></script>
-<script src="assets/js/main.js" defer></script>
+<script src="assets/js/main.js?v=20260907-rail-scroll2" defer></script>
 </body>
 </html>
