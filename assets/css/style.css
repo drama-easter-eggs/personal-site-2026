@@ -60,8 +60,8 @@
   --fs-hero: clamp(26px, 4.8vw, 60px);
   --fs-mega: clamp(30px, 3.5vw, 44px);
 
-  --lh-body: 1.8;
-  --lh-compact: 1.7;
+  --lh-body: 2;
+  --lh-compact: 1.9;
   --lh-head: 1.5;
   --lh-display: 1.4;
   --lh-hero: 1.4;
@@ -73,7 +73,7 @@
   --track-zh-head: .01em;
 
   /* — reading rhythm — */
-  --measure: 36em;
+  --measure: 44em;
   --space-paragraph: 1em;
   --space-related: 8px;
   --space-group: clamp(22px, 2.4vw, 30px);
@@ -346,7 +346,7 @@ mark.mark--b {
 .col { min-width: 0; max-width: 800px; }
 
 /* Prose measure — capped in em so it tracks the font size and lands at
-   roughly 36 漢字 per line at every step of the scale. */
+   roughly 44 漢字 per line at every step of the scale. */
 .lead,
 .col > p,
 .pull,
@@ -749,7 +749,7 @@ html:not(.js) .hero__line:first-child {
   }
   /* .col 的 800px 是給單欄長文的行寬上限。三欄並排時每欄只分到它的三分之一，
      這條規則反而在扣寬度，所以 care 這一節放掉容器上限，撐滿 .layout 右欄
-     （1200px 頁寬下是 850px）。上方那幾段內文各自有 36em／22em 的行寬上限，
+     （1200px 頁寬下是 850px）。上方那幾段內文各自有 44em／22em 的行寬上限，
      不會跟著變長；左緣仍與整欄對齊，版面軸線不動。 */
   #care .col { max-width: none; }
   .threads > li {
@@ -767,7 +767,7 @@ html:not(.js) .hero__line:first-child {
     border-left: 1px solid var(--hairline);
     padding-left: clamp(12px, 1.6vw, 20px);
   }
-  /* 36em 是內文的行寬上限，三欄下不會生效，但留著會讓人以為還有第二層限制。 */
+  /* 44em 是內文的行寬上限，三欄下不會生效，但留著會讓人以為還有第二層限制。 */
   .threads > li > p { max-width: none; }
 }
 
@@ -1014,7 +1014,7 @@ html:not(.js) .hero__line:first-child {
 .fit__list > li::before {
   content: "";
   position: absolute;
-  left: 0; top: calc(9px + .9em);
+  left: 0; top: calc(9px + var(--lh-body) * .5em);
   width: 15px; height: 2px; border-radius: 2px;
 }
 /* no colour-coding here — teal is never a success/error state */
@@ -1237,6 +1237,35 @@ html:not(.js) .hero__line:first-child {
   }
   .eyebrow > span {
     border-bottom: 0; padding-bottom: 0; margin-bottom: 0;
+  }
+  /* 單欄章節入口：英文輔標、中文主標、底線與內容間距共同建立層級。 */
+  .section .layout { gap: 28px; }
+  .section .gutter {
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--hairline);
+  }
+  .section .eyebrow {
+    display: block;
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 1.5;
+  }
+  .section .eyebrow::before {
+    content: "";
+    display: block;
+    width: 32px;
+    height: 4px;
+    margin-bottom: 16px;
+    border-radius: 2px;
+    background: var(--teal);
+  }
+  .section .eyebrow > span {
+    margin-bottom: 8px;
+    font-size: 12px;
+    line-height: 1.5;
+    font-weight: 500;
+    color: var(--stone);
+    letter-spacing: .08em;
   }
   /* 插圖跟介紹仍然並排（跟桌機同一個關係，也不會多長出一列把 Hero 撐高），
      只是左欄改成按比例縮：右欄至少還有 2/3 的寬度給那三段文字。 */
