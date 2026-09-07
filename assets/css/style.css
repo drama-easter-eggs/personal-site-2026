@@ -565,11 +565,15 @@ html:not(.js) .hero__line:first-child {
   .hero__line { transform: none; }
 }
 
-/* 首頁短介紹與內文同級；桌面欄寬 390px，減少不必要的斷行。 */
+/* 首頁短介紹與內文同級；桌面欄寬 390px，減少不必要的斷行。
+   align-self: start 讓它貼著第 2 列的頂端開始，而不是跟插圖齊底——大提問
+   佔掉上半屏之後，這一段的第一行剛好落在第一屏的中線上（.hero__grid 的
+   align-content: center 讓整組居中，所以中線位置跟著視窗高度自己走）。
+   原本為了跟插圖齊底而補的 padding-bottom 也就不需要了。 */
 .hero__body {
   grid-column: 1;
+  align-self: start;
   max-width: 30em;
-  padding-bottom: .35em;
   font-size: var(--fs-body);
   line-height: var(--lh-body);
   color: var(--stone);
@@ -616,10 +620,26 @@ html:not(.js) .hero__line:first-child {
 .hero__fixed   { animation-delay: .06s; }
 .hero__rotator { animation-delay: .18s; }
 .hero__body    { animation-delay: .3s; }
-.hero__figure  { animation-delay: .42s; }   /* 排在最後：先讀完字，插圖才出現 */
 @keyframes rise {
   from { opacity: 0; transform: translateY(14px); }
   to   { opacity: 1; transform: none; }
+}
+
+/* 插圖排在最後進場（先讀完字，人物才出現），落定後就開始緩慢上下漂浮。
+   兩個動畫串在同一條 animation 上：rise 的 .42s 延遲加 .8s 播完，float 才
+   在 1.3s 接手；float 的 0% 正好是 translateY(0)，跟 rise 的終點同一個位置，
+   所以交棒時不會跳一下。
+   幅度只有 10px（比全站進場的 14px 再小一階）、9 秒一趟、ease-in-out 讓上下
+   兩端各停一拍——是呼吸，不是彈跳。
+   reduce 由全站那條 animation-iteration-count: 1 收掉，這裡不用再寫一次。 */
+.hero__figure {
+  animation: rise .8s cubic-bezier(.22,.61,.36,1) .42s backwards,
+             float 9s ease-in-out 1.3s infinite;
+}
+@keyframes float {
+  from { transform: translateY(0); }
+  50%  { transform: translateY(-10px); }
+  to   { transform: translateY(0); }
 }
 
 /* ============================================================
