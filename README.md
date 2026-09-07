@@ -7,9 +7,8 @@
 ```
 index.html            首頁（01–08 全部區塊）
 assets/css/style.css  全站樣式
-assets/js/main.js     螢光筆標記、scroll reveal、hero 問句輪播、hero 的貓、行動版選單、年份
-assets/js/loader-cat.js         hero 左下那隻貓的 lottie 資料（原檔在 reference/）
-assets/js/vendor/lottie_light.min.js  lottie 引擎，自己 host，沒有 CDN
+assets/js/main.js     螢光筆標記、scroll reveal、hero 問句輪播、行動版選單、年份
+assets/img/hero-figure.svg      hero 左下的手繪人物（原檔在 reference/hero.svg）
 assets/favicon.svg
 docs/                 規劃與規範（不會部署）
   DESIGN.md             實作後的樣式規範，以這份為準
@@ -17,7 +16,8 @@ docs/                 規劃與規範（不會部署）
   website-plan.md        首頁文案與 section 順序
   content-architecture.md 長期內容邏輯與三個 lenses
 reference/            外部素材原檔（不會部署）
-  Loader cat.json       hero 那隻貓的 lottie 原檔
+  hero.svg              hero 那張插圖的原檔（未裁切、未改色）
+  Loader cat.json       前一版 hero 那隻貓的 lottie 原檔，已不使用
 ```
 
 ## 本機預覽

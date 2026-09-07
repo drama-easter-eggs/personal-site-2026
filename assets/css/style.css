@@ -463,17 +463,28 @@ mark.mark--b {
 /* ============================================================
    01 HERO
    ============================================================ */
-.hero { padding-block: clamp(112px, 10vw, 144px) 0; }
-
-.hero__grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(260px, 390px);
-  column-gap: clamp(30px, 4vw, 76px);
-  row-gap: clamp(28px, 3vw, 40px);
-  align-items: end;
+/* Hero 幾乎佔滿一屏：section 自己是縱向 flex，中間那格（.hero__grid）吃掉剩下的
+   高度，底線留在最後一列。min-height 用 svh 而不是 vh——手機工具列收起來時
+   vh 會突然變高、把版面往下拉一截。 */
+.hero {
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  padding-block: clamp(104px, 9vw, 140px) 0;
 }
 
-/* 問句吃掉整幅寬度，右欄的自我介紹掉到第二列——左下留白是刻意的，
+.hero__grid {
+  flex: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 46%);
+  column-gap: clamp(30px, 4vw, 76px);
+  row-gap: clamp(32px, 4.5vw, 72px);
+  align-items: end;
+  /* 兩列的內容比一屏矮的時候，整組往中間收，而不是黏在 padding 下緣。 */
+  align-content: center;
+}
+
+/* 問句吃掉整幅寬度，第二列才是左邊的自我介紹＋右邊的插圖——
    讓那句大提問先講完話，介紹才接著小聲說。 */
 .hero__display { grid-column: 1 / -1; font-weight: 400; }
 
@@ -556,7 +567,8 @@ html:not(.js) .hero__line:first-child {
 
 /* 首頁短介紹與內文同級；桌面欄寬 390px，減少不必要的斷行。 */
 .hero__body {
-  grid-column: 2;
+  grid-column: 1;
+  max-width: 30em;
   padding-bottom: .35em;
   font-size: var(--fs-body);
   line-height: var(--lh-body);
@@ -573,27 +585,20 @@ html:not(.js) .hero__line:first-child {
 .hero__role { display: inline-block; max-width: 100%; }
 .hero__body > p + p { margin-top: 1em; }
 /* 桌面貓與介紹齊底；尾巴可超出 SVG，底部分隔線預留 48px。 */
-.hero__cat {
-  grid-column: 1;
-  width: clamp(126px, 11.5vw, 166px);
-  aspect-ratio: 105 / 108;   /* 裁切後那塊畫布的比例，先卡住高度，載入時就不會跳動 */
-  /* align-items: end 只讓兩欄的盒子齊底，但右欄最後一行字的下方還有 padding
-     跟行距。補回這一段，貓的腳底才跟那行字收在同一條線上。 */
-  margin-bottom: .6em;
-}
-/* 尾巴要能甩到盒子外面：SVG 根元素預設會裁掉 viewBox 以外的東西。
-   scaleX(-1) 是左右鏡像，讓貓面向版面內側而不是頁面外側。
-   鏡像放在 svg 上、不放在 .hero__cat 上：外層那個盒子的 transform 已經被
-   入場動畫 rise 佔用了，寫在外層會在那 0.8 秒裡被 keyframes 蓋掉、動畫結束才
-   突然翻面。
-   !important 是必要的：lottie 會在 svg 根元素上寫行內的
-   style.transform = translate3d(0,0,0)（它的 GPU 合成提示），行內樣式贏過樣式表，
-   不加就完全沒作用。順手把那個 translate3d 接回來，別把它的提示弄丟。
-   （另外五個 !important 在 prefers-reduced-motion 那一區，用途不同。） */
-.hero__cat svg {
+/* 這張手繪的人物是橫幅（784 / 558 ≈ 1.4），不是原本那隻近乎正方的貓，
+   所以尺寸改由「高度」決定：寬度取到 21vw 時高度剛好落在 210px 上下，
+   跟右欄那三行自我介紹的高度同一階——這一列的高度還是由文字決定，
+   換插圖沒有把 Hero 撐高。
+   插圖本身朝右（往版面內側跳），不需要像貓那樣鏡像。 */
+.hero__figure {
+  grid-column: 2;
+  justify-self: end;
   display: block;
-  overflow: visible;
-  transform: scaleX(-1) translate3d(0, 0, 0) !important;
+  width: min(100%, clamp(300px, 36vw, 520px));
+  height: auto;
+  /* align-items: end 只讓兩欄的盒子齊底，但左欄最後一行字的下方還有 padding
+     跟行距。補回這一段，插圖底部才跟那行字收在同一條線上。 */
+  margin-bottom: .6em;
 }
 
 .hero__rule {
@@ -604,14 +609,14 @@ html:not(.js) .hero__line:first-child {
 }
 
 /* page-load: quiet, one gesture only */
-.hero__kicker, .hero__fixed, .hero__rotator, .hero__body, .hero__cat {
+.hero__kicker, .hero__fixed, .hero__rotator, .hero__body, .hero__figure {
   animation: rise .8s cubic-bezier(.22,.61,.36,1) backwards;
 }
 .hero__kicker  { animation-delay: 0s; }
 .hero__fixed   { animation-delay: .06s; }
 .hero__rotator { animation-delay: .18s; }
 .hero__body    { animation-delay: .3s; }
-.hero__cat     { animation-delay: .42s; }   /* 排在最後：先讀完字，貓才出現 */
+.hero__figure  { animation-delay: .42s; }   /* 排在最後：先讀完字，插圖才出現 */
 @keyframes rise {
   from { opacity: 0; transform: translateY(14px); }
   to   { opacity: 1; transform: none; }
@@ -1213,11 +1218,12 @@ html:not(.js) .hero__line:first-child {
   .eyebrow > span {
     border-bottom: 0; padding-bottom: 0; margin-bottom: 0;
   }
-  .hero__grid { grid-template-columns: 100px minmax(0, 1fr); gap: 28px; }
+  /* 插圖跟介紹仍然並排（跟桌機同一個關係，也不會多長出一列把 Hero 撐高），
+     只是左欄改成按比例縮：右欄至少還有 2/3 的寬度給那三段文字。 */
+  .hero__grid { grid-template-columns: minmax(0, 1fr) minmax(0, 42%); gap: 28px; }
   .hero__display { grid-column: 1 / -1; }
-  .hero__cat { grid-column: 1; width: 84px; margin: 0 0 24px; }
-  .hero__body { grid-column: 2; }
-  .hero__body { margin-top: 0; max-width: 28em; }
+  .hero__figure { grid-column: 2; width: 100%; max-width: none; margin: 0 0 .6em; }
+  .hero__body { grid-column: 1; margin-top: 0; max-width: 28em; }
   .nav__links {
     display: none;
     position: absolute;
@@ -1305,11 +1311,18 @@ html:not(.js) .hero__line:first-child {
   .nav__name { font-size: 14px; }
 }
 
-/* 手機首頁仍保留貓，但用較小尺寸縮短介紹之前的空白。 */
+/* 手機首頁仍保留插圖，但壓小一階、縮短介紹之前的空白。 */
 @media (max-width: 540px) {
-  .hero__grid { grid-template-columns: minmax(0, 1fr); row-gap: 0; }
-  .hero__cat { grid-column: 1; width: 76px; margin: 20px 0 38px; }
-  .hero__body { grid-column: 1; }
+  /* 單欄時「幾乎滿屏」會把字撐得太散：高度交回內容決定。 */
+  .hero { min-height: 0; }
+  .hero__grid { grid-template-columns: minmax(0, 1fr); row-gap: 0; align-content: start; }
+  .hero__figure {
+    grid-column: 1;
+    justify-self: start;
+    width: min(280px, 68vw);
+    margin: 20px 0 22px;
+  }
+  .hero__body { grid-column: 1; max-width: none; }
 }
 
 /* 短數據能並排比較，不必各佔一整列。320px 保留原本直排。 */

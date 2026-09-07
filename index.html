@@ -20,7 +20,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/style.css?v=20260907-rail-scroll2">
+<link rel="stylesheet" href="assets/css/style.css?v=20260907-hero-full">
 </head>
 <body>
 
@@ -73,16 +73,21 @@
       </span>
     </h1>
 
-    <!-- 貓就放在 hero grid 本來就空著的左下那一格（第 2 列、左欄），
-         跟右欄的自我介紹同一列、共用同一條底線對齊，所以不會多長出一列，
-         排版高度不變。純裝飾，對輔助科技隱藏；沒有 JS 就是一格空白，跟原本一樣。 -->
-    <div class="hero__cat" data-cat aria-hidden="true"></div>
-
     <div class="hero__body">
       <p class="hero__id">Hi，我是 Mei，我是一位<span class="hero__role">獨立研究者／體驗策略顧問</span></p>
       <p>我持續透過觀察、研究，理解人們重視什麼、如何行動。</p>
       <p>協助產品、服務團隊在複雜模糊的探索階段，找到真正值得投入的方向。</p>
     </div>
+
+    <!-- 插圖在第 2 列的右欄，跟左欄的自我介紹同一列、共用同一條底線對齊，
+         所以不會多長出一列。放在 .hero__body 後面是為了讓自動排版把兩者放進
+         同一列（欄號必須遞增），單欄手機版也剛好變成「先讀字、再看圖」。
+         純裝飾，對輔助科技隱藏（alt 留空 + aria-hidden）。
+         用 <img> 而不是內嵌 SVG：檔案本身 70KB，內嵌會讓 HTML 變三倍大且每次都重下載；
+         外部檔可以被快取，file:// 直接開也讀得到（不像 fetch 會被擋）。
+         width/height 是 viewBox 的實際比例，先卡住版位，載入時不會跳動。 -->
+    <img class="hero__figure" src="assets/img/hero-figure.svg"
+         width="784" height="558" alt="" aria-hidden="true">
   </div>
   <div class="hero__rule" aria-hidden="true"></div>
 </section>
@@ -469,8 +474,6 @@
   </div>
 </footer>
 
-<script src="assets/js/vendor/lottie_light.min.js" defer></script>
-<script src="assets/js/loader-cat.js" defer></script>
 <script src="assets/js/main.js?v=20260907-rail-scroll2" defer></script>
 </body>
 </html>
