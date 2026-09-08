@@ -777,6 +777,112 @@ html:not(.js) .hero__line:first-child {
   .threads > li > p { max-width: none; }
 }
 
+/* ---- 研究走過的領域 ----------------------------------------
+   問題不是資訊不夠，而是「金融」「文化內容」這種單層標籤太抽象——看不出
+   底下其實有證券、數位銀行、漫畫、數位收藏。所以改成兩層索引，讓三段閱讀
+   由視覺層級自己完成，不靠多加說明文字：
+
+   ① 廣度  — 左欄五個大領域垂直對齊成一根軸，一眼掃完就知道跨了幾個世界
+   ② 具體性 — 右欄 27 個關鍵字用 · 串成一行，湊近看才讀得到
+   ③ 共同問題意識 — 緊接在下方的 .care__note（結尾有螢光筆）
+
+   沿用全站的分行列表（hairline 分行 ＋ 左欄標籤 ＋ 右欄內容），但整段刻意
+   壓成 secondary layer，不跟 .threads 或 03 搶：
+   - 上線用 hairline，不用 .threads 桌機版那條 ink——ink 上線是主清單的記號
+   - 領域名 16px / 500，比 .threads h3（19–21px / 700）低兩階
+   - 關鍵字不做 tag pill。27 顆膠囊會變成 tag cloud，而且 .tags 的框線在這裡
+     等於把「分類資訊」講第二次；跑成一行帶點的文字才是編輯感的做法
+   - 不放 icon、不放數量、不排時間，這裡回答的是「走過哪些世界」
+   （取代 2026-09-07 那條 16px/s 自動循環的產業標籤軌道：兩層結構塞不進單行
+     跑馬燈，而且會動的字沒辦法「仔細看」。JS 的 rail 一併移除。） */
+/* 索引與下面那段文字共用 --measure，右緣切在同一條線上——它們是同一個敘事，
+   所以是同一塊。1101px 以上 #care .col 放掉了 800px 上限（給 .threads 三欄用），
+   分行線若跟著跑到 868px，右邊會空掉快一半：那正是「每一列都要橫向用掉版面」
+   要避免的。收在 44em 之後，整節的寬度節奏是 寬主清單 → 窄次要索引，
+   而不是一條線畫過去、右邊沒東西。 */
+.fields {
+  margin-top: clamp(36px, 4vw, 52px);
+  max-width: var(--measure);
+}
+.fields__label {
+  font-size: var(--fs-meta);
+  font-weight: 500;
+  letter-spacing: var(--track-zh);
+  color: var(--stone);
+  margin-bottom: 10px;
+}
+.fields__list { border-top: 1px solid var(--hairline); }
+.fields__row {
+  display: grid;
+  /* 172px 容得下最長的「數位產品與商業服務」（9 漢字 ≈ 146px）而不折行，
+     多出來的餘裕是把關鍵字往右推、讓整列真的橫向用掉 44em 的手段之一。 */
+  grid-template-columns: 172px minmax(0, 1fr);
+  /* 領域名 16px、關鍵字 14px，兩欄的第一條基線用 baseline 對齊，
+     不用 .cv__when 那種手調的 padding-top。 */
+  align-items: baseline;
+  gap: 4px clamp(14px, 2vw, 26px);
+  /* 比 .cv__row 的 clamp(20,2.2vw,28) 緊一階——這是索引不是敘事列。 */
+  padding-block: clamp(11px, 1.3vw, 15px);
+  border-bottom: 1px solid var(--hairline);
+}
+.fields__name {
+  font-size: var(--fs-body);
+  font-weight: 500;
+  line-height: 1.6;
+  letter-spacing: var(--track-zh-head);
+}
+.fields__keys {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  row-gap: 6px;
+  min-width: 0;
+  font-size: var(--fs-meta);
+  line-height: 1.6;
+  color: var(--stone);
+}
+.fields__keys > span { white-space: nowrap; }
+/* 間隔點掛在前一個關鍵字的尾巴（::after 而不是 ::before）：掛在後面那個字的
+   頭上時，折行會讓下一行以一顆孤點開頭。 */
+.fields__keys > span:not(:last-child)::after {
+  content: "·";
+  /* 分隔符是排版裝置不是內容。支援 alt 語法的瀏覽器讓讀屏軟體跳過它；
+     不支援的會退回上面那條，點照樣畫得出來。 */
+  content: "·" / "";
+  color: var(--hairline);
+  /* .9em 不是為了好看才放寬的：14px 的關鍵字在 44em 裡本來只吃掉六成寬，
+     點左右各留 .9em 之後最長那列到 84%，分行線右邊不再空掉三分之一。
+     同時 27 個關鍵字之間有真的間隙，掃讀時不會黏成一串。 */
+  padding-inline: .9em;
+}
+
+/* 641–900px：版面本身已經是單欄，但索引維持左標籤 ＋ 右關鍵字兩欄——塌成上下
+   會讓兩行都只用掉不到一半的列寬（實測 700px 只有 47%）。左欄收到 152px、
+   點的留白收回 .5em，最長那列在 641px 仍有 90% 的用寬且不折行。 */
+@media (min-width: 641px) and (max-width: 900px) {
+  .fields__row {
+    grid-template-columns: 152px minmax(0, 1fr);
+    gap: 4px 16px;
+  }
+  .fields__keys > span:not(:last-child)::after { padding-inline: .5em; }
+}
+
+/* ≤640px：兩欄再也擠不下一整行關鍵字，改成領域名自己一行帶頭、關鍵字接在下面
+   （跟 .cv__row / .lens 同一條塌欄規則）。實測 375px 五組關鍵字都還是一行，
+   一組只佔兩行、整塊約 466px——不是把桌機的兩欄硬壓成一欄。
+   行距與 row-gap 各放一階，320px 折行時關鍵字才讀得像一小段文字。 */
+@media (max-width: 640px) {
+  .fields__row {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 7px;
+    padding-block: clamp(14px, 3.6vw, 18px);
+  }
+  .fields__keys { row-gap: 7px; line-height: 1.7; }
+  /* .9em 是桌機為了用掉 44em 才放的寬度；手機的寬本來就用滿，維持 .9em 會把
+     「金融」「數位產品」兩列擠成兩行、末尾只剩一個孤字。 */
+  .fields__keys > span:not(:last-child)::after { padding-inline: .5em; }
+}
+
 /* ============================================================
    03 SELECTED WORK
    一頁式站不該為了三則案例把人送去別的頁面，所以細節就地展開，不開 modal、
@@ -1013,8 +1119,10 @@ html:not(.js) .hero__line:first-child {
   margin-bottom: var(--space-related);
 }
 
+/* 索引與這段文字是同一個敘事：上方離 .threads 是 clamp(36,4vw,52)（換一組），
+   這裡只留 clamp(20,2.4vw,28)，讓它讀起來是那 27 個關鍵字的收束句。 */
 .care__note {
-  margin-top: clamp(28px, 3.5vw, 40px);
+  margin-top: clamp(20px, 2.4vw, 28px);
   font-size: var(--fs-body);
 }
 
@@ -1553,26 +1661,3 @@ html:not(.js) .hero__line:first-child {
   .counters__n { font-size: 30px; }
 }
 
-/* 產業軌道：靜態清單為基底，有 JS 才複製並啟動無縫流動。 */
-.industries { margin-top: clamp(28px, 3vw, 40px); min-width: 0; }
-.industries__head { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 12px; }
-.industries__head p { font-size: var(--fs-meta); color: var(--stone); font-weight: 500; }
-.industries__group { margin-top: 0; gap: 10px; }
-.industries__group li { background: var(--cream); padding: 7px 14px; }
-.industries.is-ready .industries__viewport {
-  overflow-x: auto;
-  overflow-y: hidden;
-  scrollbar-width: none;
-  overscroll-behavior-x: contain;
-  cursor: grab;
-}
-.industries__viewport::-webkit-scrollbar { display: none; }
-.industries__viewport.is-dragging { cursor: grabbing; user-select: none; }
-.industries.is-ready .industries__track { display: flex; width: max-content; }
-.industries.is-ready .industries__group { flex-wrap: nowrap; flex-shrink: 0; min-width: var(--rail-width); justify-content: space-around; padding-right: 10px; }
-@media (prefers-reduced-motion: reduce) {
-  .industries.is-ready .industries__track { width: auto; display: block; }
-  .industries.is-ready .industries__group { min-width: 0; padding-right: 0; justify-content: flex-start; flex-wrap: wrap; }
-  .industries__group[aria-hidden="true"] { display: none; }
-  .industries.is-ready .industries__viewport { cursor: auto; }
-}

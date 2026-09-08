@@ -20,7 +20,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/style.css?v=20260907-hero-float">
+<link rel="stylesheet" href="assets/css/style.css?v=20260908-fields-index">
 </head>
 <body>
 
@@ -127,15 +127,33 @@
         </li>
       </ol>
 
-      <div class="industries" data-industry-rail>
-        <div class="industries__head">
-          <p id="industries-label">研究走過的領域</p>
-        </div>
-        <div class="industries__viewport" role="region" aria-labelledby="industries-label" tabindex="0">
-          <div class="industries__track">
-            <ul class="tags industries__group" aria-labelledby="industries-label"><li>金融</li><li>數位實體服務串接</li><li>電商</li><li>文化內容</li><li>媒體</li><li>教育</li><li>公共服務</li><li>ESG</li></ul>
+      <!-- 研究走過的領域：兩層索引。左欄五個大領域一眼掃出跨度，
+           右欄的具體關鍵字留給第二眼；下方那段文字接第三眼。
+           <dl> 是這裡最誠實的元素——領域是 term、關鍵字是它的 description。 -->
+      <div class="fields">
+        <p class="fields__label" id="fields-label">研究走過的領域</p>
+        <dl class="fields__list" aria-labelledby="fields-label">
+          <div class="fields__row">
+            <dt class="fields__name">金融與 FinTech</dt>
+            <dd class="fields__keys"><span>證券投資</span><span>數位銀行</span><span>財富管理</span><span>保險</span><span>加密貨幣</span></dd>
           </div>
-        </div>
+          <div class="fields__row">
+            <dt class="fields__name">文化內容與 IP</dt>
+            <dd class="fields__keys"><span>漫畫</span><span>出版</span><span>影視</span><span>IP</span><span>遊戲</span><span>數位收藏</span></dd>
+          </div>
+          <div class="fields__row">
+            <dt class="fields__name">數位產品與商業服務</dt>
+            <dd class="fields__keys"><span>電商</span><span>會員經營</span><span>訂閱服務</span><span>O2O</span><span>數位平台</span></dd>
+          </div>
+          <div class="fields__row">
+            <dt class="fields__name">教育與健康</dt>
+            <dd class="fields__keys"><span>EdTech</span><span>線上教育</span><span>醫療照護</span><span>熟齡服務</span></dd>
+          </div>
+          <div class="fields__row">
+            <dt class="fields__name">公共與產業轉型</dt>
+            <dd class="fields__keys"><span>公共服務</span><span>交通</span><span>ESG</span><span>製造業</span><span>HR Tech</span></dd>
+          </div>
+        </dl>
       </div>
 
       <p class="care__note">
@@ -592,6 +610,6 @@
   </div>
 </footer>
 
-<script src="assets/js/main.js?v=20260907-rail-scroll2" defer></script>
+<script src="assets/js/main.js?v=20260908-fields-index" defer></script>
 </body>
 </html>
