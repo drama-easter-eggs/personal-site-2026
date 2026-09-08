@@ -26,7 +26,6 @@
     '.lenses > *',
     '.fit__col > *:where(:not(.fit__list))',
     '.fit__list > *',
-    '.turn__folio',
     '.contact__panel > *'
   ].join(', ');
 

@@ -235,7 +235,6 @@ mark.mark--b {
 .js .lenses > *,
 .js .fit__col > *:where(:not(.fit__list)),
 .js .fit__list > *,
-.js .turn__folio,
 .js .contact__panel > * {
   opacity: 0;
   transform: translateY(var(--rise-y));
@@ -453,7 +452,7 @@ mark.mark--b {
 
    層級色在 .wrap 上一次換算完——這一段之內 --ink 就是 cream，
    --stone 與 --hairline 是 cream 的兩階透明度。所以 .eyebrow、.fit、
-   .turn__folio、focus outline 全部沿用原本的規則就自動反白，
+   focus outline 全部沿用原本的規則就自動反白，
    不需要為深底再寫一份。（不能寫在 .section--ink 自己身上：
    那條 background: var(--ink) 會先吃到被改掉的值。） */
 .section--ink { background: var(--ink); color: var(--cream); }
@@ -466,23 +465,6 @@ mark.mark--b {
 .section--ink { padding-block: calc(var(--section-y) * 1.25); }
 .section + .section--ink { padding-top: calc(var(--section-y) * 1.25); }
 .section--ink + .section { padding-top: var(--section-y); }
-
-/* 章節碼借 .layout 的格線落在 eyebrow 那一欄，所以它站在全頁的左軸線上，
-   不是漂在版面中間的裝飾。顏色壓到 --hairline：它是頁碼不是標題，
-   要能被餘光讀到、不能跟內容搶。吃 --latin 與負字距，
-   跟 .counters__n 同一種「大數字」語彙。 */
-.turn__folio {
-  grid-column: 1;
-  font-family: var(--latin);
-  font-size: clamp(38px, 4.6vw, 60px);
-  font-weight: 500;
-  line-height: 1;
-  letter-spacing: -.05em;
-  color: var(--hairline);
-}
-/* 第三章的章節碼直接站在那一節的 gutter 裡（eyebrow 之上），
-   不再需要一條獨立的停頓帶——紙已經換了。 */
-.section--ink .turn__folio { margin-bottom: clamp(14px, 1.6vw, 22px); }
 
 /* 同一章的第二節。桌機給一條版心寬的細線當跨頁分隔（比章際那一級弱），
    留白對半分在線的兩側，讓 04 → 05 讀起來是「同一章換一口氣」，
@@ -986,7 +968,7 @@ html:not(.js) .hero__line:first-child {
   background: var(--teal);
   box-shadow: 0 0 0 4px var(--cream);
 }
-/* 編號是頁碼語彙（--latin、負字距、hairline 色），跟 .turn__folio 同一族：
+/* 編號是頁碼語彙（--latin、負字距、hairline 色）：
    它排出節奏，不跟領域名搶。 */
 .vfield__no {
   position: absolute;
@@ -1043,17 +1025,6 @@ html:not(.js) .hero__line:first-child {
    inline-block——螢光筆的底圖才只鋪到字尾，不會拉滿整列。 */
 .vfield__say-l { display: block; }
 .vfield__say-l > mark { display: inline-block; }
-/* 章節碼跟 .turn__folio 同一種語彙（大號、--latin、負字距、hairline 色）：
-   它是頁碼不是標題，要能被餘光讀到、不能跟內容搶。 */
-.vfield__folio {
-  margin-top: clamp(26px, 3vw, 40px);
-  font-family: var(--latin);
-  font-size: clamp(38px, 4.6vw, 60px);
-  font-weight: 500;
-  line-height: 1;
-  letter-spacing: -.05em;
-  color: var(--hairline);
-}
 
 /* 正常流的插圖：接在那一句下面，往右破出版心。
    ≤900px 時 stage 就是滿版，負的 margin-right 正好把它推到螢幕邊被裁掉
@@ -1103,8 +1074,6 @@ html:not(.js) .hero__line:first-child {
     padding: 0;
     overflow: hidden;            /* 插圖刻意壓到構圖外緣，超出的部分裁掉 */
     container-type: size;
-    /* 版心左軸線：滿版之下，章節碼仍然站在全頁那一根左軸上。 */
-    --axis: max(var(--pad-x), calc((100% - var(--page)) / 2 + var(--pad-x)));
     /* 構圖單位。高度與寬度一起夾（見上面的註解）。 */
     --u: min(1cqh, .62cqw);
     --core-r: calc(21 * var(--u));
@@ -1288,13 +1257,6 @@ html:not(.js) .hero__line:first-child {
   .js .vfield__name { font-size: clamp(16px, calc(2.2 * var(--u)), 22px); }
   .js .vfield__keys { font-size: clamp(13px, calc(1.55 * var(--u)), 15px); }
   .js .vfield__keys > span:not(:last-child)::after { padding-inline: .55em; }
-
-  .js .vfield__folio {
-    position: absolute;
-    left: var(--axis);
-    bottom: clamp(30px, 5vh, 64px);
-    margin: 0;
-  }
 }
 
 /* ============================================================
@@ -1965,8 +1927,6 @@ html:not(.js) .hero__line:first-child {
      語意仍然是 h2，降的只有視覺份量。 */
   .section--cont .eyebrow { font-size: var(--fs-sub); }
 
-  /* .layout 併成單欄，章節碼要跟著回到第一欄。 */
-  .turn__folio { grid-column: 1; }
   /* 插圖跟介紹仍然並排（跟桌機同一個關係，也不會多長出一列把 Hero 撐高），
      只是左欄改成按比例縮：右欄至少還有 2/3 的寬度給那三段文字。 */
   .hero__grid { grid-template-columns: minmax(0, 1fr) minmax(0, 42%); gap: 28px; }
