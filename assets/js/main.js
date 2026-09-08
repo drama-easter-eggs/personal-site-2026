@@ -1,5 +1,5 @@
 /* Mei-Ling Chen — site behaviour.
-   scroll reveal、導覽區塊指示、Hero 問句輪播、Hero 的貓、手機選單、年份。
+   scroll reveal、導覽區塊指示、Hero 問句輪播、案例就地展開、手機選單、年份。
    （螢光筆的波形與流動全在 style.css，不需要 JS。） */
 
 (function () {
@@ -210,6 +210,149 @@
     }
 
     resume();
+  }
+
+  /* ---- 1f. Selected Work：案例就地展開 ----
+     元素是原生 <details>，所以沒有這段 JS 也能開合。這裡只多做三件事：
+
+     ① 補間。<details> 原生是瞬間開關，這裡用 grid-template-rows 0fr → 1fr
+        （不用 max-height 猜數字）。收合時要撐到動畫跑完才把 open 關掉，
+        否則內容會在第一幀就消失。
+     ② 網址。展開時把 hash 換成該案例的 id，載入時 hash 命中就自動展開——
+        「把案例 03 傳給客戶」因此成立，不必為了分享另外開一個頁面。
+        只碰 #case- 開頭的 hash，不會把 #work 這種區塊錨點吃掉。
+     ③ 收合後把捲動位置錨回原處。內容變短、頁面觸底時瀏覽器會夾住 scrollY，
+        整頁會往下抽一段；量一下摘要的位移補回去就好。
+
+     可以同時展開多則，不做互斥手風琴：互斥會在你往下讀時把上面那則收掉，
+     畫面自己跳一下，比多開幾則更擾人。 */
+
+  var discs = Array.prototype.slice.call(document.querySelectorAll('[data-case]'));
+
+  if (discs.length) {
+    var hashOf = function (d) {
+      var row = d.parentNode;
+      return row && row.id ? row.id : '';
+    };
+
+    /* 網址代表「最上面那則展開中的案例」。一則都沒開就把 #case- 收掉。 */
+    var syncHash = function () {
+      var open = null;
+      discs.forEach(function (d) { if (!open && d.open) open = d; });
+      var id = open ? hashOf(open) : '';
+
+      if (id) {
+        if (location.hash !== '#' + id) history.replaceState(null, '', '#' + id);
+      } else if (/^#case-/.test(location.hash)) {
+        history.replaceState(null, '', location.pathname + location.search);
+      }
+    };
+
+    var keepInPlace = function (head, before) {
+      var delta = head.getBoundingClientRect().top - before;
+      if (Math.abs(delta) < 1) return;
+      /* html 有 scroll-behavior: smooth，這裡要的是瞬間補位，不是捲動 */
+      window.scrollTo({ top: window.pageYOffset + delta, behavior: 'instant' });
+    };
+
+    /* 動畫進行中的那一則記在這裡：collapse 要跑完才會把 open 關掉，
+       所以動畫期間不能拿 d.open 當作「現在是開還是關」——
+       want 才是「這一次要走到哪個狀態」。 */
+    var busy = {};
+
+    var run = function (d, open) {
+      var wrap = d.querySelector('.case__wrap');
+      var head = d.querySelector('.case__head');
+      var id = hashOf(d);
+
+      /* 上一次的動畫還沒跑完就又被按了：先把它結掉再開新的。
+         不這樣做的話，連按兩下的第二下會被丟掉，看起來像沒反應。 */
+      if (busy[id]) busy[id].finish();
+
+      var before = head.getBoundingClientRect().top;
+
+      if (!wrap || reduced) {
+        d.open = open;
+        if (!open) keepInPlace(head, before);
+        syncHash();
+        return;
+      }
+
+      d.classList.add('is-moving');
+      if (open) d.open = true;        /* 先掛上去才量得到、也才動得起來 */
+
+      wrap.style.gridTemplateRows = open ? '0fr' : '1fr';
+      void wrap.offsetHeight;         /* 逼出一次 reflow，否則兩個值會被合成一個 */
+      wrap.style.gridTemplateRows = open ? '1fr' : '0fr';
+
+      var fallback = null;
+
+      var finish = function () {
+        busy[id] = null;
+        wrap.removeEventListener('transitionend', onEnd);
+        window.clearTimeout(fallback);
+        if (!open) d.open = false;
+        wrap.style.gridTemplateRows = '';
+        d.classList.remove('is-moving');
+        if (!open) keepInPlace(head, before);
+        syncHash();
+      };
+
+      var onEnd = function (e) {
+        if (e.target === wrap && e.propertyName === 'grid-template-rows') finish();
+      };
+
+      busy[id] = { finish: finish, want: open };
+      wrap.addEventListener('transitionend', onEnd);
+      /* transitionend 沒來（分頁被切走、瀏覽器不轉這個屬性）也要收得了尾 */
+      fallback = window.setTimeout(finish, 700);
+    };
+
+    discs.forEach(function (d) {
+      var head = d.querySelector('.case__head');
+      if (!head) return;
+
+      /* 攔下原生開合，改走上面的補間。鍵盤的 Enter / Space 在 <summary> 上
+         一樣會派送 click，所以這一條同時涵蓋滑鼠與鍵盤。 */
+      head.addEventListener('click', function (e) {
+        e.preventDefault();
+        var id = hashOf(d);
+        var now = busy[id] ? busy[id].want : d.open;
+        run(d, !now);
+      });
+
+      /* Ctrl+F 找到收合中的字時，瀏覽器會自己把 <details> 打開（不經過 click），
+         這條讓那種情況下的網址也跟著對。 */
+      d.addEventListener('toggle', function () {
+        if (!d.classList.contains('is-moving')) syncHash();
+      });
+    });
+
+    /* 帶著 #case-xxx 進來就展開那一則並捲到位。
+       hashchange 那一條管的是「站內連到某一則案例」——同頁換 hash 不會重新載入，
+       所以只在載入時跑一次還不夠。 */
+    var openFromHash = function (smooth) {
+      var landed = location.hash.slice(1);
+      if (!/^case-/.test(landed)) return;
+      var row = document.getElementById(landed);
+      var target = row && row.querySelector('[data-case]');
+      if (!target) return;
+      if (!target.open) run(target, true);
+      /* 載入時瀏覽器已經捲過一次，但那是圖片與字型都還沒就位時算的位置，
+         常常差好幾百 px。自己再捲一次（scroll-margin-top 會讓它停在導覽下方）。 */
+      row.scrollIntoView({ block: 'start', behavior: smooth ? 'smooth' : 'instant' });
+    };
+
+    /* 捲兩次：load（圖片就位）之後一次，字型換上去之後再一次。
+       中文字型晚到會把上面所有段落的行數改掉，只捲第一次會差好幾百 px。
+       openFromHash 對已經展開的那一則只會重捲，不會再開一次。 */
+    window.addEventListener('load', function () {
+      openFromHash(false);
+      if (document.fonts && document.fonts.ready) {
+        document.fonts.ready.then(function () { openFromHash(false); });
+      }
+    });
+    window.addEventListener('hashchange', function () { openFromHash(true); });
   }
 
   /* ---- 2. Mobile menu ---- */

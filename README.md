@@ -7,7 +7,7 @@
 ```
 index.html            首頁（01–08 全部區塊）
 assets/css/style.css  全站樣式
-assets/js/main.js     螢光筆標記、scroll reveal、hero 問句輪播、行動版選單、年份
+assets/js/main.js     螢光筆標記、scroll reveal、hero 問句輪播、案例就地展開、行動版選單、年份
 assets/img/hero-figure.svg      hero 右側的手繪人物（原檔在 reference/hero.svg）
 assets/favicon.svg
 docs/                 規劃與規範（不會部署）
@@ -63,10 +63,16 @@ python3 -m http.server 4000
 ```
 
 `mark--b` 是第二種手繪筆觸，交錯使用可以避免每一道線長得一模一樣。
+
+**案例故事點開看細節。** 每一則案例是一個 `<details>`，整塊摘要就是 `<summary>`，
+點哪裡都能展開；沒有 JS 也能開，Ctrl+F 搜到收合中的字時瀏覽器會自己打開。
+每一則有自己的網址（`index.html#case-fandom`），可以直接把某一則傳給別人。
+新增案例時 `<li class="case" id="case-xxx">` 的 id 要語意化，不要用 `case-4`。
 捲動到畫面上時會由左往右畫出來；使用者若開啟「減少動態效果」則直接顯示。
 
 ## 還沒補的內容（搜尋 `TODO` 可以找到）
 
+0. `index.html` — Selected Work 三則案例的**展開內容目前是假文字**（規模、四個段落、受訪者引言）。骨架與版型已經定案，把文案換掉就好；骨架見 `docs/DESIGN.md` 的「案例故事就地展開」。
 1. `index.html` — Selected Work **案例 05**（公共服務相關），整塊已寫好註解起來，補完文案取消註解即可。
 2. `index.html` — **Selected Talks & Slides** 三場講題，元件已備好註解起來。
 3. `index.html` — **Substack 訂閱連結**（目前是 `#`）。

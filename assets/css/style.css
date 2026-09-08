@@ -253,8 +253,9 @@ mark.mark--b {
 /* Hero 不吃這套：它有自己的載入動畫，且不在 .col 裡。 */
 
 /* ---- 微互動只給真正可以按的東西 ----
-   案例、經歷、lenses 這些列不是連結，所以不給 hover 狀態：
+   經歷、lenses 這些列不是連結，所以不給 hover 狀態：
    對不能點的東西回應滑鼠，等於教使用者一個不存在的功能。
+   案例列是例外——它是 <summary>，真的可以按，所以有 hover。
    會動的部分全部包在 @media (hover: hover) 裡，觸控裝置點完不會卡住 hover 樣式。 */
 .nav__mark { transition: transform var(--dur-ui) var(--ease); }
 .btn__dot  { transition: transform var(--dur-ui) var(--ease); }
@@ -266,6 +267,11 @@ mark.mark--b {
   /* 按鈕右端那顆圓點是「可點性提示」，所以回應手勢的是它，不是整顆按鈕 */
   .btn:hover .btn__dot { transform: scale(1.32); }
   .contact__social a:hover { transform: translateY(-1px); }
+  /* 整塊摘要都可按，但回應手勢的是展開提示那一行，不是整塊變色——
+     一整列跟著亮會讓人以為自己按到了什麼別的東西。 */
+  .case__head:hover .case__more { color: var(--ink); border-bottom-color: var(--ink); }
+  .case__head:hover::after { transform: scaleY(.18); }
+  .case__disc[open] > .case__head:hover::after { transform: scaleY(1); }
 }
 /* 按下去要回到平面，手指才有「壓到」的感覺 */
 .btn:active { transform: translateY(0); }
@@ -351,7 +357,7 @@ mark.mark--b {
 .col > p,
 .pull,
 .threads > li > p,
-.case__body > p,
+.case__line,
 .cv__what > p,
 .care__note,
 .lens > p,
@@ -678,7 +684,7 @@ html:not(.js) .hero__line:first-child {
 }
 
 .tags { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 16px; }
-.tags li {
+.tags > * {
   font-size: var(--fs-meta);
   line-height: 1.45;
   padding: 5px 12px;
@@ -773,15 +779,60 @@ html:not(.js) .hero__line:first-child {
 
 /* ============================================================
    03 SELECTED WORK
+   一頁式站不該為了三則案例把人送去別的頁面，所以細節就地展開，不開 modal、
+   不跳頁。展開用原生 <details>：鍵盤可操作、沒有 JS 也能開、Ctrl+F 搜到
+   收合中的字時瀏覽器會自己把它打開——這三件事自己用 JS 做都會漏掉。
+
+   欄位：整塊摘要是 <summary>，它自己就是那個 48px + 1fr 的格線
+   （所以整塊可點），展開的內容縮到第二欄，左邊編號那一欄留白，
+   01/02/03 的垂直節奏不會被展開打斷。
    ============================================================ */
 .cases { border-top: 1px solid var(--hairline); }
 .case {
-  display: grid;
-  grid-template-columns: 48px minmax(0, 1fr);
-  gap: 0 clamp(12px, 2vw, 24px);
-  padding-block: clamp(24px, 2.8vw, 32px);
   border-bottom: 1px solid var(--hairline);
+  /* 從網址直接開某一則案例時，不要被浮動導覽壓到 */
+  scroll-margin-top: 104px;
+  /* 摘要的上下留白＝這一列的節奏，展開後的內容底部沿用同一個值 */
+  --case-pad: clamp(24px, 2.8vw, 32px);
+  --case-col: 48px;
+  --case-gap: clamp(12px, 2vw, 24px);
 }
+
+.case__head {
+  display: grid;
+  grid-template-columns: var(--case-col) minmax(0, 1fr);
+  gap: 0 var(--case-gap);
+  padding-block: var(--case-pad);
+  position: relative;
+  cursor: pointer;
+  list-style: none;
+  transition: padding-bottom var(--dur-ui) var(--ease);
+}
+/* 原生的三角形換掉——這一站的展開提示是編號下方那條 teal 結構線 */
+.case__head::-webkit-details-marker { display: none; }
+.case__head > *:not(.case__no) { grid-column: 2; }
+
+/* 結構線：收合時 scaleY(0) 藏在編號正下方，展開時往下長，
+   接上 .case__detail 左緣同一條線——視覺上是一條線從編號拉到內容底。
+   起點 = 上留白 + 編號那一行的行高（14px × line-height 2 ＝ 28，
+   加 padding-top .55em ≈ 7.7，再留 4px 呼吸）＝ 固定 40px，不隨斷點跑。 */
+.case__head::after {
+  content: "";
+  position: absolute;
+  left: 3px;
+  top: calc(var(--case-pad) + 40px);
+  bottom: 6px;
+  width: 1px;
+  background: var(--teal);
+  transform: scaleY(0);
+  transform-origin: top;
+  transition: transform var(--dur-ui) var(--ease);
+}
+/* 展開後把線一路接到摘要底緣，跟 .case__detail 的那一段接成同一條 */
+.case__disc[open] > .case__head::after { transform: scaleY(1); bottom: 0; }
+/* 展開後摘要與細節之間不需要整段留白，收掉一半 */
+.case__disc[open] > .case__head { padding-bottom: 20px; }
+
 .case__no {
   font-family: var(--latin);
   font-size: var(--fs-meta);
@@ -798,6 +849,113 @@ html:not(.js) .hero__line:first-child {
   letter-spacing: var(--track-zh-head);
   text-wrap: balance;
   margin-bottom: 16px;
+}
+.case__line { display: block; }
+.case__line + .case__line { margin-top: var(--space-paragraph); }
+
+/* 展開提示。刻意不用 chevron：那是誰家的網站都有的零件。
+   這裡靠文字換句＋上面那條結構線，收合說「看翻轉」，展開說「收起」。
+   aria-hidden 是因為 <summary> 本身已經會報 expanded／collapsed，
+   再讓螢幕閱讀器唸一次提示等於講兩遍。 */
+/* tags 與展開提示同一列，提示靠右——tags 只用掉左邊三分之一，
+   右邊那段空白正好是這一站不想留的（見 DESIGN.md「分行列表」那條）。 */
+.case__foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px 20px;
+  margin-top: 16px;
+}
+.case__foot .tags { margin-top: 0; }
+
+.case__more {
+  font-size: var(--fs-meta);
+  font-weight: 500;
+  color: var(--teal-deep);
+  border-bottom: 1px solid var(--teal);
+  padding-bottom: 2px;
+  transition: color var(--dur-ui) var(--ease),
+              border-color var(--dur-ui) var(--ease);
+}
+.case__more-t--open,
+.case__disc[open] .case__more-t--shut { display: none; }
+.case__disc[open] .case__more-t--open { display: inline; }
+
+/* ---- 展開的動畫 ----
+   grid-template-rows 0fr → 1fr，不用 max-height 猜一個「應該夠高」的數字。
+   收合時 <details> 要撐到動畫跑完才關（JS 負責），所以這裡預設 1fr，
+   實際的 0fr/1fr 由 JS 寫成 inline style；沒有 JS 就是瞬間開關。 */
+.case__wrap {
+  display: grid;
+  grid-template-rows: 1fr;
+  transition: grid-template-rows var(--dur-ui) var(--ease);
+}
+.case__wrap > * { min-height: 0; overflow: hidden; }
+/* 動完就把 overflow 放開，否則裡面的 focus outline 會被切掉 */
+.case__disc[open]:not(.is-moving) .case__wrap > * { overflow: visible; }
+
+.case__detail {
+  position: relative;
+  padding-left: calc(var(--case-col) + var(--case-gap));
+  padding-bottom: var(--case-pad);
+  --k: 104px;
+}
+/* 接續 .case__head::after 的那條線 */
+.case__detail::before {
+  content: "";
+  position: absolute;
+  left: 3px; top: 0; bottom: var(--case-pad);
+  width: 1px;
+  background: var(--teal);
+}
+
+.case__meta {
+  font-size: var(--fs-meta);
+  line-height: 1.7;
+  color: var(--stone);
+  padding-bottom: 14px;
+  margin-bottom: clamp(14px, 1.6vw, 20px);
+  border-bottom: 1px solid var(--hairline);
+}
+
+/* 標題在左、內容在右，跟 About 的年份／職稱同一種兩欄關係，
+   欄寬窄一階（104 vs 148），因為這裡已經先縮排過一次。 */
+.beat {
+  display: grid;
+  grid-template-columns: var(--k) minmax(0, 1fr);
+  gap: 4px var(--case-gap);
+}
+.beat + .beat { margin-top: clamp(16px, 1.8vw, 22px); }
+.beat__k {
+  font-size: var(--fs-meta);
+  font-weight: 500;
+  color: var(--stone);
+  padding-top: .45em;
+}
+.beat__v { margin: 0; max-width: var(--measure); }
+/* 「翻轉」是這一站的重點，所以標題升到 ink 與字重 700，
+   而且每一則案例的螢光筆只畫在這一格——一則一筆，不重複。 */
+.beat--turn .beat__k { color: var(--ink); font-weight: 700; }
+
+.case__quote {
+  margin-top: clamp(22px, 2.4vw, 30px);
+  padding-left: calc(var(--k) + var(--case-gap));
+}
+.case__quote p {
+  font-family: var(--display);
+  font-size: var(--fs-head);
+  font-weight: 500;
+  line-height: 1.75;
+  letter-spacing: var(--track-zh-head);
+  max-width: var(--measure);
+}
+.case__quote cite {
+  display: block;
+  margin-top: 8px;
+  font-size: var(--fs-meta);
+  font-style: normal;
+  color: var(--stone);
 }
 
 
@@ -1330,8 +1488,17 @@ html:not(.js) .hero__line:first-child {
     flex-direction: row; align-items: baseline; gap: 16px;
   }
   .talk__when { padding-top: 0; }
-  .case { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+  .case__head { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+  .case__head > *:not(.case__no) { grid-column: 1; }
   .case__no { padding-top: 0; }
+  /* 一欄之後編號在自己那一行，垂直線會穿過文字，所以摘要這一段不畫線；
+     細節那一段改成貼左緣的一條邊，縮排也跟著收到 14px。 */
+  .case__head::after { display: none; }
+  .case__detail { padding-left: 14px; }
+  .case__detail::before { left: 0; }
+  .beat { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+  .beat__k { padding-top: 0; }
+  .case__quote { padding-left: 0; }
   .counters { grid-template-columns: minmax(0, 1fr); }
   .counters__item + .counters__item {
     border-left: 0; padding-left: 0;

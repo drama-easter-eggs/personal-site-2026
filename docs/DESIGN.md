@@ -1,3 +1,18 @@
+## 2026-09-08 案例故事就地展開（最新）
+
+一頁式站不為了三、五則案例把訪客送去別的頁面。細節做成 **就地展開**，不開 modal、不跳頁。
+
+- **元件是原生 `<details>` / `<summary>`。** 鍵盤可操作、沒有 JS 也能開、Ctrl+F 搜到收合中的字時瀏覽器會自己展開——這三件事自己用 JS 做都會漏掉。
+- **整塊摘要就是 `<summary>`**，它自己扛 `48px + 1fr` 的格線，所以點哪裡都能開；展開的內容縮在第二欄，左邊 01/02/03 那一欄留白，編號的垂直節奏不被打斷。
+- **`<summary>` 的內容模型是 phrasing ＋ heading**，所以裡面只有 `h3` 與 `span`：摘要用 `.case__line`（span 撐成 block），tags 用 `role="list"` 保住語意，不要塞 `div` / `p` / `ul`。
+- **展開提示不用 chevron。** 收合說「看這個案例的翻轉」、展開說「收起這個案例」，配編號下方那條往下長的 teal 結構線。提示上 `aria-hidden`——`<summary>` 本身已經會報 expanded／collapsed。
+- **tags 與展開提示同一列**，提示靠右：tags 只用掉左邊三分之一，右邊那段空白正好是「每一列都要橫向用掉版面」那條規則不想留的。
+- **可以同時展開多則，不做互斥手風琴。** 互斥會在你往下讀時把上面那則收掉，畫面自己跳一下。
+- **每一則案例有自己的 id 與網址**（`#case-fandom` 這種語意 id，不是 `#case-1`）。展開時 `replaceState` 換 hash、帶著 hash 進來就自動展開並捲到位——「把案例 03 傳給客戶」因此成立，不必為了分享另外開頁面。只碰 `#case-` 開頭的 hash。
+- **展開內容的骨架五則共用**：規模 → 當時的問題 → 我做了什麼 → 翻轉 → 後來怎麼用 → 一句受訪者原話。順序固定，讀起來才像同一個作者寫的，寫新案例也有模板。標題是問句，所以展開後的第一段就要回答那個問句。
+- **一則案例只畫一筆螢光筆，畫在「翻轉」那一格。**
+- 什麼時候該改成獨立頁面：案例要放大量圖片／影片／3000 字，或某一則要當 SEO 落地頁投廣告。現在三到五則純文字案例不值得為此拆站。
+
 ## 2026-09-08 單欄章節階層（最新）
 
 - 在 900px 以下，章節標頭改為上下排列：12px 英文輔標、24px / 700 中文標題，內文維持 16px。
@@ -367,6 +382,25 @@ ochre-tint 底、50px 圓角、內距 clamp(24–34) / clamp(26–38)。**兩行
 
 `.lens` 的三欄只在 ≥901px 套用：≤900px 版面本來就併成一欄，這時三欄會把每欄擠到 15 個漢字以下。
 
+### 案例展開（`.case__disc` / `.beats`）
+`03 Selected Work` 每一列都是 `<details class="case__disc">`。
+
+| 部件 | 值 |
+| --- | --- |
+| `.case__head`（`<summary>`） | `48px + 1fr` grid，`padding-block` = `--case-pad` `clamp(24,2.8vw,32)`；展開時下留白收到 20px |
+| 結構線 | `left: 3px` 的 1px teal 直線。摘要段用 `.case__head::after`（`scaleY(0→1)`，起點 `--case-pad + 40px` ＝ 編號那一行的行高），細節段用 `.case__detail::before` 接下去，兩段對齊成一條 |
+| `.case__foot` | flex `space-between`：左邊 tags、右邊展開提示 |
+| `.case__more` | 14px / 500 teal-deep ＋ 1px teal 底線，hover 轉 ink |
+| `.case__detail` | 左縮排 `48px + gap`，底部留 `--case-pad` |
+| `.case__meta` | 14px stone 的年份與規模，下方一條 hairline |
+| `.beat` | `104px + 1fr`（比 `.cv__row` 的 148px 窄一階，因為已經先縮排過一次），列距 `clamp(16,1.8vw,22)` |
+| `.beat--turn` | 標題升到 ink / 700——「翻轉」是這一站的重點 |
+| `.case__quote` | 對齊 `.beat` 的內容欄，19–21px / 500，`cite` 14px stone、不斜體 |
+
+≤720px：格線塌成一欄，摘要段的結構線關掉（會穿過文字），細節改成貼左緣的 1px teal 邊 ＋ 14px 縮排，`.beat` 標題落到內容上方。
+
+展開動畫見 Motion。
+
 ### Stat Block（`.counters`）
 三欄，上緣一條 ink 實線，欄與欄之間 hairline。
 數字 28–46px 拉丁 500，`+` 號是 teal；說明 14px stone。**捲動時不要做數字跳動的 counter 動畫。**
@@ -436,6 +470,14 @@ cream 底，14px stone，左邊版權、右邊 `What moves people?`。年份由 
 - 進場一次就 `unobserve`，捲回去不重播——重播會讓頁面顯得不安分
 - Hero 不吃這套（它有自己的載入動畫，而且不在 `.col` 裡）
 - 選擇器同時寫在 `style.css` 的 MOTION 區塊與 `main.js` 的 `REVEAL`，**兩邊要一起改**
+
+### 案例展開
+`grid-template-rows: 0fr → 1fr`（不用 `max-height` 猜一個「應該夠高」的數字），時長 `--dur-ui`——這是元件狀態切換，不另外開第四階。
+JS 攔下 `<summary>` 的原生開合自己補間；收合時要撐到動畫跑完才把 `open` 關掉，否則內容在第一幀就消失。
+動畫期間 `.is-moving` 讓內容 `overflow: hidden`，動完放開，不然裡面的 focus outline 會被切掉。
+收合後量一次摘要的位移補回捲動位置：內容變短、頁面觸底時瀏覽器會夾住 `scrollY`，整頁會往下抽一段。
+`transitionend` 沒來（分頁被切走、瀏覽器不轉這個屬性）有 700ms 的 fallback 收尾。
+沒有 JS 或開了減少動態效果就是瞬間開關，功能不受影響。
 
 ### Hero 問句輪播
 
