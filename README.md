@@ -68,7 +68,14 @@ python3 -m http.server 4000
 點哪裡都能展開；沒有 JS 也能開，Ctrl+F 搜到收合中的字時瀏覽器會自己打開。
 每一則有自己的網址（`index.html#case-fandom`），可以直接把某一則傳給別人。
 新增案例時 `<li class="case" id="case-xxx">` 的 id 要語意化，不要用 `case-4`。
-捲動到畫面上時會由左往右畫出來；使用者若開啟「減少動態效果」則直接顯示。
+展開之後「翻轉」那一格會鋪上一片 teal-tint，色塊由左往右刷過一次——
+那是把簽名的螢光筆放大成一整片。使用者若開啟「減少動態效果」則直接上色。
+
+**首頁有兩處會把畫面停住（pin）的場。** 「研究走過的領域 → 精選案例」與
+「服務主體從我換成你」各是一段 `height: 200svh` 的跑道加一格 `position: sticky`
+的舞台，捲動位置由 `main.js` 換算成 `--p`（0 → 1）寫在那一段上，所有位移與
+透明度都由 CSS 從 `--p` 推出來。沒有 JS、或開啟「減少動態效果」時兩塊都不 pin，
+各自有一個靜態、完整的構圖（詳見 `docs/DESIGN.md` 的 VISUAL NARRATIVE 一節）。
 
 ## 還沒補的內容（搜尋 `TODO` 可以找到）
 
@@ -79,3 +86,9 @@ python3 -m http.server 4000
 4. `index.html` — **Email**（目前是 `hello@example.com`，我沒有直接放上你的私人信箱）。
 5. `index.html` — **Facebook / Instagram / Threads 連結**（目前是 `#`）。
 6. `index.html` — `og:url` 與 `og:image`，等網域確定後再補。
+7. `index.html` — **三處手繪插圖預留位**（`grep data-placeholder index.html`）：
+   About 的作者像（1:1）、服務項目下方「一起拆問題」的橫幅（16:7）、
+   「人 ×」軸下方的三種鏡片（1:1）。每一格裡面就寫著建議的構圖、比例與動態，
+   畫好之後把整個 `.visual-placeholder` 換成 `<img>` / `<svg>`，
+   外層的定位（`.colophon__fig` / `.lenses__fig`）與比例照留。
+   **交稿前務必確認這三格都換掉或刪掉**——它們現在會顯示在頁面上。

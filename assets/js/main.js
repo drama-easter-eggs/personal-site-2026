@@ -1,6 +1,7 @@
 /* Mei-Ling Chen — site behaviour.
-   scroll reveal、導覽區塊指示、Hero 問句輪播、案例就地展開、手機選單、年份。
-   （螢光筆的波形與流動全在 style.css，不需要 JS。） */
+   scroll reveal、scroll-linked 場景（--p）、人 × 的軸、導覽區塊指示、
+   Hero 問句輪播、案例就地展開、手機選單、年份。
+   （螢光筆的波形與流動、翻轉那一片色塊的刷入，全在 style.css。） */
 
 (function () {
   'use strict';
@@ -13,21 +14,20 @@
 
   var REVEAL = [
     '.eyebrow',
-    '.col > *:where(:not(.threads, .cases, .counters, .cv, .teach, .talks, .cards, .lenses, .fit, .teaching))',
+    '.col > *:where(:not(.threads, .cases, .cv, .talks, .pairs, .lenses, .fit, .teaching))',
     '.threads > *',
     '.cases > *',
-    '.counters__item',
     '.cv > *',
     '.teaching__header',
     '.teaching__topics > *',
     '.teaching__examples-head',
     '.talks > *',
-    '.cards > *',
-    '.lenses > *',
-    '.fit__col > *:where(:not(.fit__list))',
-    '.fit__list > *',
+    '.pairs > *',
+    '.lenses__list > *',
+    '.fit__ask > *',
+    '.fit__says > *',
+    '.fit__aside > *',
     '.turn__folio',
-    '.turn__ask',
     '.contact__panel > *'
   ].join(', ');
 
@@ -65,6 +65,120 @@
     }, { threshold: 0, rootMargin: '0px 0px -12% 0px' });
 
     units.forEach(function (el) { rise.observe(el); });
+  }
+
+  /* ---- 1b. Scroll-linked 場景：把捲動位置換算成 --p（0 → 1） ----
+     兩塊在用，而且都是「motion 就是那句話本身」的那種用法，不是進場動畫：
+
+       MOMENT 01（.vfield）  27 個關鍵字往中心收、退成背景 → 只剩一句
+                             ＝ many worlds → one recurring question
+       MOMENT 03（.turnover） 巨大的「我」退開、巨大的「你」接上來
+                             ＝ 敘事主體從我換成你
+
+     做法是每一塊自己是一段比視窗高的「跑道」（CSS 的 height），
+     裡面一格 sticky 的舞台。--p ＝ 跑道已經走完的比例，
+     所有位移、縮放、透明度都由 CSS 從 --p 推出來，JS 只寫這一個數字。
+
+     為什麼不用 CSS 的 scroll-driven animation（animation-timeline: view()）：
+     Firefox 還沒有，而這兩塊是這一版的骨幹，不能在某個瀏覽器上整塊消失。
+
+     降級：
+       reduced-motion  完全不建 observer、不寫 --p。CSS 那邊 .vfield 退回
+                       正常流的兩層索引、.turnover 停在 --p: 1 的終局構圖，
+                       兩塊都不 pin，靜態讀起來是完整的
+       沒有 JS         同上（--p 的預設值就是那個終局） */
+
+  var scenes = Array.prototype.slice.call(document.querySelectorAll('[data-scene]'));
+
+  if (scenes.length && !reduced) {
+    var live = [];          /* 目前在畫面上的場景，只算這幾個 */
+    var queued = false;
+
+    var paint = function () {
+      queued = false;
+      var vh = window.innerHeight;
+      for (var i = 0; i < live.length; i++) {
+        var box = live[i].getBoundingClientRect();
+        /* 跑道比視窗高出來的那一段就是 pin 的行程。行程 ≤ 0（例如視窗
+           比跑道還高）時不硬算，直接給終局，否則會除以零。 */
+        var travel = box.height - vh;
+        var p = travel > 0 ? -box.top / travel : 1;
+        live[i].style.setProperty('--p', (p < 0 ? 0 : p > 1 ? 1 : p).toFixed(4));
+      }
+    };
+
+    /* 一帧只算一次。scroll 事件在觸控裝置上一次滑動會來幾十次，
+       每次都量 getBoundingClientRect 會逼出多餘的 layout。 */
+    var queue = function () {
+      if (queued) return;
+      queued = true;
+      window.requestAnimationFrame(paint);
+    };
+
+    var watching = false;
+    var listen = function (on) {
+      if (on === watching) return;
+      watching = on;
+      if (on) window.addEventListener('scroll', queue, { passive: true });
+      else window.removeEventListener('scroll', queue);
+    };
+
+    var sceneWatch = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        var at = live.indexOf(entry.target);
+        if (entry.isIntersecting) { if (at < 0) live.push(entry.target); }
+        else if (at >= 0) live.splice(at, 1);
+      });
+      /* 畫面上一個場景都沒有就把 scroll 監聽拆掉——整頁大部分的位置
+         都不在這兩塊裡面，不需要一直算。 */
+      listen(live.length > 0);
+      if (live.length) queue();
+    }, { threshold: 0 });
+
+    scenes.forEach(function (el) { sceneWatch.observe(el); });
+
+    /* 轉向、換視窗大小都會改變行程長度；字型晚到會改變前面所有段落的行數，
+       進而改變跑道的位置。兩個時機都重算一次。 */
+    window.addEventListener('resize', queue, { passive: true });
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(queue);
+    }
+    paint();
+  }
+
+  /* ---- 1c. 人 × 的軸（MOMENT 05） ----
+     三個研究方向共用同一個「人」。桌機上那個「人」是真的不動的（CSS 的
+     sticky），這裡只負責告訴 CSS「現在讀到第幾個方向」，換的只有後面那個詞。
+     那就是這一節要被看見的東西：中心不變，鏡片換。
+
+     判斷帶跟導覽指示同一條（視窗中線附近）。離開判斷帶時不清掉 data-at：
+     清掉會讓那個詞閃一下消失，而「人 ×」在那一刻反而應該留著。
+     沒有 JS 時 CSS 讓整根軸不顯示，右欄的 h3（人 × 系統）照樣讀得到。 */
+
+  var lensBox = document.querySelector('[data-lenses]');
+  var lensRows = lensBox
+    ? Array.prototype.slice.call(lensBox.querySelectorAll('[data-lens]'))
+    : [];
+
+  if (lensRows.length && 'IntersectionObserver' in window) {
+    var lensAt = {};
+
+    var lensSpy = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        var i = lensRows.indexOf(entry.target);
+        if (entry.isIntersecting) lensAt[i] = 1;
+        else delete lensAt[i];
+      });
+      /* 兩則同時命中判斷帶時取文件順序上比較前面的那一則 */
+      for (var i = 0; i < lensRows.length; i++) {
+        if (lensAt[i]) {
+          lensBox.setAttribute('data-at', String(i));
+          return;
+        }
+      }
+    }, { rootMargin: '-45% 0px -45% 0px', threshold: 0 });
+
+    lensRows.forEach(function (el) { lensSpy.observe(el); });
   }
 
   /* ---- 1d. 導覽的區塊指示 ----
