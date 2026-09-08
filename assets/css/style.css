@@ -172,6 +172,7 @@ mark.mark--b {
    字級大的兩處把時間一起放大，讓全站每一筆都維持在 2–5px/s。 */
 .hero__fixed mark.mark   { --mark-wave: 14s; }
 .care__thesis mark.mark  { --mark-wave: 8s; }
+.turn__ask mark.mark     { --mark-wave: 8s; }
 
 @keyframes mark-wave {
   from { background-position-x: 0; }
@@ -222,6 +223,8 @@ mark.mark--b {
 .js .lenses > *,
 .js .fit__col > *:where(:not(.fit__list)),
 .js .fit__list > *,
+.js .turn__folio,
+.js .turn__ask,
 .js .contact__panel > * {
   opacity: 0;
   transform: translateY(var(--rise-y));
@@ -366,6 +369,107 @@ mark.mark--b {
 /* 選擇器要比上面的 .col > p 更重，不然內文行寬會蓋掉 22em——
    這一行是字重 900 的宣言，行寬跟內文一樣長就撐不住。 */
 .col > p.care__thesis { max-width: 22em; }
+
+/* ============================================================
+   CHAPTER TRANSITIONS — 首頁的四個章節
+   首頁不是八個等重的 section，是四章：
+
+     01 Worldview      Hero → 我關心什麼
+     02 Evidence       精選案例 → 我的經歷（含教學與分享）
+     03 Collaboration  什麼情況適合找我 → 服務項目
+     04 Ongoing        我的觀點 → Contact
+
+   原本的問題不是哪一節不好看，是「每一個交界都長得一樣」：任何兩節之間都是
+   2 × --section-y 的等距留白，底色又照 cream / sand 機械交替，所以捲下去
+   讀得出「換了一個區塊」，讀不出「翻了一章」。
+
+   這一版只做兩件事：
+
+   ① 把留白分成兩級。章內交界收到 .5 × --section-y，章際交界換成 .turn
+      這一塊帶章節碼的停頓帶。疏密差本身就是節奏，不需要額外裝飾。
+   ② 把換紙從裝飾改成敘事。整頁只換一次紙：sand 那一片就是第三章
+      （敘事主體從「我」變成「你」），前後都是 cream。換紙代表換人稱，
+      不代表「該換一個顏色了」。
+
+   三個章際交界共用同一個形狀——滿版的橫向事件（一條細線，或紙本身的邊）
+   → 章節碼 →（可選的一句話）。強弱只差在停頓多長、有沒有那句話，
+   不是三種不同的裝置。
+
+   線的三個層級（改任何一條之前先確認自己在哪一級）：
+     滿版（不受 --page 限制）   = 章際交界，整頁只有一條（.turn--rule）
+     版心寬                     = 同一章之內的跨頁（.hero__rule、.section--cont）
+     hairline 分行              = 列表的列（.cases、.cv、.talks…）
+
+   關掉 JS、或 prefers-reduced-motion 之下，四個章節的結構完全不變——
+   停頓、紙、章節碼、線都不依賴 motion。
+   ============================================================ */
+
+/* 章內交界：上一節維持自己的下留白，下一節收到一半。
+   .hero + .section 也算章內——Hero 與「我關心什麼」是同一個開場，
+   Hero 尾端那條版心寬的 .hero__rule 已經是它們之間的跨頁分隔。 */
+.section + .section,
+.hero + .section { padding-top: calc(var(--section-y) * .5); }
+
+/* 章際交界前的最後一節：下留白也收一半，讓停頓幾乎整段落在新的那一章裡。
+   讀起來的順序是「紙先換 → 然後才是那段安靜」，不是「先空一大段 → 再換紙」。 */
+.section:has(+ .turn) { padding-bottom: calc(var(--section-y) * .5); }
+
+/* 停頓帶自己就是章際交界的全部間距，所以下一節不再補上留白。 */
+.turn + .section { padding-top: 0; }
+
+.turn {
+  --turn-y: clamp(56px, 7vw, 104px);
+  padding-block: var(--turn-y);
+}
+/* 02：第二章沒有換紙，所以事件由一條真正滿版（不受 --page 限制）的細線承擔。
+   版心寬的線在這個站是「同一章之內」的記號，滿版的那條才是章節——
+   兩者差一個層級，不是兩種花樣。整頁只有這一條。 */
+.turn--rule { border-top: 1px solid var(--hairline); }
+/* 03：整頁唯一一次換紙，停頓最長，而且是唯一帶一句話的一次。 */
+.turn--major {
+  --turn-y: clamp(76px, 9.5vw, 140px);
+  background: var(--sand);
+}
+/* 04：紙換回 cream。回到原本那張紙，不需要跟離開時一樣用力。 */
+.turn--soft { --turn-y: clamp(40px, 5vw, 74px); }
+
+/* 章節碼借 .layout 的格線落在 eyebrow 那一欄，所以它站在全頁的左軸線上，
+   不是漂在版面中間的裝飾。顏色壓到 --hairline：它是頁碼不是標題，
+   要能被餘光讀到、不能跟內容搶。吃 --latin 與負字距，
+   跟 .counters__n 同一種「大數字」語彙（03 案例的 01/02/03 是 14px stone
+   且在內容欄裡，兩者不會被看成同一組編號）。 */
+.turn__folio {
+  grid-column: 1;
+  font-family: var(--latin);
+  font-size: clamp(38px, 4.6vw, 60px);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -.05em;
+  color: var(--hairline);
+}
+/* 全站第二次直接對讀者發問（第一次是 Hero 那句）。級數、字重、行寬
+   沿用 .care__thesis 那一階，不為它另開一個尺寸。 */
+.turn__ask {
+  grid-column: 2;
+  max-width: 22em;
+  font-family: var(--display);
+  font-size: var(--fs-display);
+  font-weight: 900;
+  line-height: 1.6;
+  letter-spacing: var(--track-zh-head);
+  text-wrap: pretty;
+}
+/* 斷行點由這個 nowrap 單位決定，不交給 text-wrap（見 index.html 的註解）。
+   最窄的 320px 下這九個漢字仍是一行（23px × 9 ≈ 207px，版心 280px）。 */
+.turn__ask-tail { white-space: nowrap; }
+
+/* 同一章的第二節。桌機給一條版心寬的細線當跨頁分隔（比章際那條滿版線弱一級），
+   留白對半分在線的兩側，讓 05 → 06 讀起來是「同一段對話換一口氣」，
+   而不是兩個各自獨立的服務區塊。04 對 03 同理。 */
+.section--cont > .wrap {
+  border-top: 1px solid var(--hairline);
+  padding-top: calc(var(--section-y) * .5);
+}
 
 /* ============================================================
    NAV — floating white pill
@@ -1392,9 +1496,10 @@ html:not(.js) .hero__line:first-child {
    圓角沿用 .card / .sub-card 的 --r，維持同一套語彙。 */
 .contact {
   color: var(--white);
-  /* 07 的 section-y 底部 padding 在 sand 底色「裡面」，所以上緣得自己給距離，
-     不然 sand 色塊直接貼上 teal 面板。取比原本一半略多，留一道看得出來的 cream。 */
-  padding-block: clamp(28px, 3.4vw, 56px) clamp(22px, 2.6vw, 40px);
+  /* Contact 是第四章的第二節（07「我的觀點」→ Contact），所以上緣吃的是
+     章內交界那一階，跟 04 對 03、06 對 05 同一個值。它不另外畫版心寬的細線——
+     teal 面板本身已經是這一節的事件。 */
+  padding-block: calc(var(--section-y) * .5) clamp(22px, 2.6vw, 40px);
 }
 /* 這一節刻意不吃 --page 的 1200px 限制：面板幾乎滿版，只留一道窄邊
    讓圓角看得出來，色塊的重量才撐得住整頁最後一個動作。 */
@@ -1533,6 +1638,30 @@ html:not(.js) .hero__line:first-child {
     color: var(--stone);
     letter-spacing: .08em;
   }
+
+  /* ---- 手機的章節感不是桌機縮小 ----
+     單欄之下，每一節的章節入口本來長得一模一樣（teal 短線 ＋ 12px 英文 ＋
+     24px 中文 ＋ 一條分隔線），八個一樣的入口正好是「讀不出章節」的來源。
+     手機的分工改成：
+
+       章節第一節  teal 短線 ＋ 24px 標題   → 這裡開了一章
+       章節第二節  沒有短線 ＋ --fs-sub 標題 → 還在同一章裡
+
+     章際交界則靠滿版的紙邊（03、04）與滿版細線（02）——單欄下那是唯一
+     真的橫貫整個螢幕的東西，比任何留白都讀得出來。 */
+
+  /* 桌機那條版心寬的細線在單欄下等於滿版，會跟章際那一級撞在一起，所以手機不畫。 */
+  .section--cont > .wrap { border-top: 0; padding-top: 0; }
+  /* 32 × 4px 的 teal 短線保留給「開一章」的那一節。 */
+  .section--cont .eyebrow::before { display: none; }
+  /* 標題降一階（24px → --fs-sub 21px）：它是這一章的第二段，不是新的一章。
+     語意仍然是 h2，降的只有視覺份量。 */
+  .section--cont .eyebrow { font-size: var(--fs-sub); }
+
+  /* .layout 併成單欄，章節碼與提問要跟著回到第一欄——留在第 2 欄會長出
+     一條隱含的欄位，把那句提問擠成一條窄柱。 */
+  .turn__folio,
+  .turn__ask { grid-column: 1; }
   /* 插圖跟介紹仍然並排（跟桌機同一個關係，也不會多長出一列把 Hero 撐高），
      只是左欄改成按比例縮：右欄至少還有 2/3 的寬度給那三段文字。 */
   .hero__grid { grid-template-columns: minmax(0, 1fr) minmax(0, 42%); gap: 28px; }

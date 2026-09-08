@@ -26,6 +26,8 @@
     '.lenses > *',
     '.fit__col > *:where(:not(.fit__list))',
     '.fit__list > *',
+    '.turn__folio',
+    '.turn__ask',
     '.contact__panel > *'
   ].join(', ');
 
@@ -96,6 +98,11 @@
       /* 兩節交界時可能同時命中，取文件順序上比較前面的那一節 */
       var current = null;
       targets.forEach(function (el) { if (!current && here[el.id]) current = el.id; });
+
+      /* 章際交界（.turn 那段停頓）落在判斷帶上時，一節都不命中。
+         這時維持上一個指示不動——把它清掉會讓導覽的短線在翻章時閃一下，
+         而「翻章」正是最需要知道自己在哪的時候。 */
+      if (!current) return;
 
       navLinks.forEach(function (a) {
         if (current && a.getAttribute('href') === '#' + current) {
