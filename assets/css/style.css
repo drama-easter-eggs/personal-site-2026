@@ -1824,6 +1824,22 @@ html:not(.js) .hero__line:first-child {
 .post__link:hover { text-decoration-color: var(--ink); }
 .post__arrow { margin-left: .4em; }
 
+/* 列表的收尾行。清單最後一列的 hairline 已經把它關起來了，
+   所以這一行不再加線，只用 stone 退到補述的層級。
+   角色跟 .services__close 一樣（一句話＋一個出口），
+   差別在出口是外連文字連結而不是藥丸按鈕。
+   min-height 給連結而不給整行：觸控區往字的上下長，行距不被撐開。 */
+.posts__close {
+  margin-top: clamp(14px, 1.6vw, 20px);
+  font-size: var(--fs-meta);
+  line-height: 1.6;
+  color: var(--stone);
+}
+/* 出口直接借 .post__link：它已經把 44px 觸控區與 text-decoration 底線
+   的關係處理好了（border-bottom 會被觸控區推成浮線），這裡只補顏色——
+   在 stone 的句子裡，出口要回到 ink 才看得出是可點的那一段。 */
+.posts__close .post__link { color: var(--ink); }
+
 .sub-card {
   margin-top: clamp(28px, 3vw, 40px);
   background: var(--teal-tint);
