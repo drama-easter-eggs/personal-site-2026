@@ -20,7 +20,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/style.css?v=20260908-narrative">
+<link rel="stylesheet" href="assets/css/style.css?v=20260908-narrative2">
 </head>
 <body>
 
@@ -208,11 +208,9 @@
            TODO 以下三則細節目前是假文字，等真實案例文案補上再換掉。 -->
       <ol class="cases">
         <li class="case" id="case-fandom">
-          <!-- 編號搬出 <summary>：它現在要在整則案例（摘要＋展開的細節）的高度裡 sticky，
-               留在 summary 裡就只黏得住摘要那一段。純視覺，順序由 <ol> 負責。 -->
-          <p class="case__no" aria-hidden="true">01</p>
           <details class="case__disc" data-case>
             <summary class="case__head">
+              <span class="case__no">01</span>
               <h3 class="case__q">從「喜歡」到<mark class="mark" data-mark>真正付費</mark>的距離</h3>
               <span class="case__line">人們花錢買漫畫、買周邊，除了收藏之外，背後還有哪些情感在支持？</span>
               <span class="case__line">現今娛樂的選擇很多，粉絲為何狂熱、又為什麼願意對特定作品花錢。</span>
@@ -258,11 +256,9 @@
         </li>
 
         <li class="case" id="case-worth">
-          <!-- 編號搬出 <summary>：它現在要在整則案例（摘要＋展開的細節）的高度裡 sticky，
-               留在 summary 裡就只黏得住摘要那一段。純視覺，順序由 <ol> 負責。 -->
-          <p class="case__no" aria-hidden="true">02</p>
           <details class="case__disc" data-case>
             <summary class="case__head">
+              <span class="case__no">02</span>
               <h3 class="case__q">人們如何判斷<mark class="mark mark--b" data-mark>「是否值得」</mark></h3>
               <span class="case__line">台灣人真的只追求 CP 值嗎？為什麼有時候願意高價付費。</span>
               <span class="case__foot">
@@ -307,11 +303,9 @@
         </li>
 
         <li class="case" id="case-loyalty">
-          <!-- 編號搬出 <summary>：它現在要在整則案例（摘要＋展開的細節）的高度裡 sticky，
-               留在 summary 裡就只黏得住摘要那一段。純視覺，順序由 <ol> 負責。 -->
-          <p class="case__no" aria-hidden="true">03</p>
           <details class="case__disc" data-case>
             <summary class="case__head">
+              <span class="case__no">03</span>
               <h3 class="case__q">選擇很多，是什麼讓人<mark class="mark" data-mark>願意留下</mark></h3>
               <span class="case__line">真的是因為贈品多、好禮大放送，人們才留下來的嗎？</span>
               <span class="case__foot">
@@ -371,10 +365,14 @@
            這裡只讓人再靠近一點。所以整段刻意降密度、降級數，走 colophon 的構圖——
            左邊一格作者像、右邊三個數字，兩者共用一條上緣線。 -->
       <div class="colophon">
-        <div class="colophon__fig visual-placeholder" data-placeholder="about" aria-hidden="true">
-          <p class="visual-placeholder__t">插圖預留位・作者像</p>
-          <p class="visual-placeholder__d">1:1 方幅、約 180–220px。手繪半身，坐著、手上有筆記或逐字稿。不需要動態；若要，只給極輕微的一次眨眼。</p>
-        </div>
+        <!-- 作者像。1:1 方幅、800px（顯示尺寸 146–210px，留到 3x）。
+             整站唯一一張照片，所以它不做任何處理——不加濾鏡、不套色、不描邊，
+             就是一張安靜的半身照，跟 colophon 這一段的密度一致。 -->
+        <img class="colophon__fig"
+             src="assets/img/about-portrait.jpg"
+             width="800" height="800"
+             alt="陳玫伶（Mei-Ling Chen）的半身照"
+             loading="lazy" decoding="async">
 
         <div class="colophon__body">
           <p class="lead">研究、教學，以及公開分享。</p>
@@ -494,82 +492,54 @@
   </div>
 </section>
 
-<!-- ══════════ MOMENT 03 · ME → YOU ══════════
-     全頁最重要的一次轉場，也是唯一一次整個視窗換掉閱讀方式：
-     前面讀者一直在讀「Mei 在想什麼／做過什麼／發現什麼」，這裡輪到他自己。
+<!-- ══════════ 05 WHEN TO REACH OUT ══════════
+     第三章的開場，也是整頁唯一一次翻到紙的背面（ink）。
+     敘事主體在這裡換人：前面每一節都在講「我怎麼想／做過什麼」，
+     從這一節開始每一句都在講你的處境。換紙就是換人稱，整頁只發生一次。
 
-     裝置只有三樣，且都有語意：
-       ① 整頁唯一一片 ink 場（滿版、pin 住一屏）。ink 不是第三個色相，是本來的文字色
-          翻成紙——「翻頁」在這個站就是把紙翻到背面，一次就好
-       ② 敘事主體的交棒：巨大的「我」往上退開、巨大的「你」接上來，同一個位置
-       ③ 一個被視窗右緣裁掉的巨大「？」，是這一頁提問語氣的實體。
-          這一屏刻意不放插圖——「？」自己就是這裡的圖形，再擠一格插圖位
-          會把「一次只講一件事」的力氣分掉。
+     所以版型刻意不特別——就是原本那組左右對照（適合／不適合）。
+     翻的是紙，不是版：如果連排版都一起換，這一刻就變成「又一個新花樣」，
+     而不是「換人講話了」。
 
-     然後才落到 sand 那一章（05 + 06 同一張紙 = 同一段對話）。
-     螢光筆畫在「你現在」，跟 Hero 畫在「人們為什麼」對照著讀。
-
-     降級：沒有 JS 或 reduced-motion 時 --p 停在 1，也就是這一格的終局——
-     「我」淡到背景、「你」與那句提問都在位，靜態讀起來仍然是完整的一個構圖。 -->
-<section class="turnover" data-scene aria-labelledby="turnover-ask">
-  <div class="turnover__stage">
-    <span class="turnover__glyph" aria-hidden="true">？</span>
-
-    <span class="turnover__swap" aria-hidden="true">
-      <span class="turnover__me">我</span>
-      <span class="turnover__you">你</span>
-    </span>
-
-    <!-- 後半句包成一個不斷行的單位：窄螢幕上讓它固定斷在螢光筆結束的地方
-         （「那麼，你現在 ／ 正在試著釐清什麼？」）。放給瀏覽器自己斷的話，
-         balance 會斷成「…你現在正 ／ 在試著釐清什麼？」，把「正在」切成兩半。 -->
-    <p class="turnover__ask" id="turnover-ask">那麼，<mark class="mark mark--b" data-mark>你現在</mark><span class="turnover__ask-tail">正在試著釐清什麼？</span></p>
-
-    <p class="turnover__folio" aria-hidden="true">03</p>
-  </div>
-</section>
-
-<!-- ══════════ 05 WHEN TO REACH OUT ══════════ -->
-<section class="section section--tint" id="reach">
+     ink 上的層級色在 .section--ink 那一組 token 裡一次換算完
+     （--ink → cream、--stone / --hairline → cream 的透明度階），
+     所以 .eyebrow、.fit、細線全部沿用原本的規則，不需要各自改寫。 -->
+<section class="section section--ink" id="reach">
   <div class="wrap layout">
     <div class="gutter">
+      <p class="turn__folio" aria-hidden="true">03</p>
       <h2 class="eyebrow"><span>When to reach out</span>什麼情況適合找我</h2>
     </div>
 
     <div class="col">
-      <!-- 不是 checklist，是六句對話。左邊那句提問 sticky 住，右邊六個情境一句一句走過去，
-           讀起來像坐下來對照著問「是這個嗎？還是這個？」。
-           「不適合」那三條刻意收成右下角一小塊安靜的字：它是備註，不是第二份清單，
-           密度差本身就是語氣差。 -->
       <div class="fit">
-        <div class="fit__ask">
+        <div class="fit__col">
           <h3 class="fit__head">如果你正遇到這些情境，很適合先一起聊聊</h3>
+          <ul class="fit__list fit__list--yes">
+            <li>方向很多，但不知道真正的問題在哪裡</li>
+            <li>團隊手上有很多資料、有各自不同的觀察與假設，需要重新釐清問題</li>
+            <li>知道使用者做了什麼，卻不知道為什麼</li>
+            <li>數據看得到行為，卻看不懂、看不出背後的動機</li>
+            <li>已經做過不少研究、數據也很多，卻不知道下一步怎麼走</li>
+            <li>想和顧客建立更深的關係，但不是只有複製市場上的成功公式</li>
+          </ul>
         </div>
 
-        <ul class="fit__says">
-          <li>方向很多，但不知道真正的問題在哪裡</li>
-          <li>團隊手上有很多資料、有各自不同的觀察與假設，需要重新釐清問題</li>
-          <li>知道使用者做了什麼，卻不知道為什麼</li>
-          <li>數據看得到行為，卻看不懂、看不出背後的動機</li>
-          <li>已經做過不少研究、數據也很多，卻不知道下一步怎麼走</li>
-          <li>想和顧客建立更深的關係，但不是只有複製市場上的成功公式</li>
-        </ul>
-
-        <aside class="fit__aside">
-          <h3 class="fit__aside-head">這些可能比較不適合找我</h3>
+        <div class="fit__col">
+          <h3 class="fit__head">這些可能比較不適合找我</h3>
           <ul class="fit__list fit__list--no">
             <li>問題與解法都已經非常明確，只需要快速執行</li>
             <li>已經決定方向，只需要研究替既有決策背書</li>
             <li>目前沒有空間重新檢視問題或調整方向</li>
           </ul>
-        </aside>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
 <!-- ══════════ 06 WORK WITH ME ══════════ -->
-<section class="section section--tint section--cont" id="services">
+<section class="section section--tint" id="services">
   <div class="wrap layout">
     <div class="gutter">
       <h2 class="eyebrow"><span>Work with me</span>服務項目</h2>
@@ -580,49 +550,28 @@
         每個團隊、每個問題適合的方式都不太一樣。有時候，我們需要重新回到使用者身上理解需求；有時候，其實團隊已經有很多資料，只是還沒有把散落一地的線索，重新組合在一起。
       </p>
 
-      <!-- 四張卡片改成四組對照：左邊是你的處境（原本卡片裡那句「當你需要…」），
-           右邊是我會怎麼做。中間那顆 teal 圓點是全站按鈕上的同一顆，
-           在這裡的意思是「這兩邊是一組」。
-           讀起來要是「我們坐下來一起拆問題」，不是「以下是我的四項服務」。 -->
-      <ul class="pairs">
-        <li class="pair">
-          <p class="pair__q">當你需要真實理解一群人，不想用推測，或純粹用 AI 推敲需求。</p>
-          <span class="pair__dot" aria-hidden="true"></span>
-          <div class="pair__a">
-            <h3>深度研究洞察</h3>
-            <p>從研究問題、研究設計、訪談，到洞察與策略建議。</p>
-          </div>
+      <ul class="cards">
+        <li class="card">
+          <h3>深度研究洞察</h3>
+          <p>當你需要真實理解一群人，不想用推測，或純粹用 AI 推敲需求。</p>
+          <p class="card__how">從研究問題、研究設計、訪談，到洞察與策略建議。</p>
         </li>
-        <li class="pair">
-          <p class="pair__q">你們手上有很多資訊，但需要有人把它們拼起來。</p>
-          <span class="pair__dot" aria-hidden="true"></span>
-          <div class="pair__a">
-            <h3>策略藍圖諮詢</h3>
-            <p>協助團隊整理既有研究、數據、客戶聲音與內部觀點，找出真正的問題與下一步。</p>
-          </div>
+        <li class="card">
+          <h3>策略藍圖諮詢</h3>
+          <p>你們手上有很多資訊，但需要有人把它們拼起來。</p>
+          <p class="card__how">協助團隊整理既有研究、數據、客戶聲音與內部觀點，找出真正的問題與下一步。</p>
         </li>
-        <li class="pair">
-          <p class="pair__q">團隊有研究能力需求，但不需要一位全職的研究者。</p>
-          <span class="pair__dot" aria-hidden="true"></span>
-          <div class="pair__a">
-            <h3>短期研究夥伴</h3>
-            <p>以階段性顧問、研究夥伴的方式加入團隊。</p>
-          </div>
+        <li class="card">
+          <h3>短期研究夥伴</h3>
+          <p>團隊有研究能力需求，但不需要一位全職的研究者。</p>
+          <p class="card__how">以階段性顧問、研究夥伴的方式加入團隊。</p>
         </li>
-        <li class="pair">
-          <p class="pair__q">團隊想要自主學習研究與觀察能力、如何與 AI 共同協作。</p>
-          <span class="pair__dot" aria-hidden="true"></span>
-          <div class="pair__a">
-            <h3>演講、工作坊與企業內訓</h3>
-            <p>以講座、互動式工作坊方式，帶領學習活動。</p>
-          </div>
+        <li class="card">
+          <h3>演講、工作坊與企業內訓</h3>
+          <p>團隊想要自主學習研究與觀察能力、如何與 AI 共同協作。</p>
+          <p class="card__how">以講座、互動式工作坊方式，帶領學習活動。</p>
         </li>
       </ul>
-
-      <div class="visual-placeholder visual-placeholder--wide" data-placeholder="collab" aria-hidden="true">
-        <p class="visual-placeholder__t">插圖預留位・一起拆問題</p>
-        <p class="visual-placeholder__d">16:7 橫幅，吃滿內容欄寬。兩個人隔著桌子，桌面上是攤開的便利貼、逐字稿與一張畫壞的圖；視線都在紙上而不是彼此。線稿＋teal 一色點綴即可。建議動態：只讓桌上其中一張紙很輕微地飄一下（6s 一循環），人不要動。</p>
-      </div>
 
       <p class="services__close">
         如果不確定什麼適合，可以先聊聊再一起決定。
@@ -653,48 +602,26 @@
         我把自己關心且持續思考的問題，透過文章寫作分享：
       </p>
 
-      <!-- 三個研究方向不是三個內容分類，是整站最後一片概念地景。
-           共同的那個「人」是真的不動的：桌機上它 sticky 在左欄，只有後面那個詞
-           （系統 → 文化 → 自我）跟著捲動換。這就是這一節要被「看見」的東西。
-           巨大的 Systems / Culture / Self 貼著右緣、被版心裁掉一角，是刻意的 off-grid。
-           沒有 JS 時左欄整組不顯示，右欄的 h3（人 × 系統）照樣讀得到。 -->
-      <div class="lenses" data-lenses>
-        <div class="lenses__axis" aria-hidden="true">
-          <span class="lenses__human">人</span>
-          <span class="lenses__x">×</span>
-          <span class="lenses__terms">
-            <span class="lenses__term">系統</span>
-            <span class="lenses__term">文化</span>
-            <span class="lenses__term">自我</span>
-          </span>
-
-          <div class="lenses__fig visual-placeholder" data-placeholder="lenses">
-            <p class="visual-placeholder__t">插圖預留位・被三種鏡片看的人</p>
-            <p class="visual-placeholder__d">1:1 方幅、跟著左欄寬（約 200–290px）。同一個人物、三種看法：可以是一個人被三層同心圓／三道不同角度的線圈住。線稿，teal 只做那三道線。建議動態：三道線依 data-at 換一次強調，其餘不動。</p>
-          </div>
-        </div>
-
-        <ul class="lenses__list">
-          <li class="lens" data-lens>
-            <p class="lens__en" aria-hidden="true">Systems</p>
-            <h3>人 × 系統</h3>
-            <p class="lens__q">人如何與我們創造的系統相處？</p>
-            <p>產品、服務、科技、制度、商業模式、AI、金融、教育、公共服務。為什麼相信、使用、留下或拒絕？人真正需要的，與系統以為他需要的，落差在哪裡。</p>
-          </li>
-          <li class="lens" data-lens>
-            <p class="lens__en" aria-hidden="true">Culture</p>
-            <h3>人 × 文化</h3>
-            <p class="lens__q">人如何透過故事與文化產生連結？</p>
-            <p>故事、角色、作品、IP、粉絲文化、收藏、應援與社群。為什麼一個角色會對人變得重要？私人的感動，如何形成集體文化與經濟價值。</p>
-          </li>
-          <li class="lens" data-lens>
-            <p class="lens__en" aria-hidden="true">Self</p>
-            <h3>人 × 自我</h3>
-            <p class="lens__q">人如何理解自己的經驗與選擇？</p>
-            <p>工作、閱讀、創作、AI 時代的自我與生命經驗。一段經驗如何改變一個人？我們如何理解自己正在成為誰。</p>
-          </li>
-        </ul>
-      </div>
+      <ul class="lenses">
+        <li class="lens">
+          <p class="lens__en">Systems</p>
+          <h3>人 × 系統</h3>
+          <p class="lens__q">人如何與我們創造的系統相處？</p>
+          <p>產品、服務、科技、制度、商業模式、AI、金融、教育、公共服務。為什麼相信、使用、留下或拒絕？人真正需要的，與系統以為他需要的，落差在哪裡。</p>
+        </li>
+        <li class="lens">
+          <p class="lens__en">Culture</p>
+          <h3>人 × 文化</h3>
+          <p class="lens__q">人如何透過故事與文化產生連結？</p>
+          <p>故事、角色、作品、IP、粉絲文化、收藏、應援與社群。為什麼一個角色會對人變得重要？私人的感動，如何形成集體文化與經濟價值。</p>
+        </li>
+        <li class="lens">
+          <p class="lens__en">Self</p>
+          <h3>人 × 自我</h3>
+          <p class="lens__q">人如何理解自己的經驗與選擇？</p>
+          <p>工作、閱讀、創作、AI 時代的自我與生命經驗。一段經驗如何改變一個人？我們如何理解自己正在成為誰。</p>
+        </li>
+      </ul>
 
       <!-- TODO 換成你的 Substack 訂閱網址 -->
       <div class="sub-card">
@@ -741,6 +668,6 @@
   </div>
 </footer>
 
-<script src="assets/js/main.js?v=20260908-narrative" defer></script>
+<script src="assets/js/main.js?v=20260908-narrative2" defer></script>
 </body>
 </html>

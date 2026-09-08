@@ -20,11 +20,6 @@
   /* 分行細線。v2 的 Hairline Mist #d5d5d4 是冷灰，在 Sandstone 上只有 1.08:1
      （形同消失），在 cream 上也才 1.31:1。改成跟紙同一個暖色系並壓深一階。 */
   --hairline: #b7b0a2;
-  /* 極淡的圖形色：hairline 再往紙色靠一階（對 cream 1.31 → 1.13:1）。
-     專門給「放大成圖形的字」用——案例編號 01/02/03、Systems/Culture/Self。
-     它必須淡到可以讓 ink 的標題直接壓在上面還讀得清楚，
-     所以不能拿去畫線或做標籤（那是 --hairline 的工作）。 */
-  --faint:    #e2dbcc;
 
   /* — teal: the structural hue, three steps —
      teal      · strokes, borders, dots, small blocks — never large fills
@@ -112,13 +107,13 @@ img, svg { display: block; max-width: 100%; }
 a { color: inherit; }
 
 /* 橫向裁切掛在 <main> 上，不在 <html> 也不在 <body>。
-   這一版有好幾處刻意破出版心、要被螢幕邊裁掉的字（.lens__en、
-   .turnover__glyph、手機版的 .vfield__cluster），不裁的話它們會讓整頁多出
-   一條真的可以橫向捲的軸。
+   收斂場（.vfield）刻意破出版心：五個領域散在整個視窗裡，手機版的
+   .vfield__cluster 還會往右推出螢幕。不裁的話它會讓整頁多出一條真的可以
+   橫向捲的軸。
 
    為什麼是 clip 而不是 hidden：hidden 會讓元素變成捲動容器，裡面的
    position: sticky 就改成相對它的 scrollport 計算而不是相對視窗——
-   而這一版有四處 sticky（eyebrow、案例編號、人 × 的軸、案例的手機水印）。
+   而這一頁有 sticky 的 .eyebrow（每一節的標籤都靠它）。
    clip 只裁不捲，sticky 完全不受影響。
 
    為什麼掛在 <main>：<main> 是滿版、沒有內距的，所以裁切線正好落在螢幕邊，
@@ -192,7 +187,6 @@ mark.mark--b {
    字級大的兩處把時間一起放大，讓全站每一筆都維持在 2–5px/s。 */
 .hero__fixed mark.mark      { --mark-wave: 14s; }
 .vfield__say-out mark.mark  { --mark-wave: 10s; }
-.turnover__ask mark.mark    { --mark-wave: 9s; }
 
 @keyframes mark-wave {
   from { background-position-x: 0; }
@@ -230,7 +224,7 @@ mark.mark--b {
    :where() 的特異性是 0，這一整串維持在 0,2,0，跟 .is-in 同級，
    .is-in 寫在後面所以贏。 */
 .js .eyebrow,
-.js .col > *:where(:not(.threads, .cases, .cv, .talks, .pairs, .lenses, .fit, .teaching)),
+.js .col > *:where(:not(.threads, .cases, .cv, .talks, .cards, .lenses, .fit, .teaching)),
 .js .threads > *,
 .js .cases > *,
 .js .cv > *,
@@ -238,11 +232,10 @@ mark.mark--b {
 .js .teaching__topics > *,
 .js .teaching__examples-head,
 .js .talks > *,
-.js .pairs > *,
-.js .lenses__list > *,
-.js .fit__ask > *,
-.js .fit__says > *,
-.js .fit__aside > *,
+.js .cards > *,
+.js .lenses > *,
+.js .fit__col > *:where(:not(.fit__list)),
+.js .fit__list > *,
 .js .turn__folio,
 .js .contact__panel > * {
   opacity: 0;
@@ -273,8 +266,8 @@ mark.mark--b {
 }
 
 /* Hero 不吃這套：它有自己的載入動畫，且不在 .col 裡。
-   MOMENT 01（.vfield）與 MOMENT 03（.turnover）也不吃：那兩塊的出場就是 --p
-   本身，再疊一層 reveal 等於同一件事講兩個手勢。 */
+   MOMENT 01（.vfield）也不吃：那一塊的出場就是 --p 本身，
+   再疊一層 reveal 等於同一件事講兩個手勢。 */
 
 /* ---- 微互動只給真正可以按的東西 ----
    經歷、lenses 這些列不是連結，所以不給 hover 狀態：
@@ -396,37 +389,35 @@ mark.mark--b {
      03 Collaboration  什麼情況適合找我 → 服務項目
      04 Ongoing        我的觀點 → Contact
 
-   2026-09-08 的第一版把三個章際交界做成同一個形狀（滿版事件 → 章節碼 →
-   可選的一句話），強弱只差在停頓多長。那一版解決了「每個交界都長得一樣」，
-   但整頁仍然是「排版良好的長文章」：所有內容都在 container → heading →
-   text → grid → 留白 → 下一節這條軌道上，沒有一個地方真的破掉自己的規則。
+   原本的問題不是哪一節不好看，是「每一個交界都長得一樣」：任何兩節之間都是
+   2 × --section-y 的等距留白，底色又照 cream / sand 機械交替，所以捲下去
+   讀得出「換了一個區塊」，讀不出「翻了一章」。
 
-   這一版（VISUAL NARRATIVE）改的是那件事。三個章際交界不再是同一個裝置的
-   三種強弱，而是三種不同的閱讀方式，而且一次比一次遠離常規版面：
+   所以章際交界只用兩種東西，而且都不是裝飾：
 
-     → 02  .vfield    一整片滿版的收斂場。內容從版心裡走出去、散在整個視窗，
-                      再一起收回來。這裡破的是「內容住在 1200px 裡」
-     → 03  .turnover  一整屏 ink。這裡破的是「整頁都是 cream 紙」與
-                      「文字是用來讀的」——我／你是圖形，？是圖形
-     → 04  .turn      只剩一個章節碼的短停頓。三次交界一次比一次輕，
-                      因為第四章是回到原本那張紙，不需要跟離開時一樣用力
+     → 02  .vfield        一整片滿版的收斂場。內容從版心走出去、散在整個
+                          視窗，再一起收回來。破的是「內容住在 1200px 裡」
+     → 03  .section--ink  翻到紙的背面。第三章是全頁唯一一次換人稱
+                          （我 → 你），所以也是唯一一次換到 ink 那張紙
+     → 04  .turn          只剩一個章節碼的短停頓。第四章是回到原本那張紙，
+                          不需要跟離開時一樣用力
 
-   換紙仍然是敘事不是裝飾，只是現在有兩種紙以外的東西：
-     cream  預設的紙
-     sand   第三章（05 + 06 印在同一張上 ＝ 同一段對話），敘事主體是「你」
-     ink    只有 MOMENT 03 那一屏。它是「翻到背面」，所以整頁只能有一次
+   換紙是敘事不是裝飾：
+
+     cream      預設的紙。第一、二、四章都印在上面
+     ink        只有 05 那一節。它是「翻到背面」＝敘事主體換成「你」的那一刻，
+                所以整頁只能有一次
+     sand       第三章落下來的地方（06 服務項目）。ink 是翻頁本身，
+                sand 是翻過去之後的那一頁——同一章的兩張紙
      teal-deep  只有 Contact 那一塊。它是「最後一個動作」
 
    線的三個層級（改任何一條之前先確認自己在哪一級）：
-     滿版（不受 --page 限制）   = 章際交界，現在由整片場／整屏 ink 承擔
+     滿版（不受 --page 限制）   = 章際交界，由整片收斂場與整節 ink 承擔
      版心寬                     = 同一章之內的跨頁（.hero__rule、.section--cont）
-     hairline 分行              = 列表的列（.cases、.cv、.talks、.fit__says、.pairs…）
-     ink 上線                   = 「這是這一節的主清單」（.threads 桌機版、
-                                  .fit__says、.pairs、.lens:first-child）
+     hairline 分行              = 列表的列（.cases、.cv、.talks、.fit__list…）
 
-   關掉 JS、或 prefers-reduced-motion 之下，四個章節的結構完全不變：
-   停頓、紙、章節碼、線都不依賴 motion；兩塊 scroll-linked 的場各自有一個
-   靜態的終局構圖（見 .vfield 與 .turnover 開頭的註解）。
+   關掉 JS、或 prefers-reduced-motion 之下，四個章節的結構完全不變——
+   停頓、紙、章節碼、線都不依賴 motion。
    ============================================================ */
 
 /* 章內交界：上一節維持自己的下留白，下一節收到一半。
@@ -439,21 +430,42 @@ mark.mark--b {
    讀起來的順序是「紙先換 → 然後才是那段安靜」，不是「先空一大段 → 再換紙」。 */
 .section:has(+ .turn),
 .section:has(+ .vfield),
-.section:has(+ .turnover) { padding-bottom: calc(var(--section-y) * .5); }
+.section:has(+ .section--ink) { padding-bottom: calc(var(--section-y) * .5); }
 
-/* 三種章際交界自己就帶足了間距，所以下一節只補一口氣。 */
+/* 兩種章際交界自己就帶足了間距，所以下一節只補一口氣。 */
 .turn + .section { padding-top: 0; }
-.vfield + .section,
-.turnover + .section { padding-top: calc(var(--section-y) * .55); }
+.vfield + .section { padding-top: calc(var(--section-y) * .55); }
 
 .turn {
   --turn-y: clamp(56px, 7vw, 104px);
   padding-block: var(--turn-y);
 }
 /* 04：紙換回 cream。回到原本那張紙，不需要跟離開時一樣用力，
-   所以第四章的交界是全頁最短的一次停頓——三次交界一次比一次輕，
-   02 是一整片收斂場、03 是一整屏 ink、04 只是一個章節碼。 */
+   所以第四章的交界是全頁最短的一次停頓。 */
 .turn--soft { --turn-y: clamp(40px, 5vw, 74px); }
+
+/* ---- 翻到背面（第三章的開場） ----
+   ink #2c2e2a 不是第三個色相，是本來的文字色翻成紙。整頁只能有這一節，
+   而且只能是敘事主體從「我」換成「你」的那一節。
+
+   紙換了，版型刻意不換：裡面就是原本那組左右對照（適合／不適合）。
+   如果連排版也一起換，這一刻會讀成「又一個新花樣」，不是「換人講話了」。
+
+   層級色在 .wrap 上一次換算完——這一段之內 --ink 就是 cream，
+   --stone 與 --hairline 是 cream 的兩階透明度。所以 .eyebrow、.fit、
+   .turn__folio、focus outline 全部沿用原本的規則就自動反白，
+   不需要為深底再寫一份。（不能寫在 .section--ink 自己身上：
+   那條 background: var(--ink) 會先吃到被改掉的值。） */
+.section--ink { background: var(--ink); color: var(--cream); }
+.section--ink > .wrap {
+  --ink: var(--cream);
+  --stone: rgba(246, 242, 232, .72);
+  --hairline: rgba(246, 242, 232, .3);
+}
+/* 換紙的那一節留白給滿：紙的邊自己就是章際交界，不需要額外的停頓帶。 */
+.section--ink { padding-block: calc(var(--section-y) * 1.25); }
+.section + .section--ink { padding-top: calc(var(--section-y) * 1.25); }
+.section--ink + .section { padding-top: var(--section-y); }
 
 /* 章節碼借 .layout 的格線落在 eyebrow 那一欄，所以它站在全頁的左軸線上，
    不是漂在版面中間的裝飾。顏色壓到 --hairline：它是頁碼不是標題，
@@ -468,10 +480,13 @@ mark.mark--b {
   letter-spacing: -.05em;
   color: var(--hairline);
 }
+/* 第三章的章節碼直接站在那一節的 gutter 裡（eyebrow 之上），
+   不再需要一條獨立的停頓帶——紙已經換了。 */
+.section--ink .turn__folio { margin-bottom: clamp(14px, 1.6vw, 22px); }
 
 /* 同一章的第二節。桌機給一條版心寬的細線當跨頁分隔（比章際那一級弱），
-   留白對半分在線的兩側，讓 05 → 06 讀起來是「同一段對話換一口氣」，
-   而不是兩個各自獨立的服務區塊。04 對 03 同理。 */
+   留白對半分在線的兩側，讓 04 → 05 讀起來是「同一章換一口氣」，
+   而不是兩個各自獨立的區塊。 */
 .section--cont > .wrap {
   border-top: 1px solid var(--hairline);
   padding-top: calc(var(--section-y) * .5);
@@ -1118,7 +1133,7 @@ html:not(.js) .hero__line:first-child {
   }
   /* 名稱是這一段的視覺主體（1.34em × --s ＝ 22–30px），關鍵字固定 14px。
      不讓關鍵字跟著放大：那 27 個詞是這一段唯一不能被裁掉、也不能縮到看不清的
-     內容，「裁掉字」這件事留給沒有獨立資訊的圖形（.lens__en、.turnover__glyph）。 */
+     內容——這一頁不裁任何一句有獨立資訊的字。 */
   .js .vfield__keys { font-size: var(--fs-meta); }
   /* 每一組往右錯開不同的量。縮排差本身就是「五個不同的世界」，
      不需要真的把它們排成二維的場。 */
@@ -1137,83 +1152,74 @@ html:not(.js) .hero__line:first-child {
 }
 
 /* ============================================================
-   MOMENT 02 · SELECTED WORK — 三個巨大的錨點與一次翻轉
+   03 SELECTED WORK
    一頁式站不該為了三則案例把人送去別的頁面，所以細節就地展開，不開 modal、
    不跳頁。展開用原生 <details>：鍵盤可操作、沒有 JS 也能開、Ctrl+F 搜到
    收合中的字時瀏覽器會自己把它打開——這三件事自己用 JS 做都會漏掉。
 
-   這一節要讓人記住的不是「她做過三個 project」，而是「她很擅長找到那個翻轉」。
-   所以版面只做兩件事：
-
-   ① 編號變成真正的視覺錨點。01 / 02 / 03 放到 96–176px 的左欄、
-      放大到 58–132px、sticky 在整則案例的高度裡：右欄的內容捲過去的時候，
-      編號留在原地，所以「我現在在第二則」是看出來的，不是讀出來的。
-      內容欄再往左壓一點，讓標題壓在編號的右緣上——刻意的 overlap，
-      編號的顏色壓到 --faint（對紙 1.3:1）才撐得住這個疊法。
-   ② 「翻轉」那一格從一列變成一片。它跳出 beat 的兩欄格線、往右破出文字欄，
-      鋪上 teal-tint（全站唯一的彩色閱讀面），級數升到 --fs-head / 500。
-      而且它的底色是「刷」上去的：展開動畫跑完之後，色塊從左往右掃過一次，
-      跟簽名的螢光筆同一個手勢——翻轉就是她會畫線的那一句。
-
-   線的層級沒有變：teal 直線仍然只標「展開的內容」，hairline 仍然只分列。
+   欄位：整塊摘要是 <summary>，它自己就是那個 48px + 1fr 的格線
+   （所以整塊可點），展開的內容縮到第二欄，左邊編號那一欄留白，
+   01/02/03 的垂直節奏不會被展開打斷。
    ============================================================ */
 .cases { border-top: 1px solid var(--hairline); }
 .case {
-  display: grid;
-  grid-template-columns: var(--case-col) minmax(0, 1fr);
-  gap: 0 var(--case-gap);
   border-bottom: 1px solid var(--hairline);
   /* 從網址直接開某一則案例時，不要被浮動導覽壓到 */
   scroll-margin-top: 104px;
-  --case-pad: clamp(24px, 2.8vw, 34px);
-  --case-col: clamp(96px, 12vw, 176px);
-  --case-gap: clamp(14px, 1.8vw, 28px);
-}
-
-/* 編號：sticky 的錨點。整則案例（摘要＋展開的細節）都是它的 grid row，
-   所以展開之後它會一路黏著陪你讀完那一則。
-   靠右對齊 ＋ 內容欄的負左邊界＝標題壓在數字的右緣上。 */
-.case__no {
-  grid-column: 1;
-  position: sticky;
-  top: clamp(96px, 13vh, 136px);
-  align-self: start;
-  z-index: 0;
-  padding-top: var(--case-pad);
-  font-family: var(--latin);
-  font-size: clamp(58px, 8.4vw, 132px);
-  font-weight: 500;
-  line-height: .82;
-  letter-spacing: -.06em;
-  text-align: right;
-  color: var(--faint);
-  pointer-events: none;
-}
-.case__disc {
-  grid-column: 2;
-  position: relative;
-  z-index: 1;
-  margin-left: calc(-1 * clamp(4px, 1.5vw, 28px));
+  /* 摘要的上下留白＝這一列的節奏，展開後的內容底部沿用同一個值 */
+  --case-pad: clamp(24px, 2.8vw, 32px);
+  --case-col: 48px;
+  --case-gap: clamp(12px, 2vw, 24px);
 }
 
 .case__head {
-  display: block;
+  display: grid;
+  grid-template-columns: var(--case-col) minmax(0, 1fr);
+  gap: 0 var(--case-gap);
   padding-block: var(--case-pad);
+  position: relative;
   cursor: pointer;
   list-style: none;
   transition: padding-bottom var(--dur-ui) var(--ease);
 }
-/* 原生的三角形換掉——這一站的展開提示是 .case__more 那一行字 */
+/* 原生的三角形換掉——這一站的展開提示是編號下方那條 teal 結構線 */
 .case__head::-webkit-details-marker { display: none; }
+.case__head > *:not(.case__no) { grid-column: 2; }
+
+/* 結構線：收合時 scaleY(0) 藏在編號正下方，展開時往下長，
+   接上 .case__detail 左緣同一條線——視覺上是一條線從編號拉到內容底。
+   起點 = 上留白 + 編號那一行的行高（14px × line-height 2 ＝ 28，
+   加 padding-top .55em ≈ 7.7，再留 4px 呼吸）＝ 固定 40px，不隨斷點跑。 */
+.case__head::after {
+  content: "";
+  position: absolute;
+  left: 3px;
+  top: calc(var(--case-pad) + 40px);
+  bottom: 6px;
+  width: 1px;
+  background: var(--teal);
+  transform: scaleY(0);
+  transform-origin: top;
+  transition: transform var(--dur-ui) var(--ease);
+}
+/* 展開後把線一路接到摘要底緣，跟 .case__detail 的那一段接成同一條 */
+.case__disc[open] > .case__head::after { transform: scaleY(1); bottom: 0; }
 /* 展開後摘要與細節之間不需要整段留白，收掉一半 */
 .case__disc[open] > .case__head { padding-bottom: 20px; }
 
-/* 標題撐得住旁邊那個 132px 的數字，所以比 --fs-display 再高半階。 */
+.case__no {
+  font-family: var(--latin);
+  font-size: var(--fs-meta);
+  font-weight: 500;
+  letter-spacing: .06em;
+  color: var(--stone);
+  padding-top: .55em;
+}
 .case__q {
   font-family: var(--display);
-  font-size: clamp(24px, 2.5vw, 34px);
+  font-size: var(--fs-display);
   font-weight: 700;
-  line-height: 1.45;
+  line-height: var(--lh-head);
   letter-spacing: var(--track-zh-head);
   text-wrap: balance;
   margin-bottom: 16px;
@@ -1222,9 +1228,11 @@ html:not(.js) .hero__line:first-child {
 .case__line + .case__line { margin-top: var(--space-paragraph); }
 
 /* 展開提示。刻意不用 chevron：那是誰家的網站都有的零件。
-   收合說「看翻轉」，展開說「收起」。
-   aria-hidden 是因為 <summary> 本身已經會報 expanded／collapsed。
-   tags 與提示同一列、提示靠右——tags 只用掉左邊三分之一。 */
+   這裡靠文字換句＋上面那條結構線，收合說「看翻轉」，展開說「收起」。
+   aria-hidden 是因為 <summary> 本身已經會報 expanded／collapsed，
+   再讓螢幕閱讀器唸一次提示等於講兩遍。 */
+/* tags 與展開提示同一列，提示靠右——tags 只用掉左邊三分之一，
+   右邊那段空白正好是這一站不想留的（見 DESIGN.md「分行列表」那條）。 */
 .case__foot {
   display: flex;
   flex-wrap: wrap;
@@ -1263,16 +1271,15 @@ html:not(.js) .hero__line:first-child {
 
 .case__detail {
   position: relative;
-  padding-left: var(--case-in);
+  padding-left: calc(var(--case-col) + var(--case-gap));
   padding-bottom: var(--case-pad);
   --k: 104px;
-  --case-in: clamp(14px, 1.6vw, 22px);
 }
-/* teal 直線：只在展開的內容左緣，標的是「這一段是被打開的」 */
+/* 接續 .case__head::after 的那條線 */
 .case__detail::before {
   content: "";
   position: absolute;
-  left: 0; top: 0; bottom: var(--case-pad);
+  left: 3px; top: 0; bottom: var(--case-pad);
   width: 1px;
   background: var(--teal);
 }
@@ -1286,7 +1293,8 @@ html:not(.js) .hero__line:first-child {
   border-bottom: 1px solid var(--hairline);
 }
 
-/* 標題在左、內容在右，跟 About 的年份／職稱同一種兩欄關係。 */
+/* 標題在左、內容在右，跟 About 的年份／職稱同一種兩欄關係，
+   欄寬窄一階（104 vs 148），因為這裡已經先縮排過一次。 */
 .beat {
   display: grid;
   grid-template-columns: var(--k) minmax(0, 1fr);
@@ -1300,55 +1308,9 @@ html:not(.js) .hero__line:first-child {
   padding-top: .45em;
 }
 .beat__v { margin: 0; max-width: var(--measure); }
-
-/* ---- 翻轉：整則案例的重量都在這一片 ----
-   它從兩欄格線退回單欄、往右破出文字欄的右緣（左緣對齊那條 teal 線，
-   所以破的是「文字的界線」不是「這一節的軸線」），
-   級數升一階、行距放到 1.8，讀起來要慢。
-   每一則案例的螢光筆仍然只畫在這一格——一則一筆，不重複。 */
-.beat--turn {
-  position: relative;
-  grid-template-columns: minmax(0, 1fr);
-  gap: 10px;
-  margin-block: clamp(24px, 2.8vw, 38px);
-  margin-left: calc(-1 * var(--case-in));
-  margin-right: calc(-1 * clamp(14px, 2.4vw, 40px));
-  padding: clamp(24px, 2.8vw, 36px) clamp(22px, 2.6vw, 34px);
-  border-radius: var(--r);
-  overflow: hidden;
-}
-.beat--turn > * { position: relative; z-index: 1; }
-/* 底色是刷上去的，不是本來就在那裡：展開動畫跑完（.is-moving 解除）之後，
-   teal-tint 從左往右掃過一次——跟簽名的螢光筆同一個手勢，放大到一整片。
-   reduced-motion 之下全站的 transition-duration 被壓到 .001ms，
-   所以那裡是瞬間上色，構圖完全不變。 */
-.beat--turn::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: var(--teal-tint);
-  transform: scaleX(0);
-  transform-origin: left center;
-  transition: transform .72s var(--ease);
-}
-.case__disc[open]:not(.is-moving) .beat--turn::before { transform: none; }
-
-.beat--turn .beat__k {
-  font-family: var(--display);
-  font-size: var(--fs-sub);
-  font-weight: 900;
-  line-height: var(--lh-head);
-  letter-spacing: var(--track-zh-head);
-  color: var(--ink);
-  padding-top: 0;
-}
-.beat--turn .beat__v { max-width: 26em; }
-.beat--turn .beat__v p {
-  font-size: var(--fs-head);
-  font-weight: 500;
-  line-height: 1.8;
-  letter-spacing: var(--track-zh-head);
-}
+/* 「翻轉」是這一站的重點，所以標題升到 ink 與字重 700，
+   而且每一則案例的螢光筆只畫在這一格——一則一筆，不重複。 */
+.beat--turn .beat__k { color: var(--ink); font-weight: 700; }
 
 .case__quote {
   margin-top: clamp(22px, 2.4vw, 30px);
@@ -1567,115 +1529,64 @@ html:not(.js) .hero__line:first-child {
 }
 
 /* ============================================================
-   MOMENT 04a · WHEN TO REACH OUT — 六句對話，不是一張 checklist
-   左邊那句提問 sticky 住不動，右邊六個情境一句一句走過去：讀起來像坐下來
-   對照著問「是這個嗎？還是這個？」。所以六句升到 19–26px、一句一列、
-   列與列之間用 hairline 分，而不是條列符號。
-   「不適合」那三條收成右下角一小塊安靜的字，而且靠右對齊——它是備註，
-   不是第二份對等的清單，密度差本身就是語氣差。
+   05 WHEN TO REACH OUT
    ============================================================ */
-.fit { display: grid; gap: clamp(28px, 3.4vw, 46px); }
-/* 級數比 --fs-display 收一階（29 → 26px）：這一句要在 300px 的左欄裡
-   斷成兩行而不是三行，最後一行不能只剩「聊聊」兩個字。 */
+.fit { display: grid; gap: clamp(40px, 5vw, 60px); }
 .fit__head {
   font-family: var(--display);
-  font-size: clamp(21px, 1.9vw, 26px);
-  font-weight: 900;
-  line-height: 1.55;
-  letter-spacing: var(--track-zh-head);
-  text-wrap: pretty;
-  max-width: 16em;
+  font-size: var(--fs-head);
+  font-weight: 700;
+  line-height: 1.6;
+  text-wrap: balance;
+  margin-bottom: clamp(18px, 2vw, 26px);
 }
-
-/* 六個情境：一句一列，級數在內文與宣言之間。ink 上線是「主清單」的記號
-   （跟 .threads 桌機版、.pairs 同一級），hairline 分列。
-   23px 是量出來的上限：桌機這一欄約 530px，再大一階六句就全部折成兩行，
-   「一句話一列」的節奏會消失。 */
-.fit__says > li {
-  font-family: var(--display);
-  font-size: clamp(19px, 1.8vw, 23px);
-  font-weight: 500;
-  line-height: 1.7;
-  letter-spacing: var(--track-zh-head);
-  text-wrap: pretty;
-  padding-block: clamp(15px, 1.7vw, 23px);
+.fit__list > li {
+  position: relative;
+  padding-left: 30px;
+  padding-block: 9px;
+  line-height: var(--lh-body);
   border-bottom: 1px solid var(--hairline);
 }
-.fit__says > li:first-child { border-top: 1px solid var(--ink); }
-
-.fit__aside { max-width: 30em; }
-.fit__aside-head {
-  font-size: var(--fs-meta);
-  font-weight: 500;
-  line-height: 1.6;
-  letter-spacing: var(--track-zh);
-  color: var(--stone);
-  margin-bottom: 8px;
-}
-/* 這一塊刻意不畫分行線、不佔滿寬：它是註腳的密度。 */
-.fit__list--no > li {
-  position: relative;
-  padding-left: 22px;
-  padding-block: 5px;
-  font-size: var(--fs-sm);
-  line-height: var(--lh-compact);
-  color: var(--stone);
-}
-.fit__list--no > li::before {
+.fit__list > li:first-child { border-top: 1px solid var(--hairline); }
+.fit__list > li::before {
   content: "";
   position: absolute;
-  left: 0; top: calc(5px + var(--lh-compact) * .5em);
-  width: 11px; height: 2px; border-radius: 2px;
-  background: var(--hairline);
+  left: 0; top: calc(9px + var(--lh-body) * .5em);
+  width: 15px; height: 2px; border-radius: 2px;
 }
+/* no colour-coding here — teal is never a success/error state */
+.fit__list--yes > li::before { background: var(--ink); }
+.fit__list--no  > li::before { background: var(--hairline); }
+.fit__list--no  > li { color: var(--stone); }
 
 /* ============================================================
-   MOMENT 04b · WORK WITH ME — problem ↔ way of working
-   四張白卡片改成四組對照：左邊是你的處境（原本卡片裡那句「當你需要…」，
-   一個字沒改），右邊是我會怎麼做。中間那顆 9px teal 圓點就是全站按鈕上的
-   同一顆，在這裡的意思是「這兩邊是一組」。
-
-   為什麼不留卡片：四張等大的白卡是「以下是我的四項服務」的長相。
-   拆成左右對照之後，這一章從頭到尾都是同一件事——你的處境對上一種做法，
-   而且 05 的六句與 06 的四組共用同一根 ink 上線與同一套分列線，
-   所以印在同一張 sand 上讀起來是一段對話，不是兩個區塊。
+   06 WORK WITH ME
    ============================================================ */
-.pairs { border-top: 1px solid var(--ink); }
-.pair {
+.cards {
   display: grid;
-  grid-template-columns: minmax(0, 1.12fr) 26px minmax(0, 1fr);
-  align-items: start;
-  padding-block: clamp(20px, 2.4vw, 32px);
-  border-bottom: 1px solid var(--hairline);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(14px, 1.6vw, 20px);
 }
-.pair__q {
-  font-family: var(--display);
-  font-size: clamp(18px, 1.85vw, 24px);
-  font-weight: 500;
-  line-height: 1.7;
-  letter-spacing: var(--track-zh-head);
-  text-wrap: pretty;
-  padding-right: clamp(12px, 1.8vw, 26px);
+.card {
+  background: var(--white);
+  border-radius: var(--r);
+  padding: clamp(24px, 2.4vw, 30px);
 }
-.pair__dot {
-  width: 9px; height: 9px; border-radius: 50%;
-  background: var(--teal);
-  margin: .78em auto 0;
-}
-.pair__a { padding-left: clamp(12px, 1.8vw, 26px); }
-.pair__a h3 {
+.card h3 {
   font-family: var(--display);
   font-size: var(--fs-head);
   font-weight: 700;
   line-height: var(--lh-head);
-  letter-spacing: var(--track-zh-head);
+  margin-bottom: 14px;
 }
-.pair__a p {
-  margin-top: 8px;
-  font-size: var(--fs-sm);
-  line-height: var(--lh-compact);
+.card p { font-size: var(--fs-sm); line-height: var(--lh-compact); }
+/* 跟 .card p 同級數。漢字差 1px 看不出來，只會多出一階沒用的級數；
+   這一行的層級交給 stone 色與上緣細線。 */
+.card__how {
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid var(--hairline);
   color: var(--stone);
-  max-width: 28em;
 }
 
 .services__close {
@@ -1684,131 +1595,32 @@ html:not(.js) .hero__line:first-child {
 }
 
 /* ============================================================
-   MOMENT 05 · QUESTIONS I EXPLORE — 最後一片概念地景
-   三個研究方向不是三個內容分類。共同的那個「人」是真的不動的：
-   桌機上它 sticky 在左欄，捲動只換後面那個詞（系統 → 文化 → 自我）。
-   所以「這三件事共用同一個中心」是被看見的，不是被讀到的——
-   也不需要真的畫一張 diagram。
-
-   右欄的 Systems / Culture / Self 靠右對齊、負右邊界推出版心：
-   寬螢幕上它真的被視窗裁掉一角，窄螢幕上至少是 off-grid。
-   它是這一節的圖形，所以吃 --faint（跟案例編號同一個角色），
-   對輔助科技隱藏，語意由旁邊的 h3 與問句承擔。
+   07 QUESTIONS I EXPLORE
    ============================================================ */
-.lenses { display: grid; }
-
-/* 左欄的軸。手機與沒有 JS 時整組不顯示，右欄的 h3（人 × 系統）照樣讀得到。 */
-.lenses__axis { display: none; }
-.lenses__human {
-  display: block;
-  font-family: var(--display);
-  font-size: clamp(64px, 8.2vw, 132px);
-  font-weight: 900;
-  line-height: 1;
-  letter-spacing: 0;
-}
-.lenses__x {
-  display: block;
-  font-family: var(--latin);
-  font-size: clamp(26px, 3vw, 48px);
-  font-weight: 500;
-  line-height: 1;
-  color: var(--teal);
-  margin: .22em 0 .16em;
-}
-.lenses__terms { display: grid; }
-/* 三個詞疊在同一格（跟 Hero 的問句輪播同一個手法），所以換詞不會把版面頂高。
-   進場沿用全站唯一的那個手勢：上浮 --rise-y 淡入。 */
-.lenses__term {
-  grid-area: 1 / 1;
-  font-family: var(--display);
-  font-size: clamp(40px, 5.2vw, 84px);
-  font-weight: 900;
-  line-height: 1.15;
-  letter-spacing: var(--track-zh-head);
-  opacity: 0;
-  transform: translateY(var(--rise-y));
-  transition: opacity var(--dur-rise) var(--ease),
-              transform var(--dur-rise) var(--ease);
-}
-.lenses:not([data-at]) .lenses__term:first-child,
-.lenses[data-at="0"] .lenses__term:nth-child(1),
-.lenses[data-at="1"] .lenses__term:nth-child(2),
-.lenses[data-at="2"] .lenses__term:nth-child(3) { opacity: 1; transform: none; }
-
+.lenses { display: grid; gap: 0; border-top: 1px solid var(--ink); }
 .lens {
-  padding-block: clamp(26px, 4.6vh, 62px);
+  padding-block: clamp(20px, 2.2vw, 28px);
   border-bottom: 1px solid var(--hairline);
+  display: grid;
+  grid-template-columns: 128px minmax(0, 1fr);
+  gap: 4px clamp(14px, 2vw, 26px);
 }
-.lens:first-child { border-top: 1px solid var(--ink); }
 .lens__en {
+  grid-row: span 3;
   font-family: var(--latin);
-  font-size: clamp(46px, 6.4vw, 96px);
-  font-weight: 500;
-  line-height: .92;
-  letter-spacing: -.055em;
-  color: var(--faint);
-  text-align: right;
-  white-space: nowrap;
-  /* 11vw 在 1440px 上是 158px，剛好超過版心到視窗的那 168px 一大半，
-     所以寬螢幕會真的裁到字；375px 上是 41px，超出 20px 的頁面內距，
-     也是裁的。中間的斷點就是 off-grid。 */
-  margin-right: calc(-1 * clamp(16px, 11vw, 230px));
-  margin-bottom: clamp(10px, 1.4vw, 18px);
+  font-size: var(--fs-micro); font-weight: 500;
+  letter-spacing: .19em; text-transform: uppercase;
+  color: var(--stone);
+  padding-top: .9em;
 }
 .lens h3 {
-  font-family: var(--display);
-  font-size: var(--fs-sub);
-  font-weight: 900;
-  line-height: var(--lh-head);
-  letter-spacing: var(--track-zh-head);
-  margin-bottom: 6px;
-}
-.lens__q {
   font-family: var(--display);
   font-size: var(--fs-head);
   font-weight: 700;
   line-height: var(--lh-head);
-  letter-spacing: var(--track-zh-head);
-  color: var(--ink);
-  max-width: 26em;
 }
-.lens > p:last-child {
-  color: var(--stone);
-  font-size: var(--fs-sm);
-  line-height: var(--lh-compact);
-  margin-top: 10px;
-}
-
-@media (min-width: 1101px) {
-  /* 跟 #care、#reach 同一個判斷：.col 的 800px 是單欄長文的行寬上限，
-     兩欄構圖時它反而在扣寬度。放掉之後右欄的內文回到 30em 上下。 */
-  #questions .col { max-width: none; }
-  .lenses {
-    grid-template-columns: minmax(0, 300px) minmax(0, 1fr);
-    column-gap: clamp(28px, 3.6vw, 56px);
-  }
-  .js .lenses__axis {
-    display: block;
-    grid-column: 1;
-    position: sticky;
-    top: clamp(150px, 24vh, 260px);
-    align-self: start;
-  }
-  .js .lenses__list { grid-column: 2; }
-  /* 軸下方那一格：左欄在「人 × 系統」之下本來是空的，那正好是這一站
-     未來最適合放手繪的位置——一個人被三種鏡片看。 */
-  .js .lenses__fig { display: block; }
-  /* 桌機有軸的時候，h3 的內容已經被軸放大講過一次了，所以只留給輔助科技。 */
-  .js .lens > h3 {
-    position: absolute;
-    width: 1px; height: 1px;
-    margin: -1px; padding: 0;
-    overflow: hidden;
-    clip-path: inset(50%);
-    white-space: nowrap;
-  }
-}
+.lens__q { color: var(--ink); font-weight: 500; margin-top: 6px; }
+.lens > p:last-child { color: var(--stone); font-size: var(--fs-sm); margin-top: 8px; }
 
 .sub-card {
   margin-top: clamp(28px, 3vw, 40px);
@@ -2052,8 +1864,12 @@ html:not(.js) .hero__line:first-child {
 @media (max-width: 720px) {
   /* 手機維持 16px 內文，密度由欄數與間距調整。 */
   :root { --fs-body: 16px; }
+  .cards { grid-template-columns: minmax(0, 1fr); }
+  .card { border-radius: 34px; }
   .sub-card { border-radius: 34px; }
   .pull { border-radius: 34px; }
+  .lens { grid-template-columns: minmax(0, 1fr); gap: 6px; }
+  .lens__en { grid-row: auto; padding-top: 0; margin-bottom: 4px; }
   .contact__panel { border-radius: 34px; }
   .cv__row { grid-template-columns: minmax(0, 1fr); gap: 6px; }
   .cv__when { padding-top: 0; }
@@ -2068,8 +1884,16 @@ html:not(.js) .hero__line:first-child {
     flex-direction: row; align-items: baseline; gap: 16px;
   }
   .talk__when { padding-top: 0; }
-  .beat:not(.beat--turn) { grid-template-columns: minmax(0, 1fr); gap: 4px; }
-  .beat:not(.beat--turn) .beat__k { padding-top: 0; }
+  .case__head { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+  .case__head > *:not(.case__no) { grid-column: 1; }
+  .case__no { padding-top: 0; }
+  /* 一欄之後編號在自己那一行，垂直線會穿過文字，所以摘要這一段不畫線；
+     細節那一段改成貼左緣的一條邊，縮排也跟著收到 14px。 */
+  .case__head::after { display: none; }
+  .case__detail { padding-left: 14px; }
+  .case__detail::before { left: 0; }
+  .beat { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+  .beat__k { padding-top: 0; }
   .case__quote { padding-left: 0; }
   .counters { grid-template-columns: minmax(0, 1fr); }
   .counters__item + .counters__item {
@@ -2127,235 +1951,33 @@ html:not(.js) .hero__line:first-child {
 
 
 /* ============================================================
-   MOMENT 03 · ME → YOU（.turnover）
-   全頁最重要的一次轉場，也是唯一一次整個視窗換掉閱讀方式。
-   前面讀者一直在讀「Mei 在想什麼／做過什麼／發現什麼」，這裡輪到他自己。
-
-   裝置只有三樣，而且每一樣都有語意：
-     ① 整頁唯一一片 ink 場，滿版、pin 住一屏。
-        ink 不是第三個色相，是本來的文字色翻成紙——「翻頁」在這個站的定義
-        就是把紙翻到背面，所以只能發生一次。
-     ② 敘事主體的交棒：巨大的「我」往上退開、巨大的「你」從下面接上來，
-        同一個位置。這是這一段 motion 唯一要表達的事。
-     ③ 一個被視窗裁掉的巨大「？」，用 teal 描邊而不是填色——
-        teal 在這個站只做線，放到 600px 也還是一條線。
-
-   接下來才落到 sand 那一章（05 + 06 印在同一張紙上 ＝ 同一段對話）。
-   螢光筆畫在「你現在」，跟 Hero 畫在「人們為什麼」對照著讀。
-
-   基準狀態（也就是沒有 JS 與 reduced-motion 看到的）是 --p: 1，
-   等於這一格的終局：「我」淡到背景、「你」與那句提問都在位。
-   靜態讀起來仍然是一個完整的構圖，不是一個壞掉的動畫。
-   ============================================================ */
-.turnover {
-  position: relative;
-  background: var(--ink);
-  color: var(--cream);
-  /* --p 由 JS 每一帧寫入（0 → 1）。1 是終局，所以沒有 JS 時直接看到終局。 */
-  --p: 1;
-  /* 兩個派生進度，用來把三件事排成先後而不是同時發生。
-     未註冊的自訂屬性是純文字代換，所以可以互相嵌在 calc 裡。 */
-  --pm: clamp(0, calc(var(--p) / .44), 1);           /* 「我」退場 */
-  --q:  clamp(0, calc((var(--p) - .34) / .32), 1);   /* 「你」登場 */
-  --r2: clamp(0, calc((var(--p) - .66) / .28), 1);   /* 提問句與章節碼登場 */
-}
-.turnover__stage {
-  position: relative;
-  overflow: hidden;
-  /* height 而不是 min-height：container-type: size 之下，高度不確定的容器
-     在 Chrome 會把 block 軸的 cqh 回報成 0（實測），下面所有 cqh 就全部塌成
-     clamp 的下限、構圖散掉。裡面的東西全是絕對定位，所以定高不會裁到內容。 */
-  height: min(78svh, 660px);
-  container-type: size;
-  /* 版心左軸線：滿版之下，字仍然站在全頁那一根左軸上。 */
-  --axis: max(var(--pad-x), calc((100% - var(--page)) / 2 + var(--pad-x)));
-}
-
-/* 「？」：teal 描邊的圖形，被右上角裁掉。描邊而不是填色是規範的要求——
-   teal 只做線，所以放到 600px 也還是一條線，不是一片色。
-   text-stroke 不支援時 color: transparent 會讓它整個消失，那是可以接受的
-   降級（它是裝飾），其餘三樣東西都還在。 */
-/* right / top 是量出來的，不是抓的：Noto Sans TC 的全角「？」字身只佔
-   em 寬的 .52、高的 .77，而且靠在 em 盒的中間，所以照 em 盒去對齊
-   會把整個記號留在畫面內、只裁到空白。這兩個值讓字身本身右緣被裁掉
-   約 110px，上下完整——它要讀起來是「一個對這個畫面來說太大的問號」，
-   不是兩塊斷開的圖形。改字級的話這兩個值要一起重算。 */
-.turnover__glyph {
-  position: absolute;
-  right: -.39em;
-  top: -.02em;
-  font-family: var(--display);
-  font-size: clamp(320px, 52vw, 760px);
-  font-weight: 900;
-  line-height: 1;
-  color: transparent;
-  -webkit-text-stroke: clamp(2px, .3vw, 4px) var(--teal);
-  transform: scale(calc(.92 + .08 * var(--p)));
-  transform-origin: 100% 0;
-  pointer-events: none;
-}
-
-/* 我 → 你：疊在同一格，所以交棒不會把版面頂高。 */
-.turnover__swap {
-  position: absolute;
-  left: var(--axis);
-  top: clamp(96px, 17cqh, 190px);
-  display: grid;
-  font-family: var(--display);
-  font-size: clamp(112px, 20cqh, 260px);
-  font-weight: 900;
-  line-height: 1;
-  letter-spacing: 0;
-}
-.turnover__me,
-.turnover__you { grid-area: 1 / 1; }
-/* 「我」不是被刪掉，是退到背景：p 走到 .44 就已經淡到 .14 並且退開一段，
-   所以「你」接上來的時候不會跟它糊在一起，但終局仍然看得出剛剛講的是誰。 */
-.turnover__me {
-  opacity: calc(1 - .86 * var(--pm));
-  transform: translateY(calc(var(--pm) * -26cqh));
-}
-.turnover__you {
-  opacity: var(--q);
-  transform: translateY(calc((1 - var(--q)) * 20cqh));
-}
-
-/* 提問句：交棒完成之後才出現，所以讀起來是「換人了 → 那麼，該問你了」。
-   級數、字重、行寬沿用全站的宣言那一階，不為它另開一個尺寸。 */
-.turnover__ask {
-  position: absolute;
-  left: var(--axis);
-  bottom: clamp(112px, 19cqh, 196px);
-  max-width: min(22em, calc(100% - var(--axis) * 2));
-  font-family: var(--display);
-  font-size: clamp(24px, 3.2vw, 46px);
-  font-weight: 900;
-  line-height: 1.55;
-  letter-spacing: var(--track-zh-head);
-  text-wrap: pretty;
-  opacity: var(--r2);
-  transform: translateY(calc((1 - var(--r2)) * 20px));
-}
-/* 斷行點由這個 nowrap 單位決定，不交給 text-wrap：放給瀏覽器自己斷的話，
-   balance 會斷成「…你現在正 ／ 在試著釐清什麼？」，把「正在」切成兩半。 */
-.turnover__ask-tail { white-space: nowrap; }
-
-.turnover__folio {
-  position: absolute;
-  left: var(--axis);
-  bottom: clamp(30px, 5cqh, 58px);
-  font-family: var(--latin);
-  font-size: clamp(38px, 4.6vw, 60px);
-  font-weight: 500;
-  line-height: 1;
-  letter-spacing: -.05em;
-  color: rgba(246, 242, 232, .38);
-  opacity: calc(.4 + .6 * var(--r2));
-}
-
-/* ---- 允許動態時才 pin ---- */
-@media (prefers-reduced-motion: no-preference) {
-  /* 兩塊 pin 住的場都是 200svh ＝ 一屏的畫面 ＋ 一屏的行程。
-     同一個數字讓兩次翻頁的手感一致，也是「這一頁只有兩處會把畫面停住」
-     這件事的實作依據。 */
-  .js .turnover {
-    height: 200svh;
-    --p: 0;
-  }
-  .js .turnover__stage {
-    position: sticky;
-    top: 0;
-    height: 100svh;
-  }
-}
-
-/* ---- 手機的 MOMENT 03 不是桌機縮小 ----
-   桌機是「左軸線上的一次交棒 ＋ 右下角被裁掉的？」；
-   手機把構圖轉成置中的縱向序列：？從右上角壓進來、我／你在正中間交棒、
-   提問句收在底部。插圖收掉——375px 裡它只會跟字打架。 */
-@media (max-width: 900px) {
-  .turnover__stage { height: min(74svh, 560px); }
-  .turnover__glyph {
-    right: -.34em;
-    top: -.05em;
-    font-size: clamp(260px, 74vw, 400px);
-  }
-  .turnover__swap {
-    left: 50%;
-    top: 50%;
-    font-size: clamp(96px, 34vw, 170px);
-    transform: translate(-50%, -58%);
-    text-align: center;
-  }
-  .turnover__ask {
-    left: var(--pad-x);
-    right: var(--pad-x);
-    bottom: clamp(74px, 13cqh, 110px);
-    max-width: none;
-    font-size: clamp(23px, 6.4vw, 32px);
-  }
-  .turnover__folio { left: var(--pad-x); bottom: clamp(24px, 4cqh, 40px); font-size: clamp(32px, 9vw, 44px); }
-}
-/* swap 在手機上多了一層 translate，位移量要接回去，不然「我」不會往上退。 */
-@media (max-width: 900px) {
-  .turnover__me { transform: translateY(calc(var(--pm) * -22cqh)); }
-  .turnover__you { transform: translateY(calc((1 - var(--q)) * 18cqh)); }
-}
-
-/* ============================================================
-   MOMENT 02／05 的手機構圖
-   ============================================================ */
-/* ---- 案例：編號變成留在字後面的水印 ----
-   桌機是「編號在左欄 sticky、內容在右欄捲」。單欄之下沒有左欄可用，
-   所以改成兩者同格（grid-area 1/1）：編號 sticky 在整則案例的高度裡、
-   躺在文字後面，內容往下讓開 26–40px。
-   讀起來仍然是「我現在在第二則」——只是那個 02 從旁邊移到了字的後面。 */
-@media (max-width: 900px) {
-  .case { grid-template-columns: minmax(0, 1fr); }
-  .case__no {
-    grid-area: 1 / 1;
-    top: clamp(72px, 11vh, 100px);
-    padding-top: 0;
-    margin-top: calc(var(--case-pad) * .5);
-    text-align: left;
-    font-size: clamp(76px, 22vw, 130px);
-  }
-  .case__disc {
-    grid-area: 1 / 1;
-    margin-left: 0;
-    padding-top: clamp(26px, 7vw, 42px);
-  }
-  /* 單欄之下翻轉那一片只往右破出，左緣仍然貼著那條 teal 線。 */
-  .beat--turn { margin-right: calc(-1 * clamp(10px, 3vw, 18px)); }
-}
-
-/* ---- 人 × ：手機把軸換成每一則自己的巨大英文 ----
-   sticky 的軸在單欄裡會壓在正在讀的字上面，所以 ≤1100px 不用它
-   （.lenses__axis 預設就是 display: none）。手機的層級改成：
-   被右緣裁掉的巨大 Systems → h3「人 × 系統」→ 問句 → 內文，
-   三則各自成一頁，靠 padding 而不是靠軸建立「這是第幾個方向」。 */
-@media (max-width: 1100px) {
-  .lens__en { font-size: clamp(50px, 13.5vw, 92px); }
-}
-
-/* ============================================================
    ABOUT 的 colophon 密度
    About 不需要成為第二個大型 feature section：前面的案例與合作已經證明
    專業，它的任務只是「如果你開始對這個人有興趣，這裡讓你再靠近一點」。
    所以這一節是全頁刻意最安靜的一塊——沒有滿版、沒有巨大字、沒有色塊，
    只有一格作者像、三個小號數字、兩列經歷、教學三欄。
-   節奏上它接在 MOMENT 02 的三個巨大編號之後、MOMENT 03 的 ink 場之前：
-   兩次大之間一定要有一次小，contrast 才會讓下一次翻頁有力量。
+   節奏上它接在案例那一節之後、ink 那一章之前：兩片重的東西之間一定要有
+   一段輕的，contrast 才會讓翻到背面那一下有力量。
    ============================================================ */
 .colophon { display: grid; gap: clamp(18px, 2.4vw, 28px); }
-.colophon__fig { max-width: 210px; }
+/* 整站唯一一張照片。方幅、跟 .pull / .sub-card 同一個圓角語彙，
+   width/height 寫在標籤上（800×800）讓它在載入前就佔好位置，不推版。
+   object-fit 是保險：換一張非正方的照片時構圖不會跑掉。 */
+.colophon__fig {
+  max-width: 210px;
+  aspect-ratio: 1 / 1;
+  height: auto;
+  object-fit: cover;
+  border-radius: clamp(14px, 2vw, 26px);
+  background: var(--sand);
+}
 @media (min-width: 901px) {
   .colophon {
     grid-template-columns: clamp(146px, 16vw, 200px) minmax(0, 1fr);
     column-gap: clamp(24px, 3vw, 44px);
     align-items: start;
   }
-  .colophon__fig { max-width: none; }
+  .colophon__fig { max-width: none; width: 100%; }
 }
 #about .lead { margin-bottom: clamp(14px, 1.8vw, 20px); }
 #about .sub { font-size: var(--fs-head); margin-top: clamp(28px, 3.2vw, 40px); }
@@ -2364,83 +1986,3 @@ html:not(.js) .hero__line:first-child {
 #about .cv__what h4 { font-size: var(--fs-head); }
 #about .teaching__header h3 { font-size: var(--fs-head); }
 
-/* ============================================================
-   VISUAL PLACEHOLDER
-   還沒畫的手繪插圖的版位。它刻意長得像鷹架（虛線、12–26px 圓角、
-   說明文字寫在裡面），不假裝自己是一張卡片——現在的用途是讓構圖可以被判斷，
-   不是好看。
-   換成真圖時：把整個 .visual-placeholder 換成 <img>／<svg>，
-   外層的定位（.turnover__fig / .colophon__fig）與比例照留。
-   全部都有 data-placeholder，交稿前 grep 這個屬性就找得到還沒換掉的。
-   ============================================================ */
-.visual-placeholder {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  gap: 6px;
-  aspect-ratio: 1 / 1;
-  padding: clamp(12px, 1.4vw, 18px);
-  border: 1px dashed var(--hairline);
-  border-radius: clamp(14px, 2vw, 26px);
-  background: var(--sand);
-}
-.visual-placeholder__t {
-  font-size: var(--fs-meta);
-  font-weight: 500;
-  line-height: 1.5;
-  color: var(--stone);
-}
-.visual-placeholder__d {
-  font-size: var(--fs-micro);
-  line-height: 1.65;
-  color: var(--stone);
-  max-width: 42em;
-}
-.visual-placeholder--wide {
-  aspect-ratio: 16 / 7;
-  margin-top: clamp(30px, 3.6vw, 48px);
-}
-.visual-placeholder--dark {
-  border-color: rgba(246, 242, 232, .3);
-  background: rgba(246, 242, 232, .05);
-}
-.visual-placeholder--dark .visual-placeholder__t,
-.visual-placeholder--dark .visual-placeholder__d { color: rgba(246, 242, 232, .66); }
-
-/* ============================================================
-   MOMENT 04 的桌機構圖
-   ============================================================ */
-@media (min-width: 1101px) {
-  /* .col 的 800px 是給單欄長文的行寬上限。這一節是兩欄對話，右欄還要放
-     19–23px 的句子，所以放掉容器上限、撐滿 .layout 的右欄。 */
-  #reach .col { max-width: none; }
-  .fit {
-    grid-template-columns: minmax(0, 300px) minmax(0, 1fr);
-    column-gap: clamp(28px, 3.4vw, 56px);
-    row-gap: clamp(28px, 3vw, 44px);
-    grid-template-rows: auto 1fr;
-  }
-  /* 構圖刻意不對稱：提問在左上、六句佔滿整個右欄（跨兩列）、
-     註腳掉到左下角並且貼齊底部。左欄中間那一段空白是留給那句提問的呼吸，
-     不是沒安排到的地方——它正對著右欄最密的那幾句。
-     這裡不用 sticky：全站已經有三處（eyebrow、案例編號、人 × 的軸），
-     再加第四處會讓 sticky 從裝置變成習慣。 */
-  .fit__ask   { grid-area: 1 / 1; }
-  .fit__says  { grid-area: 1 / 2 / span 2 / 3; }
-  .fit__aside { grid-area: 2 / 1; align-self: end; }
-}
-
-@media (max-width: 900px) {
-  /* 對照在單欄裡靠一小段 teal 線接起來，不用圓點——圓點在上下關係裡
-     看起來像項目符號，橫線才讀得出「這兩段是一組」。 */
-  .pair { grid-template-columns: minmax(0, 1fr); }
-  .pair__q { padding-right: 0; }
-  .pair__dot {
-    width: 22px; height: 2px; border-radius: 2px;
-    margin: 14px 0 12px;
-  }
-  .pair__a { padding-left: 0; }
-}
-
-/* 軸下方的插圖位只有桌機有軸的時候才出現（≥1101px ＋ 有 JS）。 */
-.lenses__fig { display: none; margin-top: clamp(26px, 3vw, 42px); }

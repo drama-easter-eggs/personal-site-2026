@@ -9,6 +9,7 @@ index.html            首頁（01–08 全部區塊）
 assets/css/style.css  全站樣式
 assets/js/main.js     螢光筆標記、scroll reveal、hero 問句輪播、案例就地展開、行動版選單、年份
 assets/img/hero-figure.svg      hero 右側的手繪人物（原檔在 reference/hero.svg）
+assets/img/about-portrait.jpg   我的經歷那一節的作者像（原檔在 reference/半身截圖.jpg）
 assets/favicon.svg
 docs/                 規劃與規範（不會部署）
   DESIGN.md             實作後的樣式規範，以這份為準
@@ -17,6 +18,7 @@ docs/                 規劃與規範（不會部署）
   content-architecture.md 長期內容邏輯與三個 lenses
 reference/            外部素材原檔（不會部署）
   hero.svg              hero 那張插圖的原檔（未裁切、未改色）
+  半身截圖.jpg           作者像的原檔（3998×4318；站上那張是 800×800 方裁）
   Loader cat.json       前一版 hero 那隻貓的 lottie 原檔，已不使用
 ```
 
@@ -68,14 +70,20 @@ python3 -m http.server 4000
 點哪裡都能展開；沒有 JS 也能開，Ctrl+F 搜到收合中的字時瀏覽器會自己打開。
 每一則有自己的網址（`index.html#case-fandom`），可以直接把某一則傳給別人。
 新增案例時 `<li class="case" id="case-xxx">` 的 id 要語意化，不要用 `case-4`。
-展開之後「翻轉」那一格會鋪上一片 teal-tint，色塊由左往右刷過一次——
-那是把簽名的螢光筆放大成一整片。使用者若開啟「減少動態效果」則直接上色。
+展開之後「翻轉」那一格的小標會升到 ink 與字重 700，每一則案例的螢光筆只畫在
+那一格——一則一筆，不重複。
 
-**首頁有兩處會把畫面停住（pin）的場。** 「研究走過的領域 → 精選案例」與
-「服務主體從我換成你」各是一段 `height: 200svh` 的跑道加一格 `position: sticky`
-的舞台，捲動位置由 `main.js` 換算成 `--p`（0 → 1）寫在那一段上，所有位移與
-透明度都由 CSS 從 `--p` 推出來。沒有 JS、或開啟「減少動態效果」時兩塊都不 pin，
-各自有一個靜態、完整的構圖（詳見 `docs/DESIGN.md` 的 VISUAL NARRATIVE 一節）。
+**首頁有一處會把畫面停住（pin）的場。** 「研究走過的領域 → 精選案例」是一段
+`height: 200svh` 的跑道加一格 `position: sticky` 的舞台，捲動位置由 `main.js`
+換算成 `--p`（0 → 1）寫在那一段上，所有位移與透明度都由 CSS 從 `--p` 推出來。
+沒有 JS、或開啟「減少動態效果」時它不 pin，退回一份靜態、完整的兩層索引
+（詳見 `docs/DESIGN.md`）。
+
+**整頁只換一次紙。**「什麼情況適合找我」那一節是唯一一片深色（`.section--ink`），
+它代表敘事主體從「我」換成「你」，所以不能為了視覺變化再加第二片。
+深底的層級色在 `.section--ink > .wrap` 一次換算完（`--ink` 變成 cream、
+`--stone` 與 `--hairline` 變成 cream 的透明度階），所以裡面的元件不需要
+各自寫一份深色樣式。
 
 ## 還沒補的內容（搜尋 `TODO` 可以找到）
 
@@ -86,9 +94,5 @@ python3 -m http.server 4000
 4. `index.html` — **Email**（目前是 `hello@example.com`，我沒有直接放上你的私人信箱）。
 5. `index.html` — **Facebook / Instagram / Threads 連結**（目前是 `#`）。
 6. `index.html` — `og:url` 與 `og:image`，等網域確定後再補。
-7. `index.html` — **三處手繪插圖預留位**（`grep data-placeholder index.html`）：
-   About 的作者像（1:1）、服務項目下方「一起拆問題」的橫幅（16:7）、
-   「人 ×」軸下方的三種鏡片（1:1）。每一格裡面就寫著建議的構圖、比例與動態，
-   畫好之後把整個 `.visual-placeholder` 換成 `<img>` / `<svg>`，
-   外層的定位（`.colophon__fig` / `.lenses__fig`）與比例照留。
-   **交稿前務必確認這三格都換掉或刪掉**——它們現在會顯示在頁面上。
+7. `index.html` — 插圖：hero 那張與作者像都已就位，其餘還沒補的都已經拿掉版位，
+   要加的時候再開一格，不留鷹架在頁面上。
