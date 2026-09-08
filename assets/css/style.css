@@ -30,13 +30,10 @@
   --teal-tint: #d3e6df;
 
   /* — ochre: the action hue (v3) —
-     整頁只花在「要讀者動作」的地方，一個畫面最多一次實心填色。這裡是三處：
-     06 的「開始一段對話」實心 CTA、02 的引言色塊、Contact 帶上 email 的底線。
-     案例／經歷的 tag 外框刻意留在細線色——tag 不是動作，染黃會把訊號稀釋掉。
-     ochre-tint 對 cream 的明度差只有 1.04:1，靠色相不靠明度：只能做大色塊，
-     不能拿去畫線、做小標籤或當內文底以外的細節。 */
+     整頁只花在「要讀者動作」的地方，一個畫面最多一次實心填色。這裡是兩處：
+     06 的「開始一段對話」實心 CTA、Contact 帶上 email 的底線。
+     案例／經歷的 tag 外框刻意留在細線色——tag 不是動作，染黃會把訊號稀釋掉。 */
   --ochre:      #e9c64e;
-  --ochre-tint: #f8eec9;
 
   /* — type — */
   /* Latin face first (no CJK coverage, so 漢字 fall through), CJK face second,
@@ -76,7 +73,6 @@
   --measure: 36em;
   --space-paragraph: 1em;
   --space-related: 8px;
-  --space-group: clamp(22px, 2.4vw, 30px);
 
   /* — rhythm — */
   --page: 1200px;
@@ -347,7 +343,10 @@ mark.mark--b {
   top: 116px;
   font-size: var(--fs-eyebrow);
   line-height: 1.7;
-  font-weight: 600;
+  /* 漢字 500 而不是 600：Noto Sans TC 每個字重都是一支獨立的 face，
+     只為這一行小標多載一支不划算。拉丁那半（.eyebrow > span，走 --latin）
+     留在 600——Inter 很輕，而全大寫的英文標籤需要那一階才站得住。 */
+  font-weight: 500;
   color: var(--ink);
   letter-spacing: var(--track-zh);
 }
@@ -370,7 +369,6 @@ mark.mark--b {
    roughly 36 漢字 per line at every step of the scale. */
 .lead,
 .col > p,
-.pull,
 .threads > li > p,
 .case__line,
 .cv__what > p,
@@ -777,21 +775,6 @@ html:not(.js) .hero__line:first-child {
   margin-bottom: 16px;
   padding-top: 16px;
   border-top: 1px solid var(--hairline);
-}
-
-/* 全頁唯一的 highlight block：兩行以內的引言，不放段落。
-   色塊自己就是強調，所以不再加 teal 直線——一個元件只吃一個色相。 */
-.pull {
-  margin: clamp(30px, 3.8vw, 48px) 0;
-  background: var(--ochre-tint);
-  border-radius: var(--r);
-  padding: clamp(24px, 2.8vw, 34px) clamp(26px, 3vw, 38px);
-  font-family: var(--display);
-  font-weight: 500;
-  font-size: var(--fs-sub);
-  line-height: 1.75;
-  letter-spacing: var(--track-zh-head);
-  text-wrap: balance;
 }
 
 .tags { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 16px; }
@@ -1536,7 +1519,6 @@ html:not(.js) .hero__line:first-child {
 .teaching__examples-head p { margin-top: 6px; font-size: var(--fs-meta); color: var(--stone); }
 .teaching .talks { border-top: 0; margin-top: 8px; }
 .teaching .talk:last-child { border-bottom: 0; padding-bottom: 0; }
-.talk__topic { font-size: var(--fs-meta); line-height: 1.5; color: var(--stone); margin-bottom: 6px; }
 @media (min-width: 1101px) {
   .teaching__topics { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
   .teaching__topics > li + li { border-left: 1px solid var(--hairline); padding-left: 16px; }
@@ -1580,19 +1562,6 @@ html:not(.js) .hero__line:first-child {
    ——沿用 .nav / .card 那幾處的同一個做法。 */
 @media (hover: hover) {
   .talk:hover .talk__cover img { transform: scale(1.03); }
-}
-
-/* 還沒有封面的那幾場：sand 色塊 + 年份，讀起來是刻意留白不是破圖。
-   放年份而不是形式字樣——「講座分享」在右邊 20px 處已經寫過一次了。
-   之後補上截圖就換成 <a class="talk__cover"><img></a>。 */
-.talk__cover--none {
-  display: grid;
-  place-items: center;
-  font-family: var(--latin);
-  font-size: var(--fs-head);
-  font-weight: 500;
-  letter-spacing: .04em;
-  color: var(--stone);
 }
 
 .talk h5 {
@@ -1763,7 +1732,9 @@ html:not(.js) .hero__line:first-child {
   align-items: center;
   gap: 8px;
   font-size: var(--fs-micro);
-  font-weight: 600;
+  /* 500 而不是 600：辨識靠 --teal-deep 的顏色與前面那道 12px 短線，不靠字重。
+     漢字端因此不需要載 Noto Sans TC 600（見 DESIGN.md 的字型載入）。 */
+  font-weight: 500;
   line-height: 1.5;
   letter-spacing: var(--track-zh);
   color: var(--teal-deep);
@@ -2091,7 +2062,6 @@ html:not(.js) .hero__line:first-child {
   .cards { grid-template-columns: minmax(0, 1fr); }
   .card { border-radius: 34px; }
   .sub-card { border-radius: 34px; }
-  .pull { border-radius: 34px; }
   .contact__panel { border-radius: 34px; }
   .cv__row { grid-template-columns: minmax(0, 1fr); gap: 6px; }
   .cv__when { padding-top: 0; }

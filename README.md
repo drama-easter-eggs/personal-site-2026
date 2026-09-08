@@ -52,7 +52,6 @@ python3 -m http.server 4000
 | 大面積色 | `#267563` Deep Teal（Contact 收尾帶）— 上面放白字 |
 | 淺色底 | `#d3e6df` Teal Tint（電子報卡片這類閱讀面） |
 | 動作色 | `#e9c64e` Ochre — 只用在要讀者動作的地方，一個畫面最多一顆實心 CTA |
-| 強調底 | `#f8eec9` Ochre Tint — 全頁一塊（02 的引言），不放段落、不畫線 |
 | 拉丁字 | Inter 400 / 500 |
 | 漢字 | Noto Sans TC — 單一家族，**不使用明體** |
 | 漢字層級 | 內文 400 → 標題 700 → 大標 900 |
@@ -62,8 +61,8 @@ python3 -m http.server 4000
 **簽名元素：螢光筆標記。** 在 HTML 裡把要標記的字包起來就好：
 
 ```html
-<mark class="mark" data-mark>要畫線的字</mark>
-<mark class="mark mark--b" data-mark>另一種筆觸</mark>
+<mark class="mark">要畫線的字</mark>
+<mark class="mark mark--b">另一種筆觸</mark>
 ```
 
 `mark--b` 是第二種手繪筆觸，交錯使用可以避免每一道線長得一模一樣。

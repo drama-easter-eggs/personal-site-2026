@@ -1,4 +1,32 @@
-## 2026-09-08 拿掉章節大編號（最新）
+## 2026-09-08 清掉死碼、字重收斂（最新）
+
+### 退場的東西
+
+`.pull`（highlight block）與它專屬的 `--ochre-tint`。HTML 裡已經沒有這個元素，
+CSS 三處規則（measure 清單、元件本體、≤720px 圓角）一併清掉。
+本文件原本描述它的 14 處也全部撤掉——色彩 token 表、Surfaces 階梯、對比實測表、
+字級表的 `--fs-sub` 列、圓角用途、元件章節、Agent Prompt Guide 的色票與範例。
+**ochre 現在只有兩個落點**（實心 CTA、Contact 的 email 底線），
+用色比例表裡原本的「ochre + ochre-tint ~5%」因此失效，標記為待重測。
+
+同時清掉 `.talk__topic`（無對應元素）、`--space-group`（定義了沒用）、
+`data-mark` 屬性 ×10 與 `id="hero-questions"`（CSS 與 JS 都沒有讀它們，
+螢光筆全靠 `.mark` / `.mark--b` 的 background，輪播用的是 `[data-rotator]`）。
+
+### 漢字不再用 600
+
+`.eyebrow` 的漢字 600 → 500、`.post__tag` 600 → 500。原因是 600 當時根本沒載到：
+字型請求只有 400/500/700/900，那兩處是瀏覽器合成的假粗體。
+修法選了「降字重」而不是「補載字重」——Noto Sans TC 每個字重都是一支獨立的 face，
+為兩行小標多載一支不划算。600 只留給 `.eyebrow > span`（走 `--latin`／Inter，
+全大寫的英文標籤需要那一階），所以兩支字體的請求字重刻意不對稱：
+`Inter:wght@400;500;600;700;900` + `Noto+Sans+TC:wght@400;500;700;900`。
+
+`.post__tag` 掉一階不影響辨識——它靠 `--teal-deep` 與前置的 12px 短線，不靠字重。
+
+---
+
+## 2026-09-08 拿掉章節大編號
 
 `.turn__folio`（03、04）與 `.vfield__folio`（02）拿掉了——原本借 `.counters__n`
 語彙、clamp(38px, 4.6vw, 60px) 的那個大號 `--latin` 數字，整頁不再出現。
@@ -131,7 +159,7 @@
 （3998×4318）方裁後壓縮。顯示尺寸 146–210px，留到 3x。
 
 - 版位沿用 colophon 左欄，`width`/`height` 寫在標籤上，載入前就佔好位置不推版
-- 圓角跟 `.pull` / `.sub-card` 同一階（`clamp(14px, 2vw, 26px)`）
+- 圓角跟 `.sub-card` 同一階（`clamp(14px, 2vw, 26px)`）
 - 照片本身不做任何處理——不套色、不加濾鏡、不描邊。
   `docs/design-reference_v3.md` 那份參考寫的是「illustration-only、無照片」，
   這裡是刻意的偏離：作者像用真人比用手繪更誠實，
@@ -610,7 +638,6 @@ CSS 變數名以實作為準（短名），右欄是 v3 規範裡的對應名稱
 | `--teal-deep` | `#2e9a82` | Deep Teal | 唯一的大面積填色：Contact 收尾帶。上面放白字 |
 | `--teal-tint` | `#d3e6df` | Teal Tint | 唯一的彩色閱讀面：電子報卡片 |
 | `--ochre` | `#e9c64e` | Ochre | 動作色。實心 CTA、Contact 帶上 email 底線 |
-| `--ochre-tint` | `#f8eec9` | Ochre Tint | 全頁一塊 highlight block（02 的引言） |
 
 ### 兩處偏離規範，都是對比問題
 
@@ -629,27 +656,24 @@ CSS 變數名以實作為準（短名），右欄是 v3 規範裡的對應名稱
 | cream / sandstone / white | ~70% | 紙做結構工作 |
 | ink 文字與線 | ~10% | |
 | teal 三階 | ~15% | 結構、螢光筆，加一條收尾色帶 |
-| ochre + ochre-tint | ~5% | 只有動作 |
+| ochre | 待重測 | 只有動作。原本的 ~5% 含已退場的 ochre-tint 色塊，現在只剩實心 CTA 與 email 底線兩處 |
 
-### ochre 的三個落點（全站就這三處）
+### ochre 的兩個落點（全站就這兩處）
 
 1. 06「開始一段對話」實心 CTA — 全站唯一一顆實心按鈕，ink on ochre 8.26:1
-2. 02 引言的 ochre-tint 色塊 — 全頁唯一的 highlight block
-3. Contact 帶上 email 的底線 — Deep Teal 帶上唯一的暖色標記
+2. Contact 帶上 email 的底線 — Deep Teal 帶上唯一的暖色標記
 
-導入 ochre 時做的三個判斷，規範沒寫：
+導入 ochre 時做的兩個判斷，規範沒寫：
 
 - **tag 外框刻意不染黃。** 規範允許 ochre 當 tag 外框，但案例與經歷的 tag 有十幾顆，
   染黃等於把「這裡要動作」的訊號稀釋掉。tag 是分類資訊不是動作，留在 `--hairline`。
-- **ochre-tint 只能做大色塊。** `#f8eec9` 對 cream 的明度差只有 1.04:1——靠色相不靠明度。
-  做成大面積引言色塊看得出來，拿去畫線、做小 chip 或當描邊會直接消失。全頁只用一塊。
 - **email 底線 3px 不是 2px。** ochre 對 deep teal 只有 2.09:1，2px 在那條帶上撐不住。
 
 ### 組合規則
 
-- 一個元件只吃一個色相。引言色塊是 ochre-tint 就不再加 teal 直線；卡片有 teal 描邊就不放實心 CTA
+- 一個元件只吃一個色相。卡片有 teal 描邊就不放實心 CTA
 - 一個畫面裡 Deep Teal 填色與 ochre 填色各最多出現一次
-- 內文只落在 cream / white / sandstone / teal-tint 上，不落在 ochre-tint 以外的彩色上
+- 內文只落在 cream / white / sandstone / teal-tint 上，不落在其他彩色上
 - 不用顏色表達成功／錯誤／警告。`fit__list` 的「適合／不適合」用 ink 與 hairline 的短線區分，不用紅綠
 - 不要再引入第三個色相
 
@@ -674,7 +698,8 @@ CSS 變數名以實作為準（短名），右欄是 v3 規範裡的對應名稱
 
 本節取代下方歷史規格的對應項目。尚未推送或部署。
 
-- 章節 eyebrow 中文 17px、英文 14px、字重 600；英文 tracking 0.08em。
+- 章節 eyebrow 中文 17px、英文 14px；中文字重 500、英文字重 600（英文走 `--latin`／Inter，加載成本低）；英文 tracking 0.08em。
+- `.post__tag` 字重由 600 降為 500：辨識靠 `--teal-deep` 與前置的 12px 短線，不靠字重；漢字端因此不必載 Noto Sans TC 600。
 - 交替底色由 #e3dcd0 調亮為 #efede6；次要文字由 #5f615d 加深為 #50554f。
 - sRGB 相對亮度計算：次要文字對交替底色 6.51:1（原為 4.60:1），主要文字 11.71:1。
 - 原教學經驗與演講課程整合為「教學與分享」，以共同白色閱讀面與留白表示群組；依使用者回饋移除外框及青綠頂線，沿用 Work with me 的無框設計。圓角與其卡片一致：桌面使用 --r（50px），720px 以下使用 34px。
@@ -714,7 +739,7 @@ CSS 變數名以實作為準（短名），右欄是 v3 規範裡的對應名稱
 
 ### 兩支字體，一個層級系統
 
-拉丁字 **Inter**，漢字 **Noto Sans TC**，全站只有這兩支。層級靠字重與字級落差（400 → 500 → 700 → 900），
+拉丁字 **Inter**，漢字 **Noto Sans TC**，全站只有這兩支。層級靠字重與字級落差（漢字 400 → 500 → 700 → 900；拉丁多一階 600，只給 eyebrow 的全大寫標籤），
 不靠第二支字體。規範說「單一家族 Inter」，但 Inter 沒有漢字，所以這裡必然是兩支——重點是漢字端只有一支。
 
 ```css
@@ -728,7 +753,9 @@ CSS 變數名以實作為準（短名），右欄是 v3 規範裡的對應名稱
   PingFang 會搶走所有漢字，而 Windows 上從這兩個通用字族遞補進來的常常就是新細明體
 - `<html lang="zh-Hant-TW">` 要正確。標記錯誤時瀏覽器會用簡體或日文的預設字體遞補，明體從這裡進來
 - Google Fonts 匯入的是 **Noto Sans TC**，不是 Noto Serif TC；400/500/700/900 四個字重要一起載，
-  漏載會變成合成粗體，漢字會糊
+  漏載會變成合成粗體，漢字會糊。**漢字不用 600** —— Noto Sans TC 每個字重都是一支獨立的 face，
+  為一兩行小標多載一支不划算。600 只存在於 Inter（`--latin`），所以兩支字體的請求字重刻意不對稱：
+  `Inter:wght@400;500;600;700;900` + `Noto+Sans+TC:wght@400;500;700;900`
 - 漢字不用斜體。CJK 沒有真正的斜體字形，瀏覽器只會做傾斜變形
 
 ### 中文行高拉開
@@ -762,7 +789,7 @@ token 的元素才會跟著降。
 | `--fs-hero` | hero 問句（兩行同級）`.hero__fixed` / `.hero__rotator` | 25 → 60px（4.65vw） | 900 | 1.4 | .01em |
 | `--fs-mega` | Contact 大標 `.contact__head`、數字 `.counters__n` | 28 → 46px（3.6vw） | 900 / 500 (latin) | 1.32 / 1 | .01em / -.05em |
 | `--fs-display` | 論點句 `.care__thesis`、案例提問 `.case__q`、email `.contact__mail` | 21 → 28px（2.2vw） | 900 / 700 / 500 | 1.6 / 1.45 / — | .01em / -.035em (latin) |
-| `--fs-sub` | 章節小標 `.sub`、引言色塊 `.pull` | 20 → 24px（1.9vw） | 700 / 500 | 1.45 / 1.75 | — / .01em |
+| `--fs-sub` | 章節小標 `.sub` | 20 → 24px（1.9vw） | 700 | 1.45 | — |
 | `--fs-head` | 所有區塊與項目標題 `.threads h3` / `.card h3` / `.lens h3` / `.sub-card h3` / `.fit__head` / `.cv__what h4` / `.teach h4` / `.talk h4` | 19 → 21px（1.65vw） | 700 | 1.45 | — |
 | `--fs-body` | 內文 `body`、`.hero__id`、`.about__note`，以及導言 `.lead`、`.services__close`、`.contact__body`（繼承） | 17px | 400 / 500 | 1.78 | .02em |
 | `--fs-sm` | 次要段落、按鈕、nav `.btn` / `.card p` / `.nav__links a` | 15px | 400 / 500 | 1.78 | .02em |
@@ -828,10 +855,10 @@ token 的元素才會跟著降。
 | `--gutter-gap` | clamp(22, 2.8vw, 48) | 兩欄間距 |
 | `--pad-x` | clamp(20, 5vw, 48) | 版心左右留白 |
 | `--section-y` | clamp(60, 6.6vw, 96) | 區塊上下留白 |
-| `--r` | 50px | 卡片、按鈕、導覽、tag、引言色塊 |
+| `--r` | 50px | 卡片、按鈕、導覽、tag |
 | `--r-sm` | 12px | skip link 這類小元件 |
 
-圓角在 ≤720px 一律收到 34px（`.card` / `.sub-card` / `.pull`），行動版手機寬度下 50px 會吃掉太多內距。
+圓角在 ≤720px 一律收到 34px（`.card` / `.sub-card`），行動版手機寬度下 50px 會吃掉太多內距。
 不要用 0–4px 的直角——這套系統的柔軟度靠大圓角，收掉就變成另一套系統。
 
 ---
@@ -868,7 +895,6 @@ token 的元素才會跟著降。
 | 1 | sandstone | `#e3dcd0` | 交替區塊 |
 | 2 | white | `#ffffff` | 卡片、浮動導覽 |
 | 3 | teal-tint | `#d3e6df` | 電子報卡片 |
-| 3 | ochre-tint | `#f8eec9` | 引言色塊 |
 | — | teal-deep | `#2e9a82` | Contact 收尾帶 |
 
 **不使用陰影與漸層。** 層次全部由表面明度階梯與大圓角承擔，維持印刷般的平面感。
@@ -881,8 +907,8 @@ token 的元素才會跟著降。
 整套系統辨識度最高的裝置，對應 Mei 讀逐字稿劃重點的實際工作方式。效力來自稀有度。
 
 ```html
-<mark class="mark" data-mark>要畫線的字</mark>
-<mark class="mark mark--b" data-mark>另一種筆觸</mark>
+<mark class="mark">要畫線的字</mark>
+<mark class="mark mark--b">另一種筆觸</mark>
 ```
 
 - 兩個手繪 SVG 筆觸（`.mark` / `.mark--b`），交錯使用，重複時才不會看起來一模一樣
@@ -914,10 +940,6 @@ token 的元素才會跟著降。
 上排 12px 拉丁大寫、字距 .19em、ink 色，下面一條 hairline；下排 15px 中文、stone 色。sticky。
 gutter 收到 140px 之後，較長的標籤（`WHAT I CARE ABOUT`、`QUESTIONS I EXPLORE`）折成兩行，
 這是可接受的——它是側欄的定位標，不是要一眼讀完的句子。
-
-### Highlight Block（`.pull`）
-ochre-tint 底、50px 圓角、內距 clamp(24–34) / clamp(26–38)。**兩行以內**，不放段落。
-色塊自己就是強調，所以不再加 teal 直線。全頁一塊。
 
 ### 分行列表（cases / cv / teach / talks / lenses / fit）
 沒有卡片，用 hairline 分行 + 左欄編號或年份的 grid。這是全站的主要內容形式。
@@ -1009,7 +1031,7 @@ cream 底，14px stone，左邊版權、右邊 `What moves people?`。年份由 
 
 規則只有兩條：
 
-1. **一個區塊是一個手勢。** 段落、引言、卡片、newsletter 卡各自整塊進場，不逐字逐行拆
+1. **一個區塊是一個手勢。** 段落、卡片、newsletter 卡各自整塊進場，不逐字逐行拆
 2. **列表交給每一列自己。** `.threads` `.cases` `.counters` `.cv` `.teach` `.talks`
    `.cards` `.lenses` `.fit__list` 這幾個容器**自己不進場**（CSS 裡用 `:not()` 排掉），
    由裡面的每一列進場；容器與列都動會疊成兩次
@@ -1254,7 +1276,6 @@ JS 攔下 `<summary>` 的原生開合自己補間；收合時要撐到動畫跑�
 | ink / sandstone | 10.07 | ✅ |
 | ink / white | 13.71 | ✅ |
 | ink / teal-tint | 10.55 | ✅ |
-| ink / ochre-tint | 11.8 | ✅ |
 | ink / ochre（CTA） | 8.26 | ✅ |
 | stone / cream | 5.6 | ✅ |
 | stone / sandstone | 4.6 | ✅ |
@@ -1292,7 +1313,6 @@ JS 攔下 `<summary>` 的原生開合自己補間；收合時要撐到動畫跑�
 ### Don't
 - 不要引入第三個色相，也不要用顏色表達成功／錯誤／警告
 - 不要把 ochre 拿去做區塊底色、頁尾色帶或內文底
-- 不要用 ochre-tint 畫線、做 tag 或任何小面積——它對 cream 只有 1.04:1，會消失
 - 不要在字體堆疊裡把 `system-ui` / `ui-sans-serif` / `-apple-system` 放在 Noto Sans TC 前面
 - 不要出現明體、宋體、細明體，任何位置都不行；漢字也不用斜體
 - 不要用陰影或漸層做層次
@@ -1321,7 +1341,7 @@ JS 攔下 `<summary>` 的原生開合自己補間；收合時要撐到動畫跑�
 
 - text: `#2c2e2a`／muted `#5f615d`
 - background: `#f6f2e8`（畫布）、`#e3dcd0`（交替區塊）
-- surface: `#ffffff`（卡片、導覽）、`#d3e6df`（電子報卡）、`#f8eec9`（引言色塊）
+- surface: `#ffffff`（卡片、導覽）、`#d3e6df`（電子報卡）
 - border: `#b7b0a2`（細線）、`#2c2e2a`（重線）
 - accent: `#5cb2a0`（只做線與小面積）
 - large area: `#2e9a82`（只有 Contact 收尾帶，白字）
@@ -1337,10 +1357,9 @@ JS 攔下 `<summary>` 的原生開合自己補間；收合時要撐到動畫跑�
    文字直接坐在畫布上，沒有卡片容器。
 2. *Ghost 按鈕：* cream 底膠囊、50px 圓角、11px/20px 內距、15px/500 ink 字，右端 9px `#5cb2a0` 圓點。
 3. *實心 CTA（全站一顆）：* `#e9c64e` 底、ink 字、右端 9px ink 圓點，其餘同上。
-4. *引言色塊：* `#f8eec9` 底、50px 圓角、內距 24–34px / 26–38px、19–25px weight 500 ink 字、行高 1.72。兩行以內。
-5. *分行列表：* 上下 hairline `#b7b0a2` 分行，左欄 74–148px 放編號或年份（13px、stone、拉丁），
+4. *分行列表：* 上下 hairline `#b7b0a2` 分行，左欄 74–148px 放編號或年份（13px、stone、拉丁），
    右欄標題 700 加一到兩段內文。沒有卡片、沒有陰影。
-6. *Contact 收尾帶：* 滿版 `#2e9a82`，白字，大標 30–68px/900，email 22–46px 拉丁 500 配 3px `#e9c64e` 底線，
+5. *Contact 收尾帶：* 滿版 `#2e9a82`，白字，大標 30–68px/900，email 22–46px 拉丁 500 配 3px `#e9c64e` 底線，
    社群連結是白色 55% 透明描邊的膠囊。
 
 ---
@@ -1366,7 +1385,6 @@ JS 攔下 `<summary>` 的原生開合自己補間；收合時要撐到動畫跑�
 
   /* ochre — 動作 */
   --ochre:      #e9c64e;
-  --ochre-tint: #f8eec9;
 
   /* type */
   --sans:    'Inter', 'Noto Sans TC', 'PingFang TC', 'Heiti TC', 'Microsoft JhengHei', sans-serif;
