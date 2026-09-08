@@ -20,7 +20,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/style.css?v=20260908-narrative2">
+<link rel="stylesheet" href="assets/css/style.css?v=20260908-orbit">
 </head>
 <body>
 
@@ -131,55 +131,78 @@
 </section>
 
 <!-- ══════════ MOMENT 01 · 收斂場 → 02 EVIDENCE ══════════
-     這一塊同時是「研究走過的領域」與第一章翻到第二章的轉場，不是兩件事。
+     這一塊同時是「走過的領域」與第一章翻到第二章的轉場，不是兩件事。
 
-     原本它是版心裡一份安靜的兩層索引（左欄五個大領域、右欄 27 個關鍵字）。
-     索引本身沒問題，問題是它把「跨過很多個世界」講成了一張表格。
-     所以這裡把同一份資料攤成一個滿版的場：五個領域散落在整個視窗裡，
-     捲動時一起往中心收、退成背景，最後只留下那一句原本寫在段落結尾的話。
+     構圖：一顆白色的圓站在畫面正中央，五個領域是它外面那一圈細線上的五個點
+     （左右各兩站，第五站在正下方；圓的正上方留一段空弧）。捲動時五站依序出現，讀完
+     之後一起被帶回圓心、退掉，圓裡原本寫的「我研究過這些領域」換成那一句
+     結論；結論落定之後，插圖從圓的右下角浮出來，壓過圓、也壓出圓外。
 
-     motion 的語意就是這句話本身：many worlds → one recurring question。
-     位置由每個群組自己的 --x / --y（單位是 cqw / cqh）決定，是手排的，不是隨機——
-     改版時直接調那兩個數字。收斂量由 --p（0 → 1）驅動，見 main.js 的 scene。
+     motion 的語意就是那句話本身：五個各自獨立的產業 → 同一個圓心。
+     所以這裡不是「散落再收攏」而是「同一圈上的五站」——圓心從頭到尾都在，
+     只是一開始它問問題，最後它給答案，然後答案旁邊坐著那個在讀的人。
+
+     幾何全部從 --u（＝ min(1cqh, .62cqw)，見 CSS）推出來，所以圓、圈、五站、
+     插圖在任何視窗比例都是同一組比例，寬螢幕不會把五站甩出畫面、
+     矮螢幕不會把最上與最下那兩塊擠到邊緣外。五站的角度與錨點寫在 CSS 的
+     :nth-child 裡（同一個地方看得到五個座標，比散在五行 style 上好對）。
+
+     破框：插圖刻意超出白圓的右緣與下緣（參考 reference/破框示意.png）。
+     它的身體是留空的，所以圓的邊線會從身體裡穿過去——那正是參考圖的樣子，
+     不是沒對齊。
 
      降級（三層，都要能讀）：
-       沒有 JS        → .vfield__list 維持正常流排版，就是原本那份兩層索引
-       reduced-motion → 版位照排、但 --p 停在 .34，不隨捲動變化，那一句一直在
-       ≤900px        → 不用滿版散落（375px 塞不進去），改成自己的敘事，見 RESPONSIVE
+       沒有 JS        → .vfield__list 維持正常流排版：左邊一條縱軸串起五站的
+                        編號索引，下面接那一句與插圖。它本身是完整的設計
+       reduced-motion → 同上，不 pin、不寫 --p
+       ≤900px／矮視窗 → 同一份縱軸索引（那一圈塞不進 375px），只是級數與間距
+                        收一階；插圖照樣破出右邊界
 -->
 <section class="vfield" data-scene aria-labelledby="vfield-label">
   <div class="vfield__stage">
-    <p class="vfield__label" id="vfield-label">研究走過的領域</p>
+    <!-- 那一圈與圓心是純視覺，不帶資訊 -->
+    <div class="vfield__orbit" aria-hidden="true"></div>
+    <div class="vfield__core" aria-hidden="true"></div>
 
+    <p class="vfield__label" id="vfield-label">我研究過這些領域</p>
+
+    <!-- 五站的順序＝繞著圓順時針走一圈（左上 → 右上 → 右 → 下 → 左），
+         座標與錨點在 CSS 的 .vfield__cluster:nth-child(n) -->
     <dl class="vfield__list">
-      <div class="vfield__cluster" style="--x:5;--y:19;--w:13em;--rot:-1.2deg;--s:1.26">
-        <dt class="vfield__name">金融與 FinTech</dt>
+      <div class="vfield__cluster">
+        <dt class="vfield__name"><span class="vfield__no" aria-hidden="true">01</span>金融與 FinTech</dt>
         <dd class="vfield__keys"><span>證券投資</span><span>數位銀行</span><span>財富管理</span><span>保險</span><span>加密貨幣</span></dd>
       </div>
-      <div class="vfield__cluster" style="--x:61;--y:9;--w:13em;--rot:.8deg;--s:1.1">
-        <dt class="vfield__name">文化內容與 IP</dt>
+      <div class="vfield__cluster">
+        <dt class="vfield__name"><span class="vfield__no" aria-hidden="true">02</span>文化內容與 IP</dt>
         <dd class="vfield__keys"><span>漫畫</span><span>出版</span><span>影視</span><span>IP</span><span>遊戲</span><span>數位收藏</span></dd>
       </div>
-      <div class="vfield__cluster" style="--x:2;--y:61;--w:14em;--rot:.6deg;--s:1.16">
-        <dt class="vfield__name">數位產品與商業服務</dt>
+      <div class="vfield__cluster">
+        <dt class="vfield__name"><span class="vfield__no" aria-hidden="true">03</span>數位產品與商業服務</dt>
         <dd class="vfield__keys"><span>電商</span><span>會員經營</span><span>訂閱服務</span><span>O2O</span><span>數位平台</span></dd>
       </div>
-      <div class="vfield__cluster" style="--x:52;--y:75;--w:12em;--rot:-.7deg;--s:.94">
-        <dt class="vfield__name">教育與健康</dt>
+      <div class="vfield__cluster">
+        <dt class="vfield__name"><span class="vfield__no" aria-hidden="true">04</span>教育與健康</dt>
         <dd class="vfield__keys"><span>EdTech</span><span>線上教育</span><span>醫療照護</span><span>熟齡服務</span></dd>
       </div>
-      <div class="vfield__cluster" style="--x:77;--y:42;--w:11em;--rot:1.1deg;--s:1">
-        <dt class="vfield__name">公共與產業轉型</dt>
+      <div class="vfield__cluster">
+        <dt class="vfield__name"><span class="vfield__no" aria-hidden="true">05</span>公共與產業轉型</dt>
         <dd class="vfield__keys"><span>公共服務</span><span>交通</span><span>ESG</span><span>製造業</span><span>HR Tech</span></dd>
       </div>
     </dl>
 
-    <!-- 這兩句原本是 .care__note 的後半段，一個字沒改，只是換了位置：
-         段落結尾的一句結論，變成整個場收斂後剩下的那一句。 -->
-    <div class="vfield__say">
-      <p class="vfield__say-in">而我有個癖好是——</p>
-      <p class="vfield__say-out"><mark class="mark" data-mark>在跨領域的產業中，看見共同的人性需求</mark></p>
-    </div>
+    <!-- 收乾之後圓裡剩下的那一句。刻意斷成兩行、兩道螢光筆（第二道是反相位的
+         .mark--b，相鄰兩筆不會長得一樣）：交給自動斷行會斷在「我看／見」中間。 -->
+    <p class="vfield__say">
+      <span class="vfield__say-l"><mark class="mark" data-mark>在不同產業當中，</mark></span>
+      <span class="vfield__say-l"><mark class="mark mark--b" data-mark>我看見共同的人性需求</mark></span>
+    </p>
+
+    <!-- 那一句落定之後才浮出來的人。純裝飾（alt 留空 + aria-hidden）：
+         它講的事情跟上面那一句一模一樣，讀屏軟體再讀一次只是重複。
+         width/height 是 viewBox 的實際比例，先卡住版位。 -->
+    <img class="vfield__fig" src="assets/img/reading-figure.svg"
+         width="569" height="656" alt="" aria-hidden="true" loading="lazy" decoding="async">
 
     <p class="vfield__folio" aria-hidden="true">02</p>
   </div>

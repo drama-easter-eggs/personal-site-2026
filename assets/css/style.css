@@ -107,9 +107,8 @@ img, svg { display: block; max-width: 100%; }
 a { color: inherit; }
 
 /* 橫向裁切掛在 <main> 上，不在 <html> 也不在 <body>。
-   收斂場（.vfield）刻意破出版心：五個領域散在整個視窗裡，手機版的
-   .vfield__cluster 還會往右推出螢幕。不裁的話它會讓整頁多出一條真的可以
-   橫向捲的軸。
+   收斂場（.vfield）刻意破出版心：正常流那一版的插圖用負的 margin-right
+   推到紙的外面。不裁的話它會讓整頁多出一條真的可以橫向捲的軸。
 
    為什麼是 clip 而不是 hidden：hidden 會讓元素變成捲動容器，裡面的
    position: sticky 就改成相對它的 scrollport 計算而不是相對視窗——
@@ -186,7 +185,7 @@ mark.mark--b {
 /* 同一個 duration 在不同字級上是不同的視覺速度（位移量是 em）。
    字級大的兩處把時間一起放大，讓全站每一筆都維持在 2–5px/s。 */
 .hero__fixed mark.mark      { --mark-wave: 14s; }
-.vfield__say-out mark.mark  { --mark-wave: 10s; }
+.vfield__say mark.mark      { --mark-wave: 10s; }
 
 @keyframes mark-wave {
   from { background-position-x: 0; }
@@ -395,8 +394,9 @@ mark.mark--b {
 
    所以章際交界只用兩種東西，而且都不是裝飾：
 
-     → 02  .vfield        一整片滿版的收斂場。內容從版心走出去、散在整個
-                          視窗，再一起收回來。破的是「內容住在 1200px 裡」
+     → 02  .vfield        一整片滿版的收斂場。五個領域站在同一圈上，讀完之後
+                          一起收回正中央那顆圓，插圖再從圓裡破出來。
+                          破的是「內容住在 1200px 裡」
      → 03  .section--ink  翻到紙的背面。第三章是全頁唯一一次換人稱
                           （我 → 你），所以也是唯一一次換到 ink 那張紙
      → 04  .turn          只剩一個章節碼的短停頓。第四章是回到原本那張紙，
@@ -895,28 +895,41 @@ html:not(.js) .hero__line:first-child {
 
 /* ============================================================
    MOMENT 01 · 收斂場（.vfield）
-   「研究走過的領域」與「第一章 → 第二章」是同一件事，所以是同一塊，
+   「走過的領域」與「第一章 → 第二章」是同一件事，所以是同一塊，
    不是一份索引後面再接一個轉場帶。
 
-   同一份資料有三種狀態，三種都要能讀：
+   同一份資料有兩種狀態，兩種都要能讀：
 
-   ① 沒有 JS ／ reduced-motion（下面這一段就是它）
-      維持 2026-09-08 那份兩層索引：左欄五個大領域垂直對齊成一根軸掃出跨度，
-      右欄 27 個關鍵字用 · 串成一行。它本身是完整的設計，不是退化畫面。
+   ① 正常流（沒有 JS ／ reduced-motion ／ ≤900px ／ 矮視窗）
+      左邊一條 hairline 的縱軸串起五站，每一站是「大號編號 ＋ 領域 ＋ 關鍵字」，
+      下面接那一句，再下面是破出右邊界的插圖。
+      它本身是完整的設計，不是退化畫面——只是把那一圈拉直。
    ② 桌機 ＋ JS ＋ 允許動態
-      同一份資料攤成一個滿版的場：五個領域散在整個視窗裡，捲動時一起往中心收、
-      退成背景，最後只留下那一句。motion 的語意就是那句話本身——
-      many worlds → one recurring question。
-   ③ ≤900px
-      375px 塞不進二維的場，所以手機有自己的敘事：交錯縮排的縱向序列、
-      關鍵字逐組退色，最寬的兩組刻意被右緣裁掉。不是把桌機的場壓扁。
+      同一條軸彎成一整圈，圍著畫面正中央那顆白色的圓。五站依序出現，
+      讀完之後一起被帶回圓心、退掉，圓裡的「我研究過這些領域」換成那一句，
+      然後插圖從圓的右下角浮出來、壓出圓外。
 
-   收斂量由 --p（0 → 1）驅動，JS 每一帧寫在 .vfield 上（見 main.js 的 1g）。
-   位置由每個群組自己的 --x / --y 決定，是手排的；改版直接調 HTML 裡那兩個數字。
+   幾何（見 index.html 的註解與下面 :nth-child 那五行）：
+   一切都是 --u 的倍數，--u ＝ min(1cqh, .62cqw)。
+     圓   21u ・ 圈 30u ・ 一站的欄寬 32u ・ 插圖 33u 寬
+   為什麼要兩個軸一起夾：只看高度，寬螢幕會把左右兩站甩出畫面；只看寬度，
+   矮螢幕會把最上與最下那兩塊擠出上下邊。夾住之後整組構圖只是等比縮放。
+
+   五站不平分一圈：四站分在左右兩側（±25° / 155° / 205°），第五站在正下方。
+   平分會有一站落在圓的正上方，那一塊得整個掛在圓上面，在 768 高的筆電上
+   會頂到浮動的導覽列。現在圓的正上方是一段乾淨的空弧。
+
+   時間軸（--p 由 JS 每一帧寫在 .vfield 上，見 main.js 的 1b）：
+     .00 – .39   五站依序進場（每站錯開 .055，各自走 .17）
+     .39 – .56   停住，這段是留給讀的
+     .56 – .84   五站回到圓心、退掉；那一圈跟著淡出
+     .56 – .69   圓裡的提問退場
+     .70 – .85   圓裡的那一句進場
+     .82 – .96   插圖從圓的右下角浮出來（那一句不動，它一直在圓心）
    ============================================================ */
 .vfield { --p: 0; }
 
-/* ---- ① 流排版：沒有 JS 或不允許動態時的兩層索引 ---- */
+/* ---- ① 正常流：拉直的縱軸索引 ---- */
 .vfield__stage {
   width: 100%;
   max-width: var(--page);
@@ -924,30 +937,72 @@ html:not(.js) .hero__line:first-child {
   padding-inline: var(--pad-x);
   padding-block: calc(var(--section-y) * .5) 0;
 }
+/* 軌道與圓只在桌機的場裡出現；正常流不需要它們（軸就是 .vfield__list::before）。 */
+.vfield__orbit,
+.vfield__core { display: none; }
+
 .vfield__label {
   font-size: var(--fs-meta);
   font-weight: 500;
   letter-spacing: var(--track-zh);
   color: var(--stone);
-  margin-bottom: 10px;
+  margin-bottom: clamp(14px, 1.6vw, 20px);
 }
+
 /* 索引與下面那句話共用 --measure，右緣切在同一條線上——它們是同一個敘事。 */
 .vfield__list {
-  border-top: 1px solid var(--hairline);
+  position: relative;
   max-width: var(--measure);
+  padding-left: clamp(22px, 2.4vw, 30px);
 }
+/* 縱軸。頭尾各縮 .9em 讓它停在第一顆與最後一顆圓點上，不會多出兩截。 */
+.vfield__list::before {
+  content: "";
+  position: absolute;
+  left: 5px;
+  top: .9em;
+  bottom: .9em;
+  width: 1px;
+  background: var(--hairline);
+}
+
 .vfield__cluster {
-  display: grid;
-  /* 172px 容得下最長的「數位產品與商業服務」（9 漢字 ≈ 146px）而不折行。 */
-  grid-template-columns: 172px minmax(0, 1fr);
-  align-items: baseline;
-  gap: 4px clamp(14px, 2vw, 26px);
+  position: relative;
   padding-block: clamp(11px, 1.3vw, 15px);
-  border-bottom: 1px solid var(--hairline);
+  /* 編號自己的欄。48px 容得下 --latin 500 的兩位數不換行。 */
+  padding-left: 48px;
+}
+.vfield__cluster + .vfield__cluster { border-top: 1px solid var(--hairline); }
+/* 軸上的站。cream 的外環讓圓點壓過軸線，不是疊在上面。 */
+.vfield__cluster::before {
+  content: "";
+  position: absolute;
+  left: -.5px;
+  top: .9em;
+  width: 11px;
+  height: 11px;
+  margin-left: calc(-1 * clamp(22px, 2.4vw, 30px));
+  border-radius: 50%;
+  background: var(--teal);
+  box-shadow: 0 0 0 4px var(--cream);
+}
+/* 編號是頁碼語彙（--latin、負字距、hairline 色），跟 .turn__folio 同一族：
+   它排出節奏，不跟領域名搶。 */
+.vfield__no {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: var(--latin);
+  font-size: 28px;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -.05em;
+  color: var(--stone);
 }
 .vfield__name {
   font-size: var(--fs-body);
-  font-weight: 500;
+  font-weight: 700;
   line-height: 1.6;
   letter-spacing: var(--track-zh-head);
 }
@@ -957,6 +1012,7 @@ html:not(.js) .hero__line:first-child {
   align-items: baseline;
   row-gap: 6px;
   min-width: 0;
+  margin-top: 2px;
   font-size: var(--fs-meta);
   line-height: 1.6;
   color: var(--stone);
@@ -972,25 +1028,21 @@ html:not(.js) .hero__line:first-child {
   padding-inline: .9em;
 }
 
-.vfield__say { max-width: var(--measure); margin-top: clamp(22px, 2.6vw, 32px); }
-.vfield__say-in {
-  font-size: var(--fs-meta);
-  font-weight: 500;
-  letter-spacing: var(--track-zh);
-  color: var(--stone);
-}
-/* 沿用 Hero 之外唯一的「宣言」級數：--fs-display / 900 / 22em。
+/* 沿用 Hero 之外唯一的「宣言」級數：--fs-display / 900。
    它是這一章收束的那一句，不是第三個標題。 */
-.vfield__say-out {
-  margin-top: .45em;
-  max-width: 22em;
+.vfield__say {
+  max-width: var(--measure);
+  margin-top: clamp(24px, 2.8vw, 34px);
   font-family: var(--display);
   font-size: var(--fs-display);
   font-weight: 900;
   line-height: 1.6;
   letter-spacing: var(--track-zh-head);
-  text-wrap: balance;
 }
+/* 兩行是寫死的（見 HTML 的註解）。每一行自己是 block，行內那顆 mark 維持
+   inline-block——螢光筆的底圖才只鋪到字尾，不會拉滿整列。 */
+.vfield__say-l { display: block; }
+.vfield__say-l > mark { display: inline-block; }
 /* 章節碼跟 .turn__folio 同一種語彙（大號、--latin、負字距、hairline 色）：
    它是頁碼不是標題，要能被餘光讀到、不能跟內容搶。 */
 .vfield__folio {
@@ -1003,39 +1055,44 @@ html:not(.js) .hero__line:first-child {
   color: var(--hairline);
 }
 
-/* 641–900px：版面已經是單欄，但索引維持左標籤 ＋ 右關鍵字兩欄——塌成上下
-   會讓兩行都只用掉不到一半的列寬。 */
-@media (min-width: 641px) and (max-width: 900px) {
-  .vfield__cluster { grid-template-columns: 152px minmax(0, 1fr); gap: 4px 16px; }
-  .vfield__keys > span:not(:last-child)::after { padding-inline: .5em; }
+/* 正常流的插圖：接在那一句下面，往右破出版心。
+   ≤900px 時 stage 就是滿版，負的 margin-right 正好把它推到螢幕邊被裁掉
+   （裁切在 main 的 overflow-x: clip）——破框在手機上一樣成立。 */
+.vfield__fig {
+  width: min(56%, 320px);
+  height: auto;
+  /* 不往上壓那一句：正常流沒有那顆白圓可以疊，壓上去只會撞到「需求」的字尾。
+     這一版的破框是右邊界——負的 margin-right 把它推到紙的外面。 */
+  margin: clamp(6px, 1.2vw, 16px) calc(-1 * var(--pad-x)) 0 auto;
 }
+
 @media (max-width: 640px) {
-  .vfield__cluster { grid-template-columns: minmax(0, 1fr); gap: 7px; padding-block: clamp(14px, 3.6vw, 18px); }
+  .vfield__cluster { padding-left: 40px; }
+  .vfield__no { font-size: 23px; }
   .vfield__keys { row-gap: 7px; line-height: 1.7; }
   .vfield__keys > span:not(:last-child)::after { padding-inline: .5em; }
+  .vfield__fig { width: min(64%, 260px); }
 }
 
-/* ---- 群組的量體（桌機的場與手機的序列共用）----
-   由手排的 --s 決定（寫在 HTML 的 style 上）：五個世界不是五個等大的方塊，
-   有的離得近、有的遠。名稱吃 em 所以跟著 --s 縮放。 */
-.js .vfield__cluster { font-size: calc(1em * var(--s, 1)); }
-.js .vfield__name {
-  font-size: 1.34em;
-  font-weight: 700;
-  line-height: 1.4;
-  margin-bottom: 7px;
-}
-.js .vfield__keys { font-size: .92em; line-height: 1.75; color: var(--stone); }
-.js .vfield__keys > span:not(:last-child)::after { padding-inline: .55em; }
-
-/* ---- ② 桌機的場：滿版、pin 一屏、捲動時收斂 ----
-   --p 只在這一段有意義。stage 用 container-type: size 是為了讓
-   --x / --y 能用 cqw / cqh 定位：換成 vw / vh 會被捲軸寬度影響，
-   而 % 的 translate 是相對元素自己、算不出「往中心收多少」。 */
-@media (prefers-reduced-motion: no-preference) and (min-width: 901px) {
+/* ---- ② 桌機的場：滿版、pin 一屏、繞著圓收回去 ----
+   --p 只在這一段有意義。stage 用 container-type: size 是為了讓幾何能用
+   cqh / cqw：換成 vh 會被捲軸寬度影響，而 % 是相對元素自己、算不出
+   「離圓心多遠」。
+   ⚠️ container-type: size 的容器一定要給 height（不能只給 min-height），
+      否則 Chrome 會把 cqh 回報成 0，整組 clamp 塌成下限、構圖散掉。
+   ⚠️ --u 只能在 stage 的「子孫」身上取值。容器單位在容器自己身上會往外
+      找上一層容器（這裡沒有 ⇒ 視窗），所以 stage 自己的屬性不准用 --u。
+   min-height: 680px：再矮就放不下「圓 ＋ 上下兩排文字」，那時正常流那一版
+   讀起來反而完整。 */
+@media (prefers-reduced-motion: no-preference)
+   and (min-width: 901px) and (min-height: 680px) {
   .js .vfield {
     position: relative;
-    height: 200svh;              /* 100svh 的 pin ＋ 100svh 的行程 */
+    height: 270svh;              /* 100svh 的 pin ＋ 170svh 的行程 */
+    /* 收斂量。五站進完場（.39）之後還留一段停頓才開始收。 */
+    --c: clamp(0, calc((var(--p) - .56) / .28), 1);
+    /* 插圖浮出來的量。它同時驅動那一句往上讓位。 */
+    --fig: clamp(0, calc((var(--p) - .82) / .14), 1);
   }
   .js .vfield__stage {
     position: sticky;
@@ -1044,111 +1101,200 @@ html:not(.js) .hero__line:first-child {
     max-width: none;
     margin: 0;
     padding: 0;
-    overflow: hidden;            /* 散開時被視窗裁掉是刻意的 */
+    overflow: hidden;            /* 插圖刻意壓到構圖外緣，超出的部分裁掉 */
     container-type: size;
-    /* 版心左軸線：滿版之下，標籤與章節碼仍然站在全頁那一根左軸上。 */
+    /* 版心左軸線：滿版之下，章節碼仍然站在全頁那一根左軸上。 */
     --axis: max(var(--pad-x), calc((100% - var(--page)) / 2 + var(--pad-x)));
+    /* 構圖單位。高度與寬度一起夾（見上面的註解）。 */
+    --u: min(1cqh, .62cqw);
+    --core-r: calc(21 * var(--u));
+    --arc-r:  calc(30 * var(--u));
+    /* 構圖的中心。五站裡只有 04 掛在圓的正下方，整組因此重心偏下；
+       把圓往上提 4u 之後上下留白才一樣寬——圓看起來還是在正中央。 */
+    --cy: calc(50cqh - 4 * var(--u));
   }
 
-  .js .vfield__label {
+  /* 那一圈：一個完整的細線圓，圓心跟白圓同一點。五站全部站在它外面
+     （最近的一站離線 2.6u），所以它讀起來是一條軌道，不是一個框。
+     收乾之後幾乎退光——五站都回到圓心了，路徑就不需要留在畫面上。 */
+  .js .vfield__orbit {
+    display: block;
     position: absolute;
-    left: var(--axis);
-    top: clamp(104px, 15vh, 168px);
-    margin: 0;
-    /* 標籤跟著場一起退場：它問的是「走過哪些領域」，答案收乾之後就不需要了。 */
-    opacity: calc(1 - var(--p));
+    left: 50%;
+    top: var(--cy);
+    width: calc(var(--arc-r) * 2);
+    height: calc(var(--arc-r) * 2);
+    margin: calc(var(--arc-r) * -1) 0 0 calc(var(--arc-r) * -1);
+    border: 1px solid var(--hairline);
+    border-radius: 50%;
+    opacity: calc(1 - .88 * var(--c));
   }
+
+  /* 圓：整頁唯一一次讓白紙變成一個量體，站在畫面正中央。收乾時微微張開
+     （1 → 1.05），像是把五站吸進去之後撐大了一點——只有 5%。 */
+  .js .vfield__core {
+    display: block;
+    position: absolute;
+    left: 50%;
+    top: var(--cy);
+    width: calc(var(--core-r) * 2);
+    height: calc(var(--core-r) * 2);
+    margin: calc(var(--core-r) * -1) 0 0 calc(var(--core-r) * -1);
+    border-radius: 50%;
+    background: var(--white);
+    transform: scale(calc(1 + .05 * var(--c)));
+  }
+
+  /* 圓裡的兩個狀態疊在同一格：先是提問，收乾之後換成那一句。
+     兩者共用同一組定位，所以是「同一個位置換了內容」，不是「多出一句話」。 */
+  .js .vfield__label,
+  .js .vfield__say {
+    position: absolute;
+    left: 50%;
+    top: var(--cy);
+    width: calc(39 * var(--u));  /* 圓內徑 42u，兩邊各留 1.5u */
+    margin: 0;
+    max-width: none;
+    text-align: center;
+  }
+  /* 提問借用那一句的級數與字重——同一個圓、同一種聲音，只是內容換了。 */
+  .js .vfield__label {
+    font-family: var(--display);
+    font-size: clamp(21px, calc(4 * var(--u)), 44px);
+    font-weight: 700;
+    line-height: 1.5;
+    letter-spacing: var(--track-zh-head);
+    color: var(--ink);
+    --out: clamp(0, calc((var(--p) - .56) / .13), 1);
+    opacity: calc(1 - var(--out));
+    transform: translate(-50%, -50%);
+  }
+  .js .vfield__say {
+    font-size: clamp(19px, calc(3.6 * var(--u)), 36px);
+    line-height: 1.55;
+    /* 提問完全退掉（.69）之後才開始出現，所以讀起來是「收乾了才剩下這句」，
+       不是「一邊收一邊有人在旁邊講話」。 */
+    --in: clamp(0, calc((var(--p) - .70) / .15), 1);
+    opacity: var(--in);
+    /* 它從頭到尾都釘在圓心：這一句就是這一整塊的答案，位置不讓給任何東西。
+       讓路的是插圖（見下面 .vfield__fig 的座標）。 */
+    transform: translate(-50%, calc(-50% + (1 - var(--in)) * 14px));
+  }
+
+  /* 插圖：壓在白圓的右下角，右緣與下緣都刻意超出去（破框）。
+     身體本身是留空的，白圓的邊線會從它身上穿過去——參考圖就是這樣，
+     不是沒對齊。z 序靠 DOM 順序：它排在 core 後面，自然疊在圓上面。 */
+  .js .vfield__fig {
+    position: absolute;
+    /* 座標是從那一句反推的：它有兩行、共 11.2u 高，置中在圓心 ⇒ 字的底線在
+       +6u。插圖的框從 +3u 開始，但左側 30% 的範圍要到 +14u 才有筆畫（那裡是
+       手臂外緣），所以框雖然疊到字的那一列，畫面上不會碰到字。
+       往右移到 +10u 也是同一件事：字最寬的那一行只到 ±18u。 */
+    left: calc(50% + 10 * var(--u));
+    top: calc(var(--cy) + 3 * var(--u));
+    width: calc(33 * var(--u));   /* 高 38u：圓下緣 +21u，它一路長到 +41u */
+    height: auto;
+    margin: 0;
+    opacity: var(--fig);
+    /* 進場沿用全站唯一的那個手勢（上浮 14px），只是改由捲動位置驅動。 */
+    transform: translateY(calc((1 - var(--fig)) * 14px));
+  }
+
+  .js .vfield__list { position: absolute; inset: 0; max-width: none; padding: 0; }
+  .js .vfield__list::before { display: none; }
+
+  /* 一站。left / top 落在那一圈上，再用 --ax / --ay 決定「哪一角貼在那個點」
+     （0 ＝ 左／上緣，.5 ＝ 置中，1 ＝ 右／下緣），--gx / --gy 是離開圓心方向
+     的那一點間距。所以每一塊都是往外長的，沒有一塊會壓到圈裡面。 */
+  .js .vfield__cluster {
+    position: absolute;
+    left: calc(50% + var(--ox) * var(--u));
+    top:  calc(var(--cy) + var(--oy) * var(--u));
+    /* 欄寬：再窄一階，五個關鍵字就會斷成三行、行尾還掛著分隔點。 */
+    width: calc(36 * var(--u));
+    max-width: none;
+    padding: 0;
+    border: 0;
+    text-align: var(--al);
+    /* 每一站自己的進場進度：錯開 .055、各自走 .17，最後一站在 .39 完成。 */
+    --a: clamp(0, calc((var(--p) - var(--i) * .055) / .17), 1);
+    /* 縮放的定點就是它在圈上的那個點，收斂時才是「被吸回圓心」而不是
+       「一邊縮一邊漂」。 */
+    transform-origin:
+      calc(var(--ax) * 100% - var(--gx) * var(--u))
+      calc(var(--ay) * 100% - var(--gy) * var(--u));
+    /* 三段疊在同一個 transform：錨點 ＋ 進場上浮 ＋ 回到圓心。
+       進場與收斂不會重疊，所以可以直接相加。 */
+    transform:
+      translate(calc(var(--ax) * -100% + var(--gx) * var(--u)
+                     - var(--ox) * var(--c) * var(--u)),
+                calc(var(--ay) * -100% + var(--gy) * var(--u)
+                     - var(--oy) * var(--c) * var(--u)
+                     + (1 - var(--a)) * 14px))
+      scale(calc(1 - .4 * var(--c)));
+    /* 退得比位移快：那一句是 900 字重的 ink，底下不能還有一團讀得出來的小字。 */
+    opacity: calc(var(--a) * (1 - min(1, calc(var(--c) * 1.5))));
+  }
+
+  /* 五站的座標，順時針：左上 → 右上 → 右下 → 正下 → 左下。
+     --ox / --oy 就是 30×cos(θ) / 30×sin(θ)（θ 以三點鐘為 0°、順時針為正）。
+     改角度要連 --ox / --oy 一起改，否則點會離開那一圈。
+
+     為什麼四站擠在 ±25° 而不是平分一圈：平分會有一站落在圓的正上方，
+     那一塊得整個掛在圓上面，在 768 高的筆電上會頂到浮動的導覽列。
+     現在四站分在左右兩側、只有一站在正下方，整組要的高度少掉四分之一，
+     圓的正上方剩下一段乾淨的空弧。 */
+  .js .vfield__cluster:nth-child(1) {   /* 205°  左上 */
+    --i: 0; --ox: -27.19; --oy: -12.68;
+    --ax: 1; --ay: .5; --gx: -3.2; --gy: 0; --al: right;
+  }
+  .js .vfield__cluster:nth-child(2) {   /* 335°  右上 */
+    --i: 1; --ox: 27.19; --oy: -12.68;
+    --ax: 0; --ay: .5; --gx: 3.2; --gy: 0; --al: left;
+  }
+  .js .vfield__cluster:nth-child(3) {   /*  25°  右下 */
+    --i: 2; --ox: 27.19; --oy: 12.68;
+    --ax: 0; --ay: .5; --gx: 3.2; --gy: 0; --al: left;
+  }
+  .js .vfield__cluster:nth-child(4) {   /*  90°  正下 */
+    --i: 3; --ox: 0; --oy: 30;
+    --ax: .5; --ay: 0; --gx: 0; --gy: 2.6; --al: center;
+  }
+  .js .vfield__cluster:nth-child(5) {   /* 155°  左下 */
+    --i: 4; --ox: -27.19; --oy: 12.68;
+    --ax: 1; --ay: .5; --gx: -3.2; --gy: 0; --al: right;
+  }
+  /* 右側靠左、左側靠右的那兩塊，關鍵字那一列要跟著同一邊收齊。 */
+  .js .vfield__cluster:nth-child(1) .vfield__keys,
+  .js .vfield__cluster:nth-child(5) .vfield__keys { justify-content: flex-end; }
+  .js .vfield__cluster:nth-child(4) .vfield__keys { justify-content: center; }
+
+  .js .vfield__cluster + .vfield__cluster { border-top: 0; }
+  /* 圈上的那顆點：位置就是「錨點反推回去」，所以永遠正好落在圓周上。 */
+  .js .vfield__cluster::before {
+    left: calc(var(--ax) * 100% - var(--gx) * var(--u));
+    top:  calc(var(--ay) * 100% - var(--gy) * var(--u));
+    margin: -5.5px 0 0 -5.5px;
+  }
+  /* 場裡的編號改成獨立一行的頁碼：左右兩側的塊要靠不同邊收齊，
+     原本那個 48px 的絕對定位欄只對得準靠左的那一種。 */
+  .js .vfield__no {
+    position: static;
+    display: block;
+    transform: none;
+    margin-bottom: .1em;
+    font-size: clamp(19px, calc(3.2 * var(--u)), 42px);
+  }
+  .js .vfield__name { font-size: clamp(16px, calc(2.2 * var(--u)), 22px); }
+  .js .vfield__keys { font-size: clamp(13px, calc(1.55 * var(--u)), 15px); }
+  .js .vfield__keys > span:not(:last-child)::after { padding-inline: .55em; }
+
   .js .vfield__folio {
     position: absolute;
     left: var(--axis);
     bottom: clamp(30px, 5vh, 64px);
     margin: 0;
   }
-
-  .js .vfield__list { position: absolute; inset: 0; border-top: 0; max-width: none; }
-
-  .js .vfield__cluster {
-    position: absolute;
-    left: calc(var(--x) * 1cqw);
-    top: calc(var(--y) * 1cqh);
-    width: var(--w);
-    display: block;
-    padding: 0;
-    border: 0;
-    transform-origin: 50% 50%;
-    /* 收斂＝往中心平移 ＋ 縮小 ＋ 退色，同時把手排的傾角轉回 0：
-       散落時是五個各自為政的世界，收乾時是一件對齊的事。
-       第二個 translate 是把「群組的左上角落在中心」修成「群組自己的中心
-       落在中心」——少了它，五組會全部堆在中心的右下方。
-       縱向的目標是 66% 而不是 50%：收乾後那一小團要落在那一句的下方，
-       穿過字中間會看起來像沒清乾淨的雜訊。 */
-    transform:
-      translate(calc((50 - var(--x)) * var(--p) * 1cqw),
-                calc((66 - var(--y)) * var(--p) * 1cqh))
-      translate(calc(var(--p) * -50%), calc(var(--p) * -50%))
-      rotate(calc(var(--rot) * (1 - var(--p))))
-      scale(calc(1 - .46 * var(--p)));
-    /* 退到 .05：那一句是 900 字重的 ink，底下不能還有一團讀得出來的小字。 */
-    opacity: calc(1 - .95 * var(--p));
-  }
-  /* 那一句：收到七成之後才開始出現，所以讀起來是「收乾了才剩下這句」，
-     不是「一邊散一邊有人在旁邊講話」。 */
-  .js .vfield__say {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    width: min(calc(100% - var(--pad-x) * 2), 640px);
-    margin: 0;
-    max-width: none;
-    text-align: center;
-    --in: clamp(0, calc((var(--p) - .62) / .3), 1);
-    opacity: var(--in);
-    transform: translate(-50%, calc(-50% + (1 - var(--in)) * 22px));
-  }
-  .js .vfield__say-in { margin-bottom: .8em; }
-  /* 行寬用自己的 em 算（11.4em × 46px ≈ 520px），所以這 18 個漢字固定斷成
-     兩行、兩道螢光筆。交給 --measure 或父層的 px 寬會斷成三行還切斷詞。 */
-  .js .vfield__say-out {
-    margin-top: 0;
-    margin-inline: auto;
-    max-width: 11.4em;
-    font-size: clamp(27px, 3.2vw, 46px);
-  }
-}
-
-/* ---- ③ ≤900px 的縱向序列 ----
-   交錯縮排 ＋ 逐組退色 ＋ 最寬的兩組被右緣裁掉。
-   「退到背景」在單欄裡靠色階完成（第一組 ink → 第五組 stone），
-   不靠位移，所以不需要 pin、也不需要 --p。 */
-@media (max-width: 900px) {
-  .js .vfield__stage { padding-block: clamp(40px, 8vw, 72px) 0; }
-  .js .vfield__list { border-top: 0; max-width: none; }
-  .js .vfield__cluster {
-    display: block;
-    border-bottom: 0;
-    padding-block: clamp(16px, 4.4vw, 28px);
-    /* 右緣一律推到螢幕邊：每一組都用得到全部剩下的寬度，
-       而且整段讀起來是「一路往版面外側走」。 */
-    margin-right: calc(-1 * var(--pad-x));
-  }
-  /* 名稱是這一段的視覺主體（1.34em × --s ＝ 22–30px），關鍵字固定 14px。
-     不讓關鍵字跟著放大：那 27 個詞是這一段唯一不能被裁掉、也不能縮到看不清的
-     內容——這一頁不裁任何一句有獨立資訊的字。 */
-  .js .vfield__keys { font-size: var(--fs-meta); }
-  /* 每一組往右錯開不同的量。縮排差本身就是「五個不同的世界」，
-     不需要真的把它們排成二維的場。 */
-  .js .vfield__cluster:nth-child(2) { margin-left: 22%; }
-  .js .vfield__cluster:nth-child(3) { margin-left: 8%; }
-  .js .vfield__cluster:nth-child(4) { margin-left: 30%; }
-  .js .vfield__cluster:nth-child(5) { margin-left: 14%; }
-  /* 色階：讀到第五組時這些領域已經退成背景，接著才是那一句。
-     名稱不退（仍然是 ink），退的只有關鍵字——資訊沒有變得讀不到。 */
-  .js .vfield__cluster:nth-child(1) .vfield__keys { color: var(--ink); }
-  .js .vfield__cluster:nth-child(2) .vfield__keys { color: #3f4340; }
-  .js .vfield__cluster:nth-child(4) .vfield__keys,
-  .js .vfield__cluster:nth-child(5) .vfield__keys { color: #6a6f68; }
-  .js .vfield__say { margin-top: clamp(40px, 11vw, 76px); }
-  .js .vfield__say-out { font-size: clamp(25px, 7.4vw, 34px); max-width: 11.4em; }
 }
 
 /* ============================================================
