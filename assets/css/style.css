@@ -209,7 +209,7 @@ mark.mark--b {
    整頁只有一種進場語氣，不另外加淡出、縮放、位移方向的變化。
    規則只有兩條——
    ① 一個區塊是一個手勢：段落、引言、卡片各自整塊進場，不逐字逐行拆
-   ② 列表交給每一列自己：案例、經歷、lenses 這種長列表由各列進場，
+   ② 列表交給每一列自己：案例、經歷、文章這種長列表由各列進場，
       同時進到畫面的才錯開（錯開量由 JS 依「這一批有幾個」給，見 main.js），
       慢慢捲的時候一列一列各自進場，不會有假的等待感
    進場一次就不再收回（unobserve）。捲回去不會重播——重播會讓頁面顯得不安分。
@@ -223,7 +223,7 @@ mark.mark--b {
    :where() 的特異性是 0，這一整串維持在 0,2,0，跟 .is-in 同級，
    .is-in 寫在後面所以贏。 */
 .js .eyebrow,
-.js .col > *:where(:not(.threads, .cases, .cv, .talks, .cards, .lenses, .fit, .teaching)),
+.js .col > *:where(:not(.threads, .cases, .cv, .talks, .cards, .posts, .fit, .teaching)),
 .js .threads > *,
 .js .cases > *,
 .js .cv > *,
@@ -232,7 +232,7 @@ mark.mark--b {
 .js .teaching__examples-head,
 .js .talks > *,
 .js .cards > *,
-.js .lenses > *,
+.js .posts > *,
 .js .fit__col > *:where(:not(.fit__list)),
 .js .fit__list > *,
 .js .contact__panel > * {
@@ -268,7 +268,7 @@ mark.mark--b {
    再疊一層 reveal 等於同一件事講兩個手勢。 */
 
 /* ---- 微互動只給真正可以按的東西 ----
-   經歷、lenses 這些列不是連結，所以不給 hover 狀態：
+   經歷、講座這些列不是連結，所以不給 hover 狀態：
    對不能點的東西回應滑鼠，等於教使用者一個不存在的功能。
    案例列是例外——它是 <summary>，真的可以按，所以有 hover。
    會動的部分全部包在 @media (hover: hover) 裡，觸控裝置點完不會卡住 hover 樣式。 */
@@ -375,7 +375,7 @@ mark.mark--b {
 .case__line,
 .cv__what > p,
 .care__note,
-.lens > p,
+.post__note,
 .contact__body { max-width: var(--measure); }
 
 /* ============================================================
@@ -1641,6 +1641,7 @@ html:not(.js) .hero__line:first-child {
 
 @media (prefers-reduced-motion: reduce) {
   .talk:hover .talk__cover img { transform: none; }
+  .post:hover .post__cover img { transform: none; }
 }
 
 /* ============================================================
@@ -1712,30 +1713,116 @@ html:not(.js) .hero__line:first-child {
 /* ============================================================
    07 QUESTIONS I EXPLORE
    ============================================================ */
-.lenses { display: grid; gap: 0; border-top: 1px solid var(--ink); }
-.lens {
-  padding-block: clamp(20px, 2.2vw, 28px);
-  border-bottom: 1px solid var(--hairline);
+/* 四篇文章的列表。三欄跟 .talks 同一套：封面 · 標題 · 外連——
+   同一頁裡「一列帶縮圖的外部連結」只用一種形狀，不為了這一節再發明一個。
+   差別有兩處：封面比例（og:image 是 16:9，講座封面是 2:1），
+   以及右欄不放來源站名——Substack / Medium 對讀者不是分類，
+   而且外連的箭頭已經說完「這會離站」這件事了。 */
+.posts {
+  margin-top: 8px;
+  border-top: 1px solid var(--hairline);
+}
+.post {
   display: grid;
-  grid-template-columns: 128px minmax(0, 1fr);
-  gap: 4px clamp(14px, 2vw, 26px);
+  grid-template-columns: clamp(140px, 14vw, 168px) minmax(0, 1fr) 92px;
+  gap: 8px clamp(16px, 2.2vw, 28px);
+  /* 一列之內三個元素高度差很大（封面固定、標題一到兩行、外連只有一行），
+     所以對齊的基準是中線而不是頂線：四列的封面、內文、外連各自置中之後，
+     中線落在同一個高度，列高不同也不會讓右邊的外連看起來忽高忽低。 */
+  align-items: center;
+  padding-block: clamp(18px, 2vw, 26px);
+  border-bottom: 1px solid var(--hairline);
 }
-.lens__en {
-  grid-row: span 3;
-  font-family: var(--latin);
-  font-size: var(--fs-micro); font-weight: 500;
-  letter-spacing: .19em; text-transform: uppercase;
-  color: var(--stone);
-  padding-top: .9em;
+
+/* 封面來自各篇的 og:image，四張來源比例不一（1200×628、945×?），
+   靠固定 16:9 + object-fit 置中裁齊，不讓列高被某一張圖撐開。
+   圓角用 --r-sm：這是縮圖不是卡片，跟 .talk__cover 同一個判斷。 */
+.post__cover {
+  display: block;
+  aspect-ratio: 16 / 9;
+  border-radius: var(--r-sm);
+  overflow: hidden;
+  background: var(--sand);
+  /* 白底或淺色的文章封面貼在 cream 上會浮起來，用一道細線收邊。 */
+  box-shadow: inset 0 0 0 1px var(--hairline);
 }
-.lens h3 {
+.post__cover img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  transition: transform var(--dur-ui) var(--ease);
+}
+@media (hover: hover) {
+  .post:hover .post__cover img { transform: scale(1.03); }
+}
+
+/* 分類不做成藥丸標籤——那是另一套語彙。用一道 12px 的 teal 短線起頭，
+   跟導覽的當前指示線是同一個手勢：短線＝「這是哪一類」。
+   兩篇同類的文章因此在捲動時自己對齊成一組。 */
+.post__tag {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--fs-micro);
+  font-weight: 600;
+  line-height: 1.5;
+  letter-spacing: var(--track-zh);
+  color: var(--teal-deep);
+  margin-bottom: 6px;
+}
+.post__tag::before {
+  content: "";
+  flex: none;
+  width: 12px; height: 2px;
+  border-radius: 1px;
+  background: var(--teal);
+}
+
+.post h3 {
   font-family: var(--display);
   font-size: var(--fs-head);
   font-weight: 700;
   line-height: var(--lh-head);
+  letter-spacing: var(--track-zh-head);
+  text-wrap: pretty;
 }
-.lens__q { color: var(--ink); font-weight: 500; margin-top: 6px; }
-.lens > p:last-child { color: var(--stone); font-size: var(--fs-sm); margin-top: 8px; }
+/* 標題底下那一句。它跟 .talk__where 在列裡是同一個角色（標題的補述，
+   不是段落），所以吃同一個 --fs-meta，不跟著 .card p 那組升到 --fs-body。 */
+.post__note {
+  margin-top: 6px;
+  font-size: var(--fs-meta);
+  line-height: 1.6;
+  color: var(--stone);
+  text-wrap: pretty;
+}
+
+/* 右欄只有一行外連，靠 .post 的 align-items: center 落在列的中線上。
+   44px 是觸控區的下限，字在裡面置中——觸控區是往上下兩邊長的，
+   不是掛在字的下方。 */
+.post__meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  line-height: 1.5;
+}
+.post__link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-size: var(--fs-meta);
+  white-space: nowrap;
+  /* .link 的底線是 border-bottom，會被 44px 的觸控區推到盒底，
+     變成一條離字 11px 的浮線。這裡換成 text-decoration：
+     線跟著字走，盒子多高都無所謂。粗細與位置調成跟 border 版一樣。 */
+  border-bottom: 0;
+  padding-bottom: 0;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-decoration-color: var(--stone);
+  text-underline-offset: 3px;
+}
+.post__link:hover { text-decoration-color: var(--ink); }
+.post__arrow { margin-left: .4em; }
 
 .sub-card {
   margin-top: clamp(28px, 3vw, 40px);
@@ -1989,8 +2076,6 @@ html:not(.js) .hero__line:first-child {
   .card { border-radius: 34px; }
   .sub-card { border-radius: 34px; }
   .pull { border-radius: 34px; }
-  .lens { grid-template-columns: minmax(0, 1fr); gap: 6px; }
-  .lens__en { grid-row: auto; padding-top: 0; margin-bottom: 4px; }
   .contact__panel { border-radius: 34px; }
   .cv__row { grid-template-columns: minmax(0, 1fr); gap: 6px; }
   .cv__when { padding-top: 0; }
@@ -2005,6 +2090,15 @@ html:not(.js) .hero__line:first-child {
     flex-direction: row; align-items: baseline; gap: 16px;
   }
   .talk__when { padding-top: 0; }
+  .post {
+    grid-template-columns: clamp(110px, 30vw, 150px) minmax(0, 1fr);
+    gap: 10px clamp(14px, 4vw, 20px);
+  }
+  .post__meta {
+    flex-wrap: wrap;
+    grid-column: 2;
+    flex-direction: row; align-items: baseline; gap: 16px;
+  }
   .case__head { grid-template-columns: minmax(0, 1fr); gap: 8px; }
   .case__head > *:not(.case__no) { grid-column: 1; }
   .case__no { padding-top: 0; }
@@ -2025,12 +2119,15 @@ html:not(.js) .hero__line:first-child {
   .nav { padding-left: 16px; }
 }
 
-/* 縮圖與日期先讓出空間，保持講題的閱讀寬度。 */
+/* 縮圖與日期先讓出空間，保持標題的閱讀寬度。 */
 @media (min-width: 721px) and (max-width: 1100px) {
   .talk { grid-template-columns: 150px minmax(0, 1fr); }
   .talk__cover { grid-row: span 2; }
   .talk__meta { grid-column: 2; flex-direction: row; flex-wrap: wrap; gap: 12px 20px; }
   .talk__when { padding-top: 0; }
+  .post { grid-template-columns: 150px minmax(0, 1fr); }
+  .post__cover { grid-row: span 2; }
+  .post__meta { grid-column: 2; flex-direction: row; flex-wrap: wrap; gap: 12px 20px; }
 }
 
 @media (max-width: 540px) {
@@ -2038,6 +2135,10 @@ html:not(.js) .hero__line:first-child {
   .talk__cover { width: min(200px, 100%); }
   .talk__meta { grid-column: 1; gap: 12px 20px; }
   .talk h5 { max-width: 24em; }
+  .post { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+  .post__cover { width: min(200px, 100%); }
+  .post__meta { grid-column: 1; gap: 12px 20px; }
+  .post h3 { max-width: 24em; }
 }
 
 @media (max-width: 400px) {
@@ -2115,7 +2216,7 @@ html:not(.js) .hero__line:first-child {
 .hero__role { display: block; }
 .hero__id { line-height: 1.65; }
 .case__line { line-height: 1.9; }
-.card p, .lens > p:last-child, .sub-card p { font-size: var(--fs-body); line-height: 1.9; }
+.card p, .sub-card p { font-size: var(--fs-body); line-height: 1.9; }
 .teaching__topics p, #about .cv__what p, #about .teaching__header p { font-size: var(--fs-sm); }
 .sub-card .sub-card__label { font-size: var(--fs-meta); }
 .vfield__keys { column-gap: .15em; }
