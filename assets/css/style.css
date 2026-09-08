@@ -1960,7 +1960,8 @@ html:not(.js) .hero__line:first-child {
    一段輕的，contrast 才會讓翻到背面那一下有力量。
    ============================================================ */
 .colophon { display: grid; gap: clamp(18px, 2.4vw, 28px); }
-/* 整站唯一一張照片。方幅、跟 .pull / .sub-card 同一個圓角語彙，
+/* 整站唯一一張照片。裁成正圓——這一節走的是 colophon（作者欄）的構圖，
+   圓形頭像本來就是作者欄的語彙，跟版面上其他方角的卡片區隔開來。
    width/height 寫在標籤上（800×800）讓它在載入前就佔好位置，不推版。
    object-fit 是保險：換一張非正方的照片時構圖不會跑掉。 */
 .colophon__fig {
@@ -1968,7 +1969,7 @@ html:not(.js) .hero__line:first-child {
   aspect-ratio: 1 / 1;
   height: auto;
   object-fit: cover;
-  border-radius: clamp(14px, 2vw, 26px);
+  border-radius: 50%;
   background: var(--sand);
 }
 @media (min-width: 901px) {
