@@ -20,7 +20,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/style.css?v=20260908-orbit">
+<link rel="stylesheet" href="assets/css/style.css?v=20260908-readability">
 </head>
 <body>
 
@@ -59,19 +59,21 @@
 <!-- ══════════ 01 HERO ══════════ -->
 <section class="hero">
   <div class="wrap hero__grid">
-    <!-- 「人們為什麼」固定，後半句輪播。六句全寫在 DOM 裡疊成同一格（.hero__rotator 是 grid），
+    <!-- 「人們為什麼」固定，後半句輪播。問句全寫在 DOM 裡疊成同一格（.hero__rotator 是 grid），
          高度就是最高那一句的高度，換句不會把 Hero 頂上頂下。
          沒有 JS 時顯示第一句（見 style.css），有 JS 才洗牌。 -->
-    <h1 class="hero__display">
-      <span class="hero__kicker">我喜歡研究——</span>
-      <span class="hero__fixed"><mark class="mark" data-mark>人們為什麼</mark></span>
-      <span class="hero__rotator" data-rotator>
-        <span class="hero__line" data-line>會被某些產品打動？</span>
-        <span class="hero__line" data-line>表面說的，和實際行為不同？</span>
-        <span class="hero__line" data-line>喜歡某些故事、品牌？</span>
-        <span class="hero__line" data-line>願意為某些東西付更多錢？</span>
-      </span>
-    </h1>
+    <div class="hero__intro">
+      <h1 class="hero__display">
+        <span class="hero__kicker">我喜歡研究——</span>
+        <span class="hero__fixed"><mark class="mark" data-mark>人們為什麼</mark></span>
+        <span class="hero__rotator" id="hero-questions" data-rotator>
+          <span class="hero__line" data-line><span class="hero__phrase">會被某些產品</span><span class="hero__phrase">打動？</span></span>
+          <span class="hero__line" data-line><span class="hero__phrase">表面說的，</span><span class="hero__phrase">和實際行為不同？</span></span>
+          <span class="hero__line" data-line><span class="hero__phrase">喜歡某些</span><span class="hero__phrase">故事、品牌？</span></span>
+          <span class="hero__line" data-line><span class="hero__phrase">願意為某些東西</span><span class="hero__phrase">付更多錢？</span></span>
+        </span>
+      </h1>
+    </div>
 
     <div class="hero__body">
       <p class="hero__id">Hi，我是 Mei，我是一位<span class="hero__role">獨立研究者／體驗策略顧問</span></p>
@@ -153,7 +155,7 @@
 
      降級（三層，都要能讀）：
        沒有 JS        → .vfield__list 維持正常流排版：左邊一條縱軸串起五站的
-                        編號索引，下面接那一句與插圖。它本身是完整的設計
+                        圖示索引，下面接那一句與插圖。它本身是完整的設計
        reduced-motion → 同上，不 pin、不寫 --p
        ≤900px／矮視窗 → 同一份縱軸索引（那一圈塞不進 375px），只是級數與間距
                         收一階；插圖照樣破出右邊界
@@ -164,29 +166,29 @@
     <div class="vfield__orbit" aria-hidden="true"></div>
     <div class="vfield__core" aria-hidden="true"></div>
 
-    <p class="vfield__label" id="vfield-label">我曾走過的研究現場</p>
+    <h2 class="vfield__label" id="vfield-label">我曾走過的研究現場</h2>
 
     <!-- 五站的順序＝繞著圓順時針走一圈（左上 → 右上 → 右 → 下 → 左），
          座標與錨點在 CSS 的 .vfield__cluster:nth-child(n) -->
     <dl class="vfield__list">
       <div class="vfield__cluster">
-        <dt class="vfield__name"><span class="vfield__no" aria-hidden="true">01</span>金融與 FinTech</dt>
+        <dt class="vfield__name"><img class="vfield__icon" src="assets/img/fields/finance.svg" width="48" height="48" alt="" aria-hidden="true">金融與 FinTech</dt>
         <dd class="vfield__keys"><span>證券投資</span><span>數位銀行</span><span>財富管理</span><span>保險</span><span>加密貨幣</span></dd>
       </div>
       <div class="vfield__cluster">
-        <dt class="vfield__name"><span class="vfield__no" aria-hidden="true">02</span>文化內容與 IP</dt>
+        <dt class="vfield__name"><img class="vfield__icon" src="assets/img/fields/culture.svg" width="48" height="48" alt="" aria-hidden="true">文化內容與 IP</dt>
         <dd class="vfield__keys"><span>漫畫</span><span>出版</span><span>影視</span><span>IP</span><span>遊戲</span><span>數位收藏</span></dd>
       </div>
       <div class="vfield__cluster">
-        <dt class="vfield__name"><span class="vfield__no" aria-hidden="true">03</span>數位產品與商業服務</dt>
+        <dt class="vfield__name"><img class="vfield__icon" src="assets/img/fields/digital.svg" width="48" height="48" alt="" aria-hidden="true">數位產品與商業服務</dt>
         <dd class="vfield__keys"><span>電商</span><span>會員經營</span><span>訂閱服務</span><span>O2O</span><span>數位平台</span></dd>
       </div>
       <div class="vfield__cluster">
-        <dt class="vfield__name"><span class="vfield__no" aria-hidden="true">04</span>教育與健康</dt>
+        <dt class="vfield__name"><img class="vfield__icon" src="assets/img/fields/learning-health.svg" width="48" height="48" alt="" aria-hidden="true">教育與健康</dt>
         <dd class="vfield__keys"><span>EdTech</span><span>線上教育</span><span>醫療照護</span><span>熟齡服務</span></dd>
       </div>
       <div class="vfield__cluster">
-        <dt class="vfield__name"><span class="vfield__no" aria-hidden="true">05</span>公共與產業轉型</dt>
+        <dt class="vfield__name"><img class="vfield__icon" src="assets/img/fields/public-transition.svg" width="48" height="48" alt="" aria-hidden="true">公共與產業轉型</dt>
         <dd class="vfield__keys"><span>公共服務</span><span>交通</span><span>ESG</span><span>製造業</span><span>HR Tech</span></dd>
       </div>
     </dl>
@@ -687,6 +689,6 @@
   </div>
 </footer>
 
-<script src="assets/js/main.js?v=20260908-narrative2" defer></script>
+<script src="assets/js/main.js?v=20260908-readability" defer></script>
 </body>
 </html>

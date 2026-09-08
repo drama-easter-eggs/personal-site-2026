@@ -6,7 +6,8 @@
 (function () {
   'use strict';
 
-  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var motionPreference = window.matchMedia('(prefers-reduced-motion: reduce)');
+  var reduced = motionPreference.matches;
 
   /* ---- 1. Scroll reveal ----
      這一串選擇器要跟 style.css 的 MOTION 區塊一致（兩邊都改）。
@@ -202,7 +203,7 @@
      播完再洗下一輪，並確保新的第一句不等於上一輪的最後一句
      （不然會看起來像卡住沒換）。
 
-     節奏：一句停 4.6 秒，換句是「舊的原地淡出 → 新的上浮 14px 淡入」，
+     節奏：一句停 6.5 秒；減少動態時停在當前問句，換句是「舊的原地淡出 → 新的上浮 14px 淡入」，
      跟全站同一個手勢。畫面看不到（捲走了、切到別的分頁）就停在當下這一句，
      回來才繼續——不讓看不見的地方一直在動。 */
 
@@ -212,7 +213,7 @@
     : [];
 
   if (lines.length > 1) {
-    var HOLD = 4600;                  /* 一句停留多久（讀完一句問題的時間） */
+    var HOLD = 6500;                  /* 一句停留多久（讀完一句問題的時間） */
     var OUT = reduced ? 0 : 620;      /* 淡出時間，對齊 CSS 的 --dur-rise */
 
     var order = [], at = 0, prevLast = -1;
@@ -234,7 +235,7 @@
       at = 0;
     };
 
-    var idle = function () { return document.hidden || !inView; };
+    var idle = function () { return document.hidden || !inView || motionPreference.matches; };
 
     var stop = function () {
       if (timer === null) return;
@@ -274,12 +275,17 @@
     /* 第一句：先把 transition 關掉再上 is-active，
        否則它會跟 .hero__rotator 的載入動畫疊成上浮兩次。 */
     shuffle();
-    current = lines[order[0]];
+    current = reduced ? lines[0] : lines[order[0]];
     at = 1;
     current.style.transition = 'none';
     current.classList.add('is-active');
     void current.offsetWidth;
     current.style.transition = '';
+
+    motionPreference.addEventListener('change', function () {
+      if (motionPreference.matches) stop();
+      else resume();
+    });
 
     document.addEventListener('visibilitychange', function () {
       if (document.hidden) stop();

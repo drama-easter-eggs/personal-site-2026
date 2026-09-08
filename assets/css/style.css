@@ -26,7 +26,7 @@
      teal-deep · large fills only (contact band) — white text on top
      teal-tint · the only chromatic reading surface (v3: #dcefe9 → #d3e6df) */
   --teal:      #5cb2a0;
-  --teal-deep: #2e9a82;
+  --teal-deep: #267563;
   --teal-tint: #d3e6df;
 
   /* — ochre: the action hue (v3) —
@@ -48,15 +48,15 @@
 
   /* 文字層級：16px 內文、19–21px 項目標題，大字留給首頁與核心提問。
      中文保留非負字距，以行高、字重及群組間距建立閱讀層次。 */
-  --fs-micro: 12px;
-  --fs-meta: 14px;
-  --fs-sm: 15px;
-  --fs-body: 16px;
+  --fs-micro: .8125rem;
+  --fs-meta: .9375rem;
+  --fs-sm: 1rem;
+  --fs-body: 1.0625rem;
   --fs-eyebrow: 17px;
   --fs-eyebrow-latin: 14px;
-  --fs-head: clamp(19px, 1.5vw, 21px);
+  --fs-head: clamp(1.25rem, 1.5vw, 1.375rem);
   --fs-sub: clamp(21px, 1.8vw, 24px);
-  --fs-display: clamp(23px, 2.1vw, 29px);
+  --fs-display: clamp(1.5rem, 2.1vw, 1.875rem);
   --fs-hero: clamp(26px, 4.8vw, 60px);
   --fs-mega: clamp(30px, 3.5vw, 44px);
 
@@ -73,7 +73,7 @@
   --track-zh-head: .01em;
 
   /* — reading rhythm — */
-  --measure: 44em;
+  --measure: 36em;
   --space-paragraph: 1em;
   --space-related: 8px;
   --space-group: clamp(22px, 2.4vw, 30px);
@@ -148,7 +148,7 @@ p + p { margin-top: var(--space-paragraph); }
 .skip:focus { left: 16px; top: 16px; }
 
 :focus-visible {
-  outline: 2px solid var(--ink);
+  outline: 2px solid var(--focus, var(--ink));
   outline-offset: 3px;
   border-radius: 4px;
 }
@@ -331,7 +331,7 @@ mark.mark--b {
 }
 
 .section { padding-block: var(--section-y); }
-.section, .contact, .hero { scroll-margin-top: 104px; }
+.section, .contact, .hero, #main, #vfield-label { scroll-margin-top: 104px; }
 .section--tint { background: var(--sand); }
 
 .layout {
@@ -367,7 +367,7 @@ mark.mark--b {
 .col { min-width: 0; max-width: 800px; }
 
 /* Prose measure — capped in em so it tracks the font size and lands at
-   roughly 44 漢字 per line at every step of the scale. */
+   roughly 36 漢字 per line at every step of the scale. */
 .lead,
 .col > p,
 .pull,
@@ -531,7 +531,7 @@ mark.mark--b {
 
 .nav__toggle {
   display: none;
-  width: 40px; height: 40px; flex: none;
+  width: 44px; height: 44px; flex: none;
   border-radius: 50%;
   background: var(--teal);
   place-items: center;
@@ -599,7 +599,9 @@ mark.mark--b {
 
 /* 問句吃掉整幅寬度，第二列才是左邊的自我介紹＋右邊的插圖——
    讓那句大提問先講完話，介紹才接著小聲說。 */
-.hero__display { grid-column: 1 / -1; font-weight: 400; }
+.hero__intro { grid-column: 1 / -1; }
+.hero__display { font-weight: 400; }
+
 
 /* 大提問前面的引子：級數壓到 eyebrow 那一階、字重退回 500、顏色退成 stone，
    才不會跟下面 74px 的問句搶——它是說話前的吸氣，不是第二個標題。 */
@@ -637,6 +639,8 @@ mark.mark--b {
   letter-spacing: var(--track-zh-head);
 }
 
+.hero__phrase { display: inline-block; max-width: 100%; vertical-align: top; }
+
 /* 進場跟全站同一個手勢：上浮 14px 淡入。
    退場則是「原地淡出」（.is-leaving 把 transform 歸零）——兩句都在動會變成
    跑馬燈，一進一靜才讀得出「換了一句」而不是「在跑畫面」。 */
@@ -671,7 +675,7 @@ html:not(.js) .hero__line:first-child {
   opacity: 1; visibility: visible; transform: none;
 }
 
-/* 減少動態：拿掉位移，只剩下最簡單的文字切換。
+/* 減少動態：停止自動換句，拿掉位移。
    （上面全站的 reduce 區塊已經把 transition-duration 歸零，這裡只需要把起點的
    translateY 拿掉，否則它會變成一次瞬間的跳位。） */
 @media (prefers-reduced-motion: reduce) {
@@ -798,7 +802,9 @@ html:not(.js) .hero__line:first-child {
   border: 1px solid var(--hairline);
   border-radius: var(--r);
   color: var(--stone);
-  white-space: nowrap;
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: anywhere;
 }
 
 .link {
@@ -883,7 +889,7 @@ html:not(.js) .hero__line:first-child {
    同一份資料有兩種狀態，兩種都要能讀：
 
    ① 正常流（沒有 JS ／ reduced-motion ／ ≤900px ／ 矮視窗）
-      左邊一條 hairline 的縱軸串起五站，每一站是「大號編號 ＋ 領域 ＋ 關鍵字」，
+      左邊一條 hairline 的縱軸串起五站，每一站是「領域圖示 ＋ 領域 ＋ 關鍵字」，
       下面接那一句，再下面是破出右邊界的插圖。
       它本身是完整的設計，不是退化畫面——只是把那一圈拉直。
    ② 桌機 ＋ JS ＋ 允許動態
@@ -902,11 +908,11 @@ html:not(.js) .hero__line:first-child {
    會頂到浮動的導覽列。現在圓的正上方是一段乾淨的空弧。
 
    時間軸（--p 由 JS 每一帧寫在 .vfield 上，見 main.js 的 1b）：
-     .00 – .39   五站依序進場（每站錯開 .055，各自走 .17）
-     .39 – .56   停住，這段是留給讀的
-     .56 – .84   五站回到圓心、退掉；那一圈跟著淡出
-     .56 – .69   圓裡的提問退場
-     .70 – .85   圓裡的那一句進場
+     .00 – .30   五站依序進場（每站錯開 .04，各自走 .14）
+     .30 – .62   停住，這段是留給讀的
+     .62 – .84   五站回到圓心、退掉；那一圈跟著淡出
+     .62 – .72   圓裡的提問退場
+     .74 – .86   圓裡的那一句進場
      .82 – .96   插圖從圓的右下角浮出來（那一句不動，它一直在圓心）
    ============================================================ */
 .vfield { --p: 0; }
@@ -924,11 +930,12 @@ html:not(.js) .hero__line:first-child {
 .vfield__core { display: none; }
 
 .vfield__label {
-  font-size: var(--fs-meta);
-  font-weight: 500;
-  letter-spacing: var(--track-zh);
-  color: var(--stone);
-  margin-bottom: clamp(14px, 1.6vw, 20px);
+  font-size: var(--fs-sub);
+  font-weight: 700;
+  line-height: 1.5;
+  letter-spacing: var(--track-zh-head);
+  color: var(--ink);
+  margin-bottom: clamp(22px, 2vw, 30px);
 }
 
 /* 索引與下面那句話共用 --measure，右緣切在同一條線上——它們是同一個敘事。 */
@@ -951,7 +958,7 @@ html:not(.js) .hero__line:first-child {
 .vfield__cluster {
   position: relative;
   padding-block: clamp(11px, 1.3vw, 15px);
-  /* 編號自己的欄。48px 容得下 --latin 500 的兩位數不換行。 */
+  /* 圖示 36px，加上與文字之間的 12px 間距。 */
   padding-left: 48px;
 }
 .vfield__cluster + .vfield__cluster { border-top: 1px solid var(--hairline); }
@@ -968,19 +975,14 @@ html:not(.js) .hero__line:first-child {
   background: var(--teal);
   box-shadow: 0 0 0 4px var(--cream);
 }
-/* 編號是頁碼語彙（--latin、負字距、hairline 色）：
-   它排出節奏，不跟領域名搶。 */
-.vfield__no {
+/* 五枚領域圖示共用灰綠描邊、青綠重點與薄荷填色。 */
+.vfield__icon {
   position: absolute;
   left: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  font-family: var(--latin);
-  font-size: 28px;
-  font-weight: 500;
-  line-height: 1;
-  letter-spacing: -.05em;
-  color: var(--stone);
+  top: clamp(11px, 1.3vw, 15px);
+  display: block;
+  width: 36px;
+  height: 36px;
 }
 .vfield__name {
   font-size: var(--fs-body);
@@ -1039,7 +1041,7 @@ html:not(.js) .hero__line:first-child {
 
 @media (max-width: 640px) {
   .vfield__cluster { padding-left: 40px; }
-  .vfield__no { font-size: 23px; }
+  .vfield__icon { width: 30px; height: 30px; }
   .vfield__keys { row-gap: 7px; line-height: 1.7; }
   .vfield__keys > span:not(:last-child)::after { padding-inline: .5em; }
   .vfield__fig { width: min(64%, 260px); }
@@ -1053,15 +1055,15 @@ html:not(.js) .hero__line:first-child {
       否則 Chrome 會把 cqh 回報成 0，整組 clamp 塌成下限、構圖散掉。
    ⚠️ --u 只能在 stage 的「子孫」身上取值。容器單位在容器自己身上會往外
       找上一層容器（這裡沒有 ⇒ 視窗），所以 stage 自己的屬性不准用 --u。
-   min-height: 680px：再矮就放不下「圓 ＋ 上下兩排文字」，那時正常流那一版
+   1200px × 768px 以下改用正常流，避免縮小文字：再矮就放不下「圓 ＋ 上下兩排文字」，那時正常流那一版
    讀起來反而完整。 */
 @media (prefers-reduced-motion: no-preference)
-   and (min-width: 901px) and (min-height: 680px) {
+   and (min-width: 75em) and (min-height: 48em) {
   .js .vfield {
     position: relative;
     height: 270svh;              /* 100svh 的 pin ＋ 170svh 的行程 */
-    /* 收斂量。五站進完場（.39）之後還留一段停頓才開始收。 */
-    --c: clamp(0, calc((var(--p) - .56) / .28), 1);
+    /* 收斂量。五站進完場（.30）之後，停留到 .62 才開始收。 */
+    --c: clamp(0, calc((var(--p) - .62) / .22), 1);
     /* 插圖浮出來的量。它同時驅動那一句往上讓位。 */
     --fig: clamp(0, calc((var(--p) - .82) / .14), 1);
   }
@@ -1134,16 +1136,16 @@ html:not(.js) .hero__line:first-child {
     line-height: 1.5;
     letter-spacing: var(--track-zh-head);
     color: var(--ink);
-    --out: clamp(0, calc((var(--p) - .56) / .13), 1);
+    --out: clamp(0, calc((var(--p) - .62) / .10), 1);
     opacity: calc(1 - var(--out));
     transform: translate(-50%, -50%);
   }
   .js .vfield__say {
     font-size: clamp(19px, calc(3.6 * var(--u)), 36px);
     line-height: 1.55;
-    /* 提問完全退掉（.69）之後才開始出現，所以讀起來是「收乾了才剩下這句」，
+    /* 提問完全退掉（.72）之後才開始出現，所以讀起來是「收乾了才剩下這句」，
        不是「一邊收一邊有人在旁邊講話」。 */
-    --in: clamp(0, calc((var(--p) - .70) / .15), 1);
+    --in: clamp(0, calc((var(--p) - .74) / .12), 1);
     opacity: var(--in);
     /* 它從頭到尾都釘在圓心：這一句就是這一整塊的答案，位置不讓給任何東西。
        讓路的是插圖（見下面 .vfield__fig 的座標）。 */
@@ -1185,8 +1187,8 @@ html:not(.js) .hero__line:first-child {
     padding: 0;
     border: 0;
     text-align: var(--al);
-    /* 每一站自己的進場進度：錯開 .055、各自走 .17，最後一站在 .39 完成。 */
-    --a: clamp(0, calc((var(--p) - var(--i) * .055) / .17), 1);
+    /* 每一站自己的進場進度：錯開 .04、各自走 .14，最後一站在 .30 完成。 */
+    --a: clamp(0, calc((var(--p) - var(--i) * .04) / .14), 1);
     /* 縮放的定點就是它在圈上的那個點，收斂時才是「被吸回圓心」而不是
        「一邊縮一邊漂」。 */
     transform-origin:
@@ -1245,17 +1247,19 @@ html:not(.js) .hero__line:first-child {
     top:  calc(var(--ay) * 100% - var(--gy) * var(--u));
     margin: -5.5px 0 0 -5.5px;
   }
-  /* 場裡的編號改成獨立一行的頁碼：左右兩側的塊要靠不同邊收齊，
-     原本那個 48px 的絕對定位欄只對得準靠左的那一種。 */
-  .js .vfield__no {
+  /* 桌機圖示獨立一行，依各站的文字方向靠左、靠右或置中。 */
+  .js .vfield__icon {
     position: static;
-    display: block;
     transform: none;
-    margin-bottom: .1em;
-    font-size: clamp(19px, calc(3.2 * var(--u)), 42px);
+    width: clamp(32px, calc(4.4 * var(--u)), 44px);
+    height: clamp(32px, calc(4.4 * var(--u)), 44px);
+    margin: 0 0 6px;
   }
-  .js .vfield__name { font-size: clamp(16px, calc(2.2 * var(--u)), 22px); }
-  .js .vfield__keys { font-size: clamp(13px, calc(1.55 * var(--u)), 15px); }
+  .js .vfield__cluster:nth-child(1) .vfield__icon,
+  .js .vfield__cluster:nth-child(5) .vfield__icon { margin-left: auto; }
+  .js .vfield__cluster:nth-child(4) .vfield__icon { margin-inline: auto; }
+  .js .vfield__name { font-size: clamp(1.125rem, calc(2.2 * var(--u)), 1.375rem); }
+  .js .vfield__keys { font-size: clamp(.9375rem, calc(1.7 * var(--u)), 1rem); line-height: 1.75; }
   .js .vfield__keys > span:not(:last-child)::after { padding-inline: .55em; }
 }
 
@@ -1627,6 +1631,9 @@ html:not(.js) .hero__line:first-child {
 /* 箭頭跟文字一起吃 .link 的底線，是「這個連結會離站」的訊號。
    不做 hover 位移——底線在，位移會讓箭頭飄出線外。 */
 .talk__link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
   font-size: var(--fs-meta);
   white-space: nowrap;
 }
@@ -1777,6 +1784,7 @@ html:not(.js) .hero__line:first-child {
   padding-inline: clamp(12px, 1.6vw, 24px);
 }
 .contact__panel {
+  --focus: var(--white);
   background: var(--teal-deep);
   border-radius: var(--r);
   padding: clamp(40px, 5.6vw, 84px) clamp(24px, 3.6vw, 60px);
@@ -1901,7 +1909,7 @@ html:not(.js) .hero__line:first-child {
   }
   .section .eyebrow > span {
     margin-bottom: 8px;
-    font-size: 12px;
+    font-size: var(--fs-micro);
     line-height: 1.5;
     font-weight: 500;
     color: var(--stone);
@@ -1930,9 +1938,13 @@ html:not(.js) .hero__line:first-child {
   /* 插圖跟介紹仍然並排（跟桌機同一個關係，也不會多長出一列把 Hero 撐高），
      只是左欄改成按比例縮：右欄至少還有 2/3 的寬度給那三段文字。 */
   .hero__grid { grid-template-columns: minmax(0, 1fr) minmax(0, 42%); gap: 28px; }
-  .hero__display { grid-column: 1 / -1; }
+  .hero__intro { grid-column: 1 / -1; }
   .hero__figure { grid-column: 2; width: 100%; max-width: none; margin: 0 0 .6em; }
   .hero__body { grid-column: 1; margin-top: 0; max-width: 28em; }
+}
+
+/* 導覽在筆電窄視窗先收成選單，避免文字與品牌互相擠壓。 */
+@media (max-width: 1100px) {
   .nav__links {
     display: none;
     position: absolute;
@@ -1943,6 +1955,9 @@ html:not(.js) .hero__line:first-child {
     border-radius: 26px;
     padding: 12px;
     gap: 0;
+    max-height: calc(100dvh - 108px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
   }
   .nav { position: relative; }
   .nav__links.is-open { display: flex; }
@@ -1968,8 +1983,8 @@ html:not(.js) .hero__line:first-child {
 }
 
 @media (max-width: 720px) {
-  /* 手機維持 16px 內文，密度由欄數與間距調整。 */
-  :root { --fs-body: 16px; }
+  /* 手機維持 17px 內文，密度由欄數與間距調整。 */
+  :root { --fs-body: 1.0625rem; }
   .cards { grid-template-columns: minmax(0, 1fr); }
   .card { border-radius: 34px; }
   .sub-card { border-radius: 34px; }
@@ -2033,7 +2048,9 @@ html:not(.js) .hero__line:first-child {
 @media (max-width: 540px) {
   /* 單欄時「幾乎滿屏」會把字撐得太散：高度交回內容決定。 */
   .hero { min-height: 0; }
+  :root { --fs-hero: clamp(1.875rem, 7.8vw, 2.5rem); }
   .hero__grid { grid-template-columns: minmax(0, 1fr); row-gap: 0; align-content: start; }
+  .hero__intro { margin-bottom: 24px; }
   .hero__figure {
     grid-column: 1;
     justify-self: start;
@@ -2093,3 +2110,27 @@ html:not(.js) .hero__line:first-child {
 #about .cv__what h4 { font-size: var(--fs-head); }
 #about .teaching__header h3 { font-size: var(--fs-head); }
 
+
+/* 閱讀補強：短行長文、窄螢幕可換行，以及穩定的章節起點。 */
+.hero__role { display: block; }
+.hero__id { line-height: 1.65; }
+.case__line { line-height: 1.9; }
+.card p, .lens > p:last-child, .sub-card p { font-size: var(--fs-body); line-height: 1.9; }
+.teaching__topics p, #about .cv__what p, #about .teaching__header p { font-size: var(--fs-sm); }
+.sub-card .sub-card__label { font-size: var(--fs-meta); }
+.vfield__keys { column-gap: .15em; }
+.vfield__keys > span { max-width: 100%; white-space: normal; overflow-wrap: anywhere; }
+@media (min-width: 541px) and (max-width: 720px) {
+  .hero__grid { grid-template-columns: minmax(0, 1fr); }
+  .hero__body { grid-column: 1; max-width: 36em; }
+  .hero__figure { grid-column: 1; justify-self: end; width: min(60%, 300px); }
+}
+@media (max-width: 720px) {
+  .vfield__cluster { padding-block: 16px; }
+  .vfield__icon { top: 16px; }
+  .vfield__keys { margin-top: 6px; row-gap: 4px; }
+  .beat + .beat { margin-top: 24px; }
+  .beat__k { font-weight: 700; color: var(--ink); margin-bottom: 4px; }
+  .case__foot { gap: 14px; }
+  .case__more { min-height: 44px; display: inline-flex; align-items: center; }
+}
