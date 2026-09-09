@@ -886,13 +886,14 @@ html:not(.js) .hero__line:first-child {
    平分會有一站落在圓的正上方，那一塊得整個掛在圓上面，在 768 高的筆電上
    會頂到浮動的導覽列。現在圓的正上方是一段乾淨的空弧。
 
-   時間軸（--p 由 JS 每一帧寫在 .vfield 上，見 main.js 的 1b）：
+   前段時間軸（--story = --p / .76；--p 由 JS 寫入，見 main.js 的 1b）：
      .00 – .30   五站依序進場（每站錯開 .04，各自走 .14）
      .30 – .62   停住，這段是留給讀的
      .62 – .84   五站回到圓心、退掉；那一圈跟著淡出
      .62 – .72   圓裡的提問退場
      .74 – .86   圓裡的那一句進場
      .82 – .96   插圖從圓的右下角浮出來（那一句不動，它一直在圓心）
+   完整跑道 --p 的 .70 – .91 是需求標籤交錯彈出，.91 – 1 留給閱讀。
    ============================================================ */
 .vfield { --p: 0; }
 
@@ -1018,6 +1019,39 @@ html:not(.js) .hero__line:first-child {
   margin: clamp(6px, 1.2vw, 16px) calc(-1 * var(--pad-x)) 0 auto;
 }
 
+/* 共同需求：沿用內文字體，以輕微不規則的色紙形狀接住文字。 */
+.vfield__needs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px 12px;
+  max-width: var(--measure);
+  margin-top: 28px;
+}
+.vfield__need {
+  --paper: var(--teal-tint);
+  position: relative;
+  padding: 12px 22px;
+  border-radius: 48% 52% 45% 55% / 55% 43% 57% 45%;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: var(--fs-body);
+  font-weight: 500;
+  line-height: 1.6;
+  text-align: center;
+}
+.vfield__need:nth-child(1) { --n: 0; --x: -32; --y: -30; --paper: #f0d7ce; }
+.vfield__need:nth-child(2) { --n: 1; --x: 28; --y: -31; }
+.vfield__need:nth-child(3) { --n: 2; --x: -58; --y: -16; }
+.vfield__need:nth-child(4) { --n: 3; --x: 57; --y: -21; --paper: #f3d873; }
+.vfield__need:nth-child(5) { --n: 4; --x: -51; --y: 1; --paper: #f3d873; }
+.vfield__need:nth-child(6) { --n: 5; --x: 54; --y: -3; --paper: #f0d7ce; }
+.vfield__need:nth-child(7) { --n: 6; --x: -58; --y: 20; --paper: #e9e2d7; }
+.vfield__need:nth-child(8) { --n: 7; --x: 64; --y: 13; }
+.vfield__need:nth-child(9) { --n: 8; --x: -39; --y: 33; }
+.vfield__need:nth-child(10) { --n: 9; --x: 61; --y: 30; --paper: #e9e2d7; }
+
 @media (max-width: 640px) {
   .vfield__cluster { padding-left: 40px; }
   .vfield__icon { width: 30px; height: 30px; }
@@ -1040,11 +1074,12 @@ html:not(.js) .hero__line:first-child {
    and (min-width: 75em) and (min-height: 48em) {
   .js .vfield {
     position: relative;
-    height: 270svh;              /* 100svh 的 pin ＋ 170svh 的行程 */
+    height: 340svh;              /* 100svh 的 pin ＋ 240svh 的行程，末段留給需求標籤 */
+    --story: clamp(0, calc(var(--p) / .76), 1);
     /* 收斂量。五站進完場（.30）之後，停留到 .62 才開始收。 */
-    --c: clamp(0, calc((var(--p) - .62) / .22), 1);
+    --c: clamp(0, calc((var(--story) - .62) / .22), 1);
     /* 插圖浮出來的量。它同時驅動那一句往上讓位。 */
-    --fig: clamp(0, calc((var(--p) - .82) / .14), 1);
+    --fig: clamp(0, calc((var(--story) - .82) / .14), 1);
   }
   .js .vfield__stage {
     position: sticky;
@@ -1115,7 +1150,7 @@ html:not(.js) .hero__line:first-child {
     line-height: 1.5;
     letter-spacing: var(--track-zh-head);
     color: var(--ink);
-    --out: clamp(0, calc((var(--p) - .62) / .10), 1);
+    --out: clamp(0, calc((var(--story) - .62) / .10), 1);
     opacity: calc(1 - var(--out));
     transform: translate(-50%, -50%);
   }
@@ -1124,7 +1159,7 @@ html:not(.js) .hero__line:first-child {
     line-height: 1.55;
     /* 提問完全退掉（.72）之後才開始出現，所以讀起來是「收乾了才剩下這句」，
        不是「一邊收一邊有人在旁邊講話」。 */
-    --in: clamp(0, calc((var(--p) - .74) / .12), 1);
+    --in: clamp(0, calc((var(--story) - .74) / .12), 1);
     opacity: var(--in);
     /* 它從頭到尾都釘在圓心：這一句就是這一整塊的答案，位置不讓給任何東西。
        讓路的是插圖（見下面 .vfield__fig 的座標）。 */
@@ -1150,6 +1185,38 @@ html:not(.js) .hero__line:first-child {
     transform: translateY(calc((1 - var(--fig)) * 14px));
   }
 
+  /* 標籤先藏在白圓後，再左右交錯噴出。ease-out-back 曲線有一點回彈，
+     反向捲動會沿原路收回；.91 後保持完整構圖，讓文字有時間被讀到。 */
+  .js .vfield__needs {
+    position: absolute;
+    inset: 0;
+    display: block;
+    max-width: none;
+    margin: 0;
+    pointer-events: none;
+  }
+  .js .vfield__core { z-index: 1; }
+  .js .vfield__say,
+  .js .vfield__fig { z-index: 2; }
+  .js .vfield__label,
+  .js .vfield__list { z-index: 1; }
+  .js .vfield__need {
+    --burst: clamp(0, calc((var(--p) - .70 - var(--n) * .012) / .10), 1);
+    --t: calc(var(--burst) - 1);
+    --spread: calc(1 + 2.7 * var(--t) * var(--t) * var(--t) + 1.7 * var(--t) * var(--t));
+    position: absolute;
+    left: 50%;
+    top: var(--cy);
+    width: max-content;
+    padding: calc(1.4 * var(--u)) calc(2.7 * var(--u));
+    font-size: clamp(17px, calc(2.35 * var(--u)), 25px);
+    opacity: clamp(0, calc(var(--burst) * 4), 1);
+    transform:
+      translate(calc(-50% + var(--x) * var(--u) * var(--spread)),
+                calc(-50% + var(--y) * var(--u) * var(--spread)))
+      scale(calc(.35 + .65 * var(--spread)));
+  }
+
   .js .vfield__list { position: absolute; inset: 0; max-width: none; padding: 0; }
   .js .vfield__list::before { display: none; }
 
@@ -1167,7 +1234,7 @@ html:not(.js) .hero__line:first-child {
     border: 0;
     text-align: var(--al);
     /* 每一站自己的進場進度：錯開 .04、各自走 .14，最後一站在 .30 完成。 */
-    --a: clamp(0, calc((var(--p) - var(--i) * .04) / .14), 1);
+    --a: clamp(0, calc((var(--story) - var(--i) * .04) / .14), 1);
     /* 縮放的定點就是它在圈上的那個點，收斂時才是「被吸回圓心」而不是
        「一邊縮一邊漂」。 */
     transform-origin:
@@ -2363,25 +2430,14 @@ html:not(.js) .hero__line:first-child {
     font-size: clamp(25px, 3.2vw, 46px);
     line-height: 1.55;
   }
+  .vfield__say, .vfield__fig { grid-row: 3; }
+  .vfield__needs { grid-column: 1 / -1; grid-row: 4; margin: 0 0 24px; }
   .vfield__fig { grid-column: 2; width: 100%; margin: 32px 0; }
-}
-@media (prefers-reduced-motion: no-preference) and (min-width: 75em) and (min-height: 48em) {
-  .js .vfield__say {
-    left: 44%;
-    width: min(60cqw, 720px);
-    font-size: clamp(32px, 3.4cqw, 52px);
-    text-align: left;
-  }
-  .js .vfield__fig {
-    left: 73%;
-    top: calc(var(--cy) - 10 * var(--u));
-    width: min(25cqw, 320px);
-  }
 }
 @media (max-width: 640px) {
   .vfield__stage { grid-template-columns: minmax(0, 1fr); }
   .vfield__say { margin: 32px 0 16px; font-size: clamp(24px, 5.4vw, 34px); }
-  .vfield__fig { grid-column: 1; width: min(52%, 220px); margin: 0 0 20px auto; }
+  .vfield__fig { grid-column: 1; grid-row: 5; width: min(52%, 220px); margin: 0 0 20px auto; }
 }
 
 .teaching .talk__body { min-width: 0; }
