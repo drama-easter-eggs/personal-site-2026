@@ -7,7 +7,7 @@
 ```
 index.html            首頁（01–08 全部區塊）
 assets/css/style.css  全站樣式
-assets/js/main.js     螢光筆標記、scroll reveal、hero 問句輪播、案例就地展開、行動版選單、年份
+assets/js/main.js     螢光筆標記、scroll reveal、hero 問句輪播、案例翻卡與 modal、行動版選單、年份
 assets/img/hero-figure.svg      hero 右側的手繪人物（原檔在 reference/hero.svg）
 assets/img/about-portrait.jpg   我的經歷那一節的作者像（原檔在 reference/半身截圖.jpg）
 assets/favicon.svg
@@ -67,12 +67,12 @@ python3 -m http.server 4000
 
 `mark--b` 是第二種手繪筆觸，交錯使用可以避免每一道線長得一模一樣。
 
-**案例故事點開看細節。** 每一則案例是一個 `<details>`，整塊摘要就是 `<summary>`，
-點哪裡都能展開；沒有 JS 也能開，Ctrl+F 搜到收合中的字時瀏覽器會自己打開。
-每一則有自己的網址（`index.html#case-fandom`），可以直接把某一則傳給別人。
-新增案例時 `<li class="case" id="case-xxx">` 的 id 要語意化，不要用 `case-4`。
-展開之後「翻轉」那一格的小標會升到 ink 與字重 700，每一則案例的螢光筆只畫在
-那一格——一則一筆，不重複。
+**案例故事以收藏卡打開。** 三張卡沿用米色紙張、teal 線稿與螢光筆標記，
+桌面並列、手機單欄。hover 時卡片輕抬、圖示微移，點擊經過翻面轉場打開原生 `<dialog>`。
+案例內容只保留一份，由 JS 從 `<details>` 移入 dialog；不支援 dialog 或沒有 JS 時仍可原地展開。
+Escape、背景或右上角圓形「×」都能關閉，焦點回到原卡片，背景閱讀位置保持不變。
+每一則保留自己的網址（例如 `index.html#case-fandom`），直接進入會打開對應 modal。
+尊重「減少動態效果」設定，停用翻面與 hover 位移。
 
 **首頁有一處會把畫面停住（pin）的場。** 「研究走過的領域 → 精選案例」是一段
 `height: 200svh` 的跑道加一格 `position: sticky` 的舞台，捲動位置由 `main.js`
@@ -88,7 +88,7 @@ python3 -m http.server 4000
 
 ## 還沒補的內容（搜尋 `TODO` 可以找到）
 
-0. `index.html` — Selected Work 三則案例的**展開內容目前是假文字**（規模、四個段落、受訪者引言）。骨架與版型已經定案，把文案換掉就好；骨架見 `docs/DESIGN.md` 的「案例故事就地展開」。
+0. `index.html` — Selected Work 三則案例的**modal 內容目前是假文字**（規模、四個段落、受訪者引言）。骨架與版型已經定案，把文案換掉就好；骨架見 `docs/DESIGN.md` 的「案例故事就地展開」。
 1. `index.html` — Selected Work **案例 05**（公共服務相關），整塊已寫好註解起來，補完文案取消註解即可。
 2. `index.html` — **Selected Talks & Slides** 三場講題，元件已備好註解起來。
 3. `index.html` — **Substack 訂閱連結**（目前是 `#`）。

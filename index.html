@@ -20,7 +20,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/style.css?v=20260908-type">
+<link rel="stylesheet" href="assets/css/style.css?v=20260909-card-modal2">
 </head>
 <body>
 
@@ -221,33 +221,29 @@
         <p>研究中，最讓我上癮的，就是找到那個<mark class="mark">顛覆原本想像的翻轉</mark>，再把這些意料之外的發現，整理成下一步的策略方向。</p>
       </div>
 
-      <!-- 案例列 = <details>。整塊摘要（提問／兩行摘要／tags）就是 <summary>，
-           點哪裡都能展開；展開的內容縮在右欄，左邊 01/02/03 那一欄留白，
-           所以編號的垂直節奏不會被展開打斷。
-           ⚠️ <summary> 的內容模型是 phrasing + heading，所以這裡只放 h3 與 span：
-           摘要用 .case__line（span 撐成 block），tags 用 role="list" 保住語意。
-           展開內容的骨架五個案例共用：規模 → 當時的問題 → 我做了什麼 → 翻轉 →
-           後來怎麼用 → 一句受訪者原話。順序固定，讀起來才像同一個作者寫的。
-           TODO 以下三則細節目前是假文字，等真實案例文案補上再換掉。 -->
+    </div>
+
+      <!-- 卡片以原生 details 保留無 JS 閱讀；JS 將內容移入 dialog。
+           TODO 以下三則細節目前是假文字，待正式案例文案替換。 -->
       <ol class="cases">
         <li class="case" id="case-fandom">
           <details class="case__disc" data-case>
             <summary class="case__head">
-              <span class="case__no">01</span>
+              <span class="case__top"><span class="case__no">CASE 01</span><span class="case__topic">CULTURE</span></span>
+              <img class="case__art" src="assets/img/fields/culture.svg" alt="" width="144" height="144">
+
               <h3 class="case__q">從「喜歡」到<mark class="mark">真正付費</mark>的距離</h3>
               <span class="case__line">人們花錢買漫畫、買周邊，除了收藏之外，背後還有哪些情感在支持？</span>
               <span class="case__line">現今娛樂的選擇很多，粉絲為何狂熱、又為什麼願意對特定作品花錢。</span>
               <span class="case__foot">
-                <span class="tags" role="list"><span role="listitem">漫畫平台研究</span><span role="listitem">粉絲文化研究</span></span>
-                <span class="case__more" aria-hidden="true">
-                  <span class="case__more-t case__more-t--shut">看這個案例的翻轉</span>
-                  <span class="case__more-t case__more-t--open">收起這個案例</span>
-                </span>
+                <span class="case__category">粉絲文化・使用者研究</span>
+                <span class="case__more" aria-hidden="true">↗</span>
               </span>
             </summary>
 
             <div class="case__wrap">
               <div class="case__detail">
+                <span class="tags" role="list"><span role="listitem">漫畫平台研究</span><span role="listitem">粉絲文化研究</span></span>
                 <p class="case__meta">2023 ｜ 深度訪談 14 位 ・ 平台行為資料分群 ・ 兩場共創工作坊</p>
 
                 <dl class="beats">
@@ -281,20 +277,20 @@
         <li class="case" id="case-worth">
           <details class="case__disc" data-case>
             <summary class="case__head">
-              <span class="case__no">02</span>
+              <span class="case__top"><span class="case__no">CASE 02</span><span class="case__topic">VALUE</span></span>
+              <img class="case__art" src="assets/img/fields/learning-health.svg" alt="" width="144" height="144">
+
               <h3 class="case__q">人們如何判斷<mark class="mark mark--b">「是否值得」</mark></h3>
               <span class="case__line">台灣人真的只追求 CP 值嗎？為什麼有時候願意高價付費。</span>
               <span class="case__foot">
-                <span class="tags" role="list"><span role="listitem">線上教育</span><span role="listitem">醫療健康</span><span role="listitem">收藏品研究</span></span>
-                <span class="case__more" aria-hidden="true">
-                  <span class="case__more-t case__more-t--shut">看這個案例的翻轉</span>
-                  <span class="case__more-t case__more-t--open">收起這個案例</span>
-                </span>
+                <span class="case__category">價值判斷・跨產業研究</span>
+                <span class="case__more" aria-hidden="true">↗</span>
               </span>
             </summary>
 
             <div class="case__wrap">
               <div class="case__detail">
+                <span class="tags" role="list"><span role="listitem">線上教育</span><span role="listitem">醫療健康</span><span role="listitem">收藏品研究</span></span>
                 <p class="case__meta">2022–2023 ｜ 橫跨三個產業共 21 位受訪者 ・ 陪同就診與上課的現場觀察</p>
 
                 <dl class="beats">
@@ -328,20 +324,20 @@
         <li class="case" id="case-loyalty">
           <details class="case__disc" data-case>
             <summary class="case__head">
-              <span class="case__no">03</span>
+              <span class="case__top"><span class="case__no">CASE 03</span><span class="case__topic">RELATIONSHIP</span></span>
+              <img class="case__art" src="assets/img/fields/finance.svg" alt="" width="144" height="144">
+
               <h3 class="case__q">選擇很多，是什麼讓人<mark class="mark">願意留下</mark></h3>
               <span class="case__line">真的是因為贈品多、好禮大放送，人們才留下來的嗎？</span>
               <span class="case__foot">
-                <span class="tags" role="list"><span role="listitem">金融產品</span><span role="listitem">會員經營</span></span>
-                <span class="case__more" aria-hidden="true">
-                  <span class="case__more-t case__more-t--shut">看這個案例的翻轉</span>
-                  <span class="case__more-t case__more-t--open">收起這個案例</span>
-                </span>
+                <span class="case__category">會員關係・體驗策略</span>
+                <span class="case__more" aria-hidden="true">↗</span>
               </span>
             </summary>
 
             <div class="case__wrap">
               <div class="case__detail">
+                <span class="tags" role="list"><span role="listitem">金融產品</span><span role="listitem">會員經營</span></span>
                 <p class="case__meta">2024 ｜ 訪談 16 位 ・ 會員資料分群 ・ 六個競品的體驗稽核</p>
 
                 <dl class="beats">
@@ -372,7 +368,6 @@
           </details>
         </li>
       </ol>
-    </div>
   </div>
 </section>
 
@@ -741,6 +736,6 @@
   </div>
 </footer>
 
-<script src="assets/js/main.js?v=20260908-posts4" defer></script>
+<script src="assets/js/main.js?v=20260909-card-modal2" defer></script>
 </body>
 </html>

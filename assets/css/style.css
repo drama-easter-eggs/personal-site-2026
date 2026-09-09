@@ -280,9 +280,6 @@ mark.mark--b {
   .contact__social a:hover { transform: translateY(-1px); }
   /* 整塊摘要都可按，但回應手勢的是展開提示那一行，不是整塊變色——
      一整列跟著亮會讓人以為自己按到了什麼別的東西。 */
-  .case__head:hover .case__more { color: var(--ink); border-bottom-color: var(--ink); }
-  .case__head:hover::after { transform: scaleY(.18); }
-  .case__disc[open] > .case__head:hover::after { transform: scaleY(1); }
 }
 /* 按下去要回到平面，手指才有「壓到」的感覺 */
 .btn:active { transform: translateY(0); }
@@ -1247,136 +1244,221 @@ html:not(.js) .hero__line:first-child {
 }
 
 /* ============================================================
-   03 SELECTED WORK
-   一頁式站不該為了三則案例把人送去別的頁面，所以細節就地展開，不開 modal、
-   不跳頁。展開用原生 <details>：鍵盤可操作、沒有 JS 也能開、Ctrl+F 搜到
-   收合中的字時瀏覽器會自己把它打開——這三件事自己用 JS 做都會漏掉。
-
-   欄位：整塊摘要是 <summary>，它自己就是那個 48px + 1fr 的格線
-   （所以整塊可點），展開的內容縮到第二欄，左邊編號那一欄留白，
-   01/02/03 的垂直節奏不會被展開打斷。
+   03 SELECTED WORK — paper collection cards + reading dialog
+   Native details remains the fallback when dialog is unavailable.
    ============================================================ */
-.cases { border-top: 1px solid var(--hairline); }
-.case {
-  border-bottom: 1px solid var(--hairline);
-  /* 從網址直接開某一則案例時，不要被浮動導覽壓到 */
-  scroll-margin-top: 104px;
-  /* 摘要的上下留白＝這一列的節奏，展開後的內容底部沿用同一個值 */
-  --case-pad: clamp(24px, 2.8vw, 32px);
-  --case-col: 48px;
-  --case-gap: clamp(12px, 2vw, 24px);
-}
-
-.case__head {
+.cases {
+  grid-column: 1 / -1;
   display: grid;
-  grid-template-columns: var(--case-col) minmax(0, 1fr);
-  gap: 0 var(--case-gap);
-  padding-block: var(--case-pad);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: start;
+  gap: clamp(20px, 3vw, 40px);
+  margin-top: 32px;
+  list-style: none;
+}
+.case {
+  --case-gap: 24px;
+  --card-angle: -1.2deg;
+  --card-paper: #efede6;
+  scroll-margin-top: 120px;
+  perspective: 1400px;
+  min-width: 0;
+}
+.case:nth-child(2) { --card-angle: 1deg; --card-paper: #e5eee7; padding-top: 16px; }
+.case:nth-child(3) { --card-angle: -.6deg; --card-paper: #eee8dc; }
+.case__head {
+  display: flex;
+  flex-direction: column;
   position: relative;
+  min-height: 500px;
+  padding: clamp(24px, 2.6vw, 36px);
+  border: 1px solid var(--hairline);
+  border-radius: 10px;
+  background: var(--card-paper);
+  box-shadow: 0 3px 0 rgba(44, 46, 42, .05), 0 12px 24px -22px rgba(44, 46, 42, .28);
+  color: var(--ink);
   cursor: pointer;
   list-style: none;
-  transition: padding-bottom var(--dur-ui) var(--ease);
+  transform: rotate(var(--card-angle));
+  backface-visibility: hidden;
+  transition: transform .32s var(--ease), box-shadow .32s var(--ease), border-color .32s ease;
 }
-/* 原生的三角形換掉——這一站的展開提示是編號下方那條 teal 結構線 */
 .case__head::-webkit-details-marker { display: none; }
-.case__head > *:not(.case__no) { grid-column: 2; }
-
-/* 結構線：收合時 scaleY(0) 藏在編號正下方，展開時往下長，
-   接上 .case__detail 左緣同一條線——視覺上是一條線從編號拉到內容底。
-   起點 = 上留白 + 編號那一行的行高（14px × line-height 2 ＝ 28，
-   加 padding-top .55em ≈ 7.7，再留 4px 呼吸）＝ 固定 40px，不隨斷點跑。 */
-.case__head::after {
-  content: "";
+.case__head::before {
+  content: '';
   position: absolute;
-  left: 3px;
-  top: calc(var(--case-pad) + 40px);
-  bottom: 6px;
-  width: 1px;
-  background: var(--teal);
-  transform: scaleY(0);
-  transform-origin: top;
-  transition: transform var(--dur-ui) var(--ease);
+  inset: 10px;
+  border: 1px solid rgba(80, 85, 79, .16);
+  border-radius: 4px;
+  pointer-events: none;
 }
-/* 展開後把線一路接到摘要底緣，跟 .case__detail 的那一段接成同一條 */
-.case__disc[open] > .case__head::after { transform: scaleY(1); bottom: 0; }
-/* 展開後摘要與細節之間不需要整段留白，收掉一半 */
-.case__disc[open] > .case__head { padding-bottom: 20px; }
-
-.case__no {
+.case__head:focus-visible { outline: 3px solid var(--teal-deep); outline-offset: 6px; }
+.case__top { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 10px; }
+.case__no, .case__topic {
   font-family: var(--latin);
-  font-size: var(--fs-meta);
+  font-size: 13px;
   font-weight: 500;
-  letter-spacing: .06em;
+  letter-spacing: .12em;
   color: var(--stone);
-  padding-top: .55em;
+}
+.case__art {
+  width: 144px;
+  height: 144px;
+  margin: 38px auto 32px;
+  object-fit: contain;
+  transition: transform .4s var(--ease);
 }
 .case__q {
   font-family: var(--display);
-  font-size: var(--fs-display);
+  font-size: clamp(24px, 2.15vw, 30px);
   font-weight: 700;
-  line-height: var(--lh-head);
+  line-height: 1.6;
   letter-spacing: var(--track-zh-head);
   text-wrap: balance;
   margin-bottom: 16px;
 }
-.case__line { display: block; }
-.case__line + .case__line { margin-top: var(--space-paragraph); }
-
-/* 展開提示。刻意不用 chevron：那是誰家的網站都有的零件。
-   這裡靠文字換句＋上面那條結構線，收合說「看翻轉」，展開說「收起」。
-   aria-hidden 是因為 <summary> 本身已經會報 expanded／collapsed，
-   再讓螢幕閱讀器唸一次提示等於講兩遍。 */
-/* tags 與展開提示同一列，提示靠右——tags 只用掉左邊三分之一，
-   右邊那段空白正好是這一站不想留的（見 DESIGN.md「分行列表」那條）。 */
+.case__head .case__line { display: none; }
+.case__disc[open] > .case__head .case__line { display: block; font-size: var(--fs-body); margin-bottom: 12px; }
 .case__foot {
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: 10px 20px;
-  margin-top: 16px;
+  gap: 12px;
+  margin-top: auto;
+  padding-top: 22px;
 }
-.case__foot .tags { margin-top: 0; }
-
+.case__category { font-size: 14px; color: var(--stone); }
 .case__more {
-  font-size: var(--fs-meta);
-  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 42px;
+  width: 42px;
+  height: 42px;
+  border: 1px solid var(--hairline);
+  border-radius: 50%;
+  font-size: 26px;
+  line-height: 1;
   color: var(--teal-deep);
-  border-bottom: 1px solid var(--teal);
-  padding-bottom: 2px;
-  transition: color var(--dur-ui) var(--ease),
-              border-color var(--dur-ui) var(--ease);
+  transition: transform .32s var(--ease), background .32s ease, border-color .32s ease;
 }
-.case__more-t--open,
-.case__disc[open] .case__more-t--shut { display: none; }
-.case__disc[open] .case__more-t--open { display: inline; }
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .case__head:hover {
+    transform: translateY(-9px) rotate(0deg) rotateY(-3deg);
+    border-color: var(--teal-deep);
+    box-shadow: 0 20px 38px -20px rgba(38, 117, 99, .3);
+  }
+  .case__head:hover .case__art { transform: translateY(-5px) rotate(5deg); }
+  .case__head:hover .case__more { transform: rotate(45deg); background: var(--ochre); border-color: var(--ochre); }
+}
+.case.is-opening .case__head { transform: rotateY(90deg) scale(.97); }
+.case.is-active .case__head { border-color: var(--teal-deep); }
+.case__wrap { margin-top: 28px; }
+.case__detail { --k: 104px; --case-gap: 24px; }
+.case__detail > .tags { margin: 0 0 20px; }
 
-/* ---- 展開的動畫 ----
-   grid-template-rows 0fr → 1fr，不用 max-height 猜一個「應該夠高」的數字。
-   收合時 <details> 要撐到動畫跑完才關（JS 負責），所以這裡預設 1fr，
-   實際的 0fr/1fr 由 JS 寫成 inline style；沒有 JS 就是瞬間開關。 */
-.case__wrap {
-  display: grid;
-  grid-template-rows: 1fr;
-  transition: grid-template-rows var(--dur-ui) var(--ease);
+.case-modal {
+  /* showModal() places this full-screen overlay in the browser's top layer. */
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: 24px;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  overflow: hidden;
+  perspective: 1800px;
 }
-.case__wrap > * { min-height: 0; overflow: hidden; }
-/* 動完就把 overflow 放開，否則裡面的 focus outline 會被切掉 */
-.case__disc[open]:not(.is-moving) .case__wrap > * { overflow: visible; }
-
-.case__detail {
-  position: relative;
-  padding-left: calc(var(--case-col) + var(--case-gap));
-  padding-bottom: var(--case-pad);
-  --k: 104px;
+.case-modal[open] { display: grid; place-items: center; }
+.case-modal::backdrop { background: rgba(27, 37, 30, .6); backdrop-filter: blur(6px); }
+.case-modal__panel {
+  width: min(880px, 100%);
+  max-height: min(860px, calc(100dvh - 64px));
+  overflow: auto;
+  overscroll-behavior: contain;
+  border: 1px solid var(--hairline);
+  border-radius: 14px;
+  background: var(--cream);
+  box-shadow: 0 32px 100px rgba(12, 25, 18, .4);
+  backface-visibility: hidden;
+  transform-origin: center;
 }
-/* 接續 .case__head::after 的那條線 */
-.case__detail::before {
-  content: "";
-  position: absolute;
-  left: 3px; top: 0; bottom: var(--case-pad);
-  width: 1px;
-  background: var(--teal);
+.case-modal[open] .case-modal__panel { animation: case-unfold .5s cubic-bezier(.16, .7, .25, 1) both; }
+.case-modal[open]::backdrop { animation: case-backdrop .3s ease both; }
+.case-modal.is-closing .case-modal__panel { animation: case-fold .18s ease both; }
+.case-modal.is-closing { pointer-events: none; }
+.case-modal__bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  gap: 16px;
+  padding: 14px 24px;
+  background: var(--cream);
+  border-bottom: 1px solid var(--hairline);
+}
+.case-modal__index { font-family: var(--latin); font-size: 13px; letter-spacing: .14em; color: var(--stone); }
+.case-modal__close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 48px;
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  border: 1px solid var(--hairline);
+  border-radius: 50%;
+  background: var(--cream);
+  font-family: var(--latin);
+  font-size: 32px;
+  font-weight: 400;
+  line-height: 1;
+  color: var(--ink);
+  cursor: pointer;
+}
+.case-modal__close:hover { background: var(--teal-tint); }
+.case-modal__close:focus-visible { outline: 3px solid var(--teal-deep); outline-offset: 3px; }
+.case-modal__body { padding: clamp(24px, 5vw, 56px); }
+.case-modal__title { font-size: clamp(26px, 4vw, 38px); line-height: 1.55; margin-bottom: 20px; text-wrap: balance; }
+.case-modal__intro { color: var(--stone); margin-bottom: 28px; max-width: var(--measure); }
+.case-modal__intro p + p { margin-top: 10px; }
+.case-modal .case__wrap { margin-top: 0; }
+.case-modal .case__detail { padding: 0; }
+.case-modal .beat--turn { background: var(--teal-tint); padding: 22px; border-radius: 4px; }
+@keyframes case-unfold {
+  from { transform: rotateY(-90deg) scale(.88); }
+  to { transform: rotateY(0) scale(1); }
+}
+@keyframes case-fold { to { opacity: 0; transform: perspective(1400px) rotateY(12deg) scale(.98); } }
+@keyframes case-backdrop { from { opacity: 0; } to { opacity: 1; } }
+@media (max-width: 1000px) {
+  .cases { gap: 20px; }
+  .case__head { min-height: 470px; padding: 24px; }
+  .case__topic { font-size: 12px; letter-spacing: .06em; }
+  .case__art { width: 120px; height: 120px; }
+  .case__q { font-size: 24px; }
+}
+@media (max-width: 760px) {
+  .cases { grid-template-columns: minmax(0, 1fr); gap: 28px; width: min(100%, 480px); justify-self: center; margin-top: 12px; }
+  .case:nth-child(2) { padding-top: 0; }
+  .case__head { min-height: 430px; padding: 30px; }
+  .case__art { margin-block: 28px; }
+  .case__q { font-size: 26px; }
+  .case-modal { padding: 12px; }
+  .case-modal__panel { max-height: calc(100dvh - 24px); }
+  .case-modal__bar { padding: 10px 18px; }
+  .case-modal .beat { grid-template-columns: minmax(0, 1fr); }
+  .case-modal .case__quote { padding-left: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .case__head, .case.is-opening .case__head { transform: none; }
+  .case-modal[open] .case-modal__panel, .case-modal.is-closing .case-modal__panel { animation: none; }
 }
 
 .case__meta {
@@ -2085,14 +2167,6 @@ html:not(.js) .hero__line:first-child {
     grid-column: 2;
     flex-direction: row; align-items: baseline; gap: 16px;
   }
-  .case__head { grid-template-columns: minmax(0, 1fr); gap: 8px; }
-  .case__head > *:not(.case__no) { grid-column: 1; }
-  .case__no { padding-top: 0; }
-  /* 一欄之後編號在自己那一行，垂直線會穿過文字，所以摘要這一段不畫線；
-     細節那一段改成貼左緣的一條邊，縮排也跟著收到 14px。 */
-  .case__head::after { display: none; }
-  .case__detail { padding-left: 14px; }
-  .case__detail::before { left: 0; }
   .beat { grid-template-columns: minmax(0, 1fr); gap: 4px; }
   .beat__k { padding-top: 0; }
   .case__quote { padding-left: 0; }
