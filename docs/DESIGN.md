@@ -1436,3 +1436,16 @@ JS 攔下 `<summary>` 的原生開合自己補間；收合時要撐到動畫跑�
 - 既有三則正文仍是待替換假文字，此次僅調整展示與互動。
 
 補充：modal 以全螢幕原生 dialog 承載置中閱讀面板，深色模糊遮罩覆蓋頁面。右上角固定於面板頂列的 48px 圓形 × 按鈕關閉浮層。點擊卡片先轉 90°（320ms），閱讀面板再由 −90° 翻至正面（500ms），串接為可辨識的翻面動作。
+
+
+## 2026-09-09 新增 featured report card
+
+Selected Work 共四張：第一張「解碼 BL 與百合的情感經濟」橫跨桌面三欄，以淺 teal 底、報告原插畫與較大的標題凸顯。CASE 01 使用原生 `<a target="_blank" rel="noopener noreferrer">`，標示「閱讀完整報告／另開分頁」，連至 https://bl-gl-unboxing.netlify.app/，不參與 modal 與點擊翻面。
+
+其餘三張改編為 CASE 02–04，原本語意 id、分享網址、翻面 modal 與 hover 都保留。手機仍依序單欄，featured card 的插畫與文字直列。插畫來自該報告的 `img/hero-sketch.webp?v=2`；摘要的 886 人樣本數依報告原文。
+
+### 收藏卡縮小比例
+
+案例組置中、最大寬度 980px、間距 24px。一般卡片最小高度從 500px 調至 380px、插圖從 144px 調至 96px；featured card 最小高度 300px、插畫最高 200px、標題最大 34px。手機一般卡片最小高度 340px，featured 插畫最高 150px。高度皆可隨文字自然增長，正文與 modal 閱讀尺寸不變。
+
+Featured card 配色更新：底色改為米白 `#faf7ef`，外框使用暖灰 `--hairline`，保留既有插畫與 teal 文字重點。

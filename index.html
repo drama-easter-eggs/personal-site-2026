@@ -20,7 +20,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/style.css?v=20260909-card-modal2">
+<link rel="stylesheet" href="assets/css/style.css?v=20260909-cream-featured">
 </head>
 <body>
 
@@ -223,13 +223,28 @@
 
     </div>
 
-      <!-- 卡片以原生 details 保留無 JS 閱讀；JS 將內容移入 dialog。
+      <!-- 第一張以連結另開完整報告；其餘卡片以原生 details 保留無 JS 閱讀，JS 將內容移入 dialog。
            TODO 以下三則細節目前是假文字，待正式案例文案替換。 -->
       <ol class="cases">
+        <li class="case case--featured" id="case-bl-gl">
+          <a class="case__head case__head--featured" href="https://bl-gl-unboxing.netlify.app/" target="_blank" rel="noopener noreferrer" aria-labelledby="case-bl-gl-title" aria-describedby="case-bl-gl-link-hint">
+            <span class="case__top"><span class="case__no">CASE 01</span><span class="case__featured-label">FEATURED / 完整研究報告</span></span>
+            <div class="case__featured-copy">
+              <h3 class="case__q" id="case-bl-gl-title">解碼 BL 與百合的<mark class="mark">情感經濟</mark></h3>
+              <p class="case__featured-desc">從 886 位粉絲的回答，理解一份喜歡如何形成情感、行動與消費。</p>
+            </div>
+            <img class="case__art" src="assets/img/cases/bl-gl-report.webp" alt="" width="1323" height="928" loading="lazy" decoding="async">
+            <span class="case__foot">
+              <span class="case__report-cta" id="case-bl-gl-link-hint">閱讀完整報告<span class="case__new-tab">另開分頁</span></span>
+              <span class="case__more" aria-hidden="true">↗</span>
+            </span>
+          </a>
+        </li>
+
         <li class="case" id="case-fandom">
           <details class="case__disc" data-case>
             <summary class="case__head">
-              <span class="case__top"><span class="case__no">CASE 01</span><span class="case__topic">CULTURE</span></span>
+              <span class="case__top"><span class="case__no">CASE 02</span><span class="case__topic">CULTURE</span></span>
               <img class="case__art" src="assets/img/fields/culture.svg" alt="" width="144" height="144">
 
               <h3 class="case__q">從「喜歡」到<mark class="mark">真正付費</mark>的距離</h3>
@@ -277,7 +292,7 @@
         <li class="case" id="case-worth">
           <details class="case__disc" data-case>
             <summary class="case__head">
-              <span class="case__top"><span class="case__no">CASE 02</span><span class="case__topic">VALUE</span></span>
+              <span class="case__top"><span class="case__no">CASE 03</span><span class="case__topic">VALUE</span></span>
               <img class="case__art" src="assets/img/fields/learning-health.svg" alt="" width="144" height="144">
 
               <h3 class="case__q">人們如何判斷<mark class="mark mark--b">「是否值得」</mark></h3>
@@ -324,7 +339,7 @@
         <li class="case" id="case-loyalty">
           <details class="case__disc" data-case>
             <summary class="case__head">
-              <span class="case__top"><span class="case__no">CASE 03</span><span class="case__topic">RELATIONSHIP</span></span>
+              <span class="case__top"><span class="case__no">CASE 04</span><span class="case__topic">RELATIONSHIP</span></span>
               <img class="case__art" src="assets/img/fields/finance.svg" alt="" width="144" height="144">
 
               <h3 class="case__q">選擇很多，是什麼讓人<mark class="mark">願意留下</mark></h3>
@@ -736,6 +751,6 @@
   </div>
 </footer>
 
-<script src="assets/js/main.js?v=20260909-card-modal2" defer></script>
+<script src="assets/js/main.js?v=20260909-featured-case" defer></script>
 </body>
 </html>

@@ -67,8 +67,9 @@ python3 -m http.server 4000
 
 `mark--b` 是第二種手繪筆觸，交錯使用可以避免每一道線長得一模一樣。
 
-**案例故事以收藏卡打開。** 三張卡沿用米色紙張、teal 線稿與螢光筆標記，
-桌面並列、手機單欄。hover 時卡片輕抬、圖示微移，點擊經過翻面轉場打開原生 `<dialog>`。
+**案例故事共有四張收藏卡。** 第一張「解碼 BL 與百合的情感經濟」為 featured card，
+桌面橫跨一列，使用報告原插畫，另開分頁連至 https://bl-gl-unboxing.netlify.app/，不開 modal。
+其餘三張沿用米色紙張、teal 線稿與螢光筆標記，桌面並列、手機單欄。hover 時卡片輕抬、圖示微移，點擊經過翻面轉場打開原生 `<dialog>`。
 案例內容只保留一份，由 JS 從 `<details>` 移入 dialog；不支援 dialog 或沒有 JS 時仍可原地展開。
 Escape、背景或右上角圓形「×」都能關閉，焦點回到原卡片，背景閱讀位置保持不變。
 每一則保留自己的網址（例如 `index.html#case-fandom`），直接進入會打開對應 modal。
@@ -97,3 +98,5 @@ Escape、背景或右上角圓形「×」都能關閉，焦點回到原卡片，
 6. `index.html` — `og:url` 與 `og:image`，等網域確定後再補。
 7. `index.html` — 插圖：hero 那張與作者像都已就位，其餘還沒補的都已經拿掉版位，
    要加的時候再開一格，不留鷹架在頁面上。
+
+Featured card 插畫來源：`https://bl-gl-unboxing.netlify.app/img/hero-sketch.webp?v=2`，本機存放於 `assets/img/cases/bl-gl-report.webp`。摘要與樣本數依完整報告內容。
