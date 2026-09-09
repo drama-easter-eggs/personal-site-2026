@@ -37,7 +37,7 @@
 
   var REVEAL = [
     '.eyebrow',
-    '.col > *:where(:not(.threads, .cases, .cv, .talks, .cards, .posts, .fit, .teaching))',
+    '.col > *:where(:not(.threads, .cases, .cv, .talks, .cards, .posts, .reach-stages, .teaching))',
     '.threads > *',
     '.cases > *',
     '.cv > *',
@@ -47,8 +47,7 @@
     '.talks > *',
     '.cards > *',
     '.posts > *',
-    '.fit__col > *:where(:not(.fit__list))',
-    '.fit__list > *',
+    '.reach-stages > *',
     '.contact__panel > *'
   ].join(', ');
 

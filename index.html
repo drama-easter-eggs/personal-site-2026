@@ -540,46 +540,86 @@
 </section>
 
 <!-- ══════════ 05 WHEN TO REACH OUT ══════════
-     第三章的開場，也是整頁唯一一次翻到紙的背面（ink）。
-     敘事主體在這裡換人：前面每一節都在講「我怎麼想／做過什麼」，
-     從這一節開始每一句都在講你的處境。換紙就是換人稱，整頁只發生一次。
-
-     所以版型刻意不特別——就是原本那組左右對照（適合／不適合）。
-     翻的是紙，不是版：如果連排版都一起換，這一刻就變成「又一個新花樣」，
-     而不是「換人講話了」。
-
-     ink 上的層級色在 .section--ink 那一組 token 裡一次換算完
-     （--ink → cream、--stone / --hairline → cream 的透明度階），
-     所以 .eyebrow、.fit、細線全部沿用原本的規則，不需要各自改寫。 -->
-<section class="section section--ink" id="reach">
+     深色紙面延續第三章的敘事轉向：從我的經驗，回到你的問題。
+     四個階段是可同時展開的閱讀入口，原生 details 不依賴 JavaScript。 -->
+<section class="section section--ink" id="reach" aria-labelledby="reach-title">
   <div class="wrap layout">
     <div class="gutter">
-      <h2 class="eyebrow"><span>When to reach out</span>什麼情況適合找我</h2>
+      <h2 class="eyebrow" id="reach-title"><span>When to reach out</span>你的產品，現在走到哪裡？</h2>
     </div>
 
     <div class="col">
-      <div class="fit">
-        <div class="fit__col">
-          <h3 class="fit__head">如果你正遇到這些情境，很適合先一起聊聊</h3>
-          <ul class="fit__list fit__list--yes">
-            <li>方向很多，但不知道真正的問題在哪裡</li>
-            <li>團隊手上有很多資料、有各自不同的觀察與假設，需要重新釐清問題</li>
-            <li>知道使用者做了什麼，卻不知道為什麼</li>
-            <li>數據看得到行為，卻看不懂、看不出背後的動機</li>
-            <li>已經做過不少研究、數據也很多，卻不知道下一步怎麼走</li>
-            <li>想和顧客建立更深的關係，但不是只有複製市場上的成功公式</li>
-          </ul>
-        </div>
+      <p class="reach-lead">每個團隊在不同階段，會遇到不同問題。如果你最近剛好在思考這些，歡迎找我一起討論。</p>
+      <div class="reach-stages">
+        <details class="reach-stage" open>
+          <summary class="reach-stage__head">
+            <span class="reach-stage__num">01</span>
+            <span class="reach-stage__label">探索期</span>
+            <span class="reach-stage__question">我們真正要解決的問題是什麼？</span>
+            <span class="reach-stage__toggle" aria-hidden="true"></span>
+          </summary>
+          <div class="reach-stage__panel">
+            <p>團隊可能各自有觀察、數據與假設，卻還沒有形成共同的問題。我會從既有資訊開始，整理已知與未知，重新釐清真正值得投入的研究與產品問題。</p>
+            <ul class="reach-stage__tags" aria-label="研究方向">
+              <li>問題釐清</li>
+              <li>既有資料整合</li>
+              <li>探索性研究</li>
+            </ul>
+          </div>
+        </details>
 
-        <div class="fit__col">
-          <h3 class="fit__head">這些可能比較不適合找我</h3>
-          <ul class="fit__list fit__list--no">
-            <li>問題與解法都已經非常明確，只需要快速執行</li>
-            <li>已經決定方向，只需要研究替既有決策背書</li>
-            <li>目前沒有空間重新檢視問題或調整方向</li>
-          </ul>
-        </div>
+        <details class="reach-stage">
+          <summary class="reach-stage__head">
+            <span class="reach-stage__num">02</span>
+            <span class="reach-stage__label">理解期</span>
+            <span class="reach-stage__question">使用者到底需要什麼？</span>
+            <span class="reach-stage__toggle" aria-hidden="true"></span>
+          </summary>
+          <div class="reach-stage__panel">
+            <p>數據可以告訴我們行為，但不一定說得出動機。我會回到真實情境，理解使用者如何思考、選擇、留下或離開，也檢視團隊原本對使用者的想像是否成立。</p>
+            <ul class="reach-stage__tags" aria-label="研究方向">
+              <li>深度訪談</li>
+              <li>行為與動機</li>
+              <li>需求洞察</li>
+            </ul>
+          </div>
+        </details>
+
+        <details class="reach-stage">
+          <summary class="reach-stage__head">
+            <span class="reach-stage__num">03</span>
+            <span class="reach-stage__label">驗證期</span>
+            <span class="reach-stage__question">我們的方向，真的對嗎？</span>
+            <span class="reach-stage__toggle" aria-hidden="true"></span>
+          </summary>
+          <div class="reach-stage__panel">
+            <p>當團隊已有產品方向、價值主張或初步方案，可以透過研究確認使用者如何理解與反應。目的不是替決策背書，而是在繼續投入之前，看見哪些假設成立、哪些地方值得調整。</p>
+            <ul class="reach-stage__tags" aria-label="研究方向">
+              <li>方向驗證</li>
+              <li>概念研究</li>
+              <li>價值主張</li>
+            </ul>
+          </div>
+        </details>
+
+        <details class="reach-stage">
+          <summary class="reach-stage__head">
+            <span class="reach-stage__num">04</span>
+            <span class="reach-stage__label">深化期</span>
+            <span class="reach-stage__question">接下來，可以如何繼續經營？</span>
+            <span class="reach-stage__toggle" aria-hidden="true"></span>
+          </summary>
+          <div class="reach-stage__panel">
+            <p>當產品已經成立，下一題不一定是再加什麼功能。我會從使用、付費、續留與關係的脈絡，理解顧客真正重視的價值，找到更適合自己的體驗與長期經營方向。</p>
+            <ul class="reach-stage__tags" aria-label="研究方向">
+              <li>會員與顧客關係</li>
+              <li>付費與續留</li>
+              <li>體驗策略</li>
+            </ul>
+          </div>
+        </details>
       </div>
+      <p class="reach-note">階段不是線性的。即使產品已經上線，也可能需要重新回到探索；這四個入口只是幫助你更快找到「現在最需要回答的問題」。</p>
     </div>
   </div>
 </section>

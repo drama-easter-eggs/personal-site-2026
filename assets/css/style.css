@@ -219,7 +219,7 @@ mark.mark--b {
    :where() 的特異性是 0，這一整串維持在 0,2,0，跟 .is-in 同級，
    .is-in 寫在後面所以贏。 */
 .js .eyebrow,
-.js .col > *:where(:not(.threads, .cases, .cv, .talks, .cards, .posts, .fit, .teaching)),
+.js .col > *:where(:not(.threads, .cases, .cv, .talks, .cards, .posts, .reach-stages, .teaching)),
 .js .threads > *,
 .js .cases > *,
 .js .cv > *,
@@ -229,8 +229,7 @@ mark.mark--b {
 .js .talks > *,
 .js .cards > *,
 .js .posts > *,
-.js .fit__col > *:where(:not(.fit__list)),
-.js .fit__list > *,
+.js .reach-stages > *,
 .js .contact__panel > * {
   opacity: 0;
   transform: translateY(var(--rise-y));
@@ -407,7 +406,7 @@ mark.mark--b {
    線的三個層級（改任何一條之前先確認自己在哪一級）：
      滿版（不受 --page 限制）   = 章際交界，由整片收斂場與整節 ink 承擔
      版心寬                     = 同一章之內的跨頁（.hero__rule、.section--cont）
-     hairline 分行              = 列表的列（.cases、.cv、.talks、.fit__list…）
+     hairline 分行              = 列表的列（.cases、.cv、.talks、.reach-stages…）
 
    關掉 JS、或 prefers-reduced-motion 之下，四個章節的結構完全不變——
    停頓、紙、章節碼、線都不依賴 motion。
@@ -441,11 +440,8 @@ mark.mark--b {
    ink #2c2e2a 不是第三個色相，是本來的文字色翻成紙。整頁只能有這一節，
    而且只能是敘事主體從「我」換成「你」的那一節。
 
-   紙換了，版型刻意不換：裡面就是原本那組左右對照（適合／不適合）。
-   如果連排版也一起換，這一刻會讀成「又一個新花樣」，不是「換人講話了」。
-
    層級色在 .wrap 上一次換算完——這一段之內 --ink 就是 cream，
-   --stone 與 --hairline 是 cream 的兩階透明度。所以 .eyebrow、.fit、
+   --stone 與 --hairline 是 cream 的兩階透明度。所以 .eyebrow、研究階段、
    focus outline 全部沿用原本的規則就自動反白，
    不需要為深底再寫一份。（不能寫在 .section--ink 自己身上：
    那條 background: var(--ink) 會先吃到被改掉的值。） */
@@ -1691,7 +1687,7 @@ html:not(.js) .hero__line:first-child {
 
 /* 教學主題與其實例共用同一個容器，實例標題低於區塊標題一級。 */
 .teaching {
-  margin-top: clamp(36px, 4vw, 52px);
+  margin-top: clamp(44px, 5vw, 64px);
   scroll-margin-top: 104px;
 }
 .teaching__header h3 {
@@ -1703,22 +1699,29 @@ html:not(.js) .hero__line:first-child {
   margin-bottom: 16px;
 }
 .teaching__header p { max-width: none; }
+/* A shared reading surface separates topics from the introduction and examples. */
 .teaching__topics {
   display: grid;
-  gap: 20px;
-  padding-block: 24px;
-  margin-top: 4px;
+  gap: 24px;
+  margin-block: clamp(28px, 3.4vw, 40px) clamp(36px, 4.2vw, 52px);
+  padding: clamp(24px, 3vw, 36px);
+  background: var(--white);
+  border-radius: clamp(20px, 2.6vw, 30px);
 }
+.teaching__topics > li { min-width: 0; }
 .teaching__topics h4 { font-size: 18px; line-height: 1.5; font-weight: 700; }
 .teaching__topics p { font-size: var(--fs-sm); line-height: var(--lh-compact); color: var(--stone); margin-top: 8px; }
-.teaching__examples-head { padding-top: 20px; border-top: 1px solid var(--hairline); }
-.teaching__examples-head h4 { font-size: 16px; line-height: 1.5; font-weight: 700; }
+.teaching__examples-head { padding-top: 0; }
+.teaching__examples-head h4 { font-size: 18px; line-height: 1.5; font-weight: 700; }
 .teaching__examples-head p { margin-top: 6px; font-size: var(--fs-meta); color: var(--stone); }
 .teaching .talks { border-top: 0; margin-top: 8px; }
 .teaching .talk:last-child { border-bottom: 0; padding-bottom: 0; }
 @media (min-width: 1101px) {
-  .teaching__topics { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
-  .teaching__topics > li + li { border-left: 1px solid var(--hairline); padding-left: 16px; }
+  .teaching__topics { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .teaching__topics > li + li { border-left: 1px solid var(--hairline); padding-left: 24px; }
+}
+@media (max-width: 1100px) {
+  .teaching__topics > li + li { border-top: 1px solid var(--hairline); padding-top: 24px; }
 }
 @media (min-width: 721px) {
   .teaching .talk { grid-template-columns: 128px minmax(0, 1fr); }
@@ -1813,33 +1816,117 @@ html:not(.js) .hero__line:first-child {
 /* ============================================================
    05 WHEN TO REACH OUT
    ============================================================ */
-.fit { display: grid; gap: clamp(40px, 5vw, 60px); }
-.fit__head {
-  font-family: var(--display);
+/* Four research entry points, on the site's existing ink paper. */
+.reach-lead {
+  margin: 0 0 28px;
+  font-size: var(--fs-body);
+  line-height: var(--lh-compact);
+  color: var(--stone);
+}
+/* Match the eyebrow label's line box + bottom padding. */
+@media (min-width: 901px) {
+  #reach .col::before {
+    content: "";
+    display: block;
+    margin-top: calc(var(--fs-eyebrow-latin) * 1.7 + 12px);
+    margin-bottom: 24px;
+    border-top: 1px solid var(--hairline);
+  }
+}
+@media (max-width: 900px) {
+  .reach-stages { border-top: 1px solid var(--hairline); }
+}
+.reach-stage { border-bottom: 1px solid var(--hairline); }
+.reach-stage__head {
+  list-style: none;
+  display: grid;
+  grid-template-columns: 34px 66px minmax(0, 1fr) 36px;
+  gap: 16px;
+  align-items: center;
+  min-height: 100px;
+  padding-block: 24px;
+  cursor: pointer;
+}
+.reach-stage__head::-webkit-details-marker { display: none; }
+.reach-stage__num {
+  font-family: var(--latin);
+  font-size: 1.125rem;
+  font-weight: 400;
+  color: var(--stone);
+}
+.reach-stage__label { font-size: var(--fs-meta); color: var(--stone); }
+.reach-stage__question {
   font-size: var(--fs-head);
-  font-weight: 700;
-  line-height: 1.6;
-  text-wrap: balance;
-  margin-bottom: clamp(18px, 2vw, 26px);
+  font-weight: 500;
+  line-height: 1.65;
+  text-wrap: pretty;
 }
-.fit__list > li {
+.reach-stage__toggle {
   position: relative;
-  padding-left: 30px;
-  padding-block: 9px;
-  line-height: var(--lh-body);
-  border-bottom: 1px solid var(--hairline);
+  width: 36px; height: 36px;
+  border: 1px solid var(--hairline);
+  border-radius: 50%;
+  transition: background var(--dur-ui) var(--ease), border-color var(--dur-ui) var(--ease);
 }
-.fit__list > li:first-child { border-top: 1px solid var(--hairline); }
-.fit__list > li::before {
+.reach-stage__toggle::before,
+.reach-stage__toggle::after {
   content: "";
   position: absolute;
-  left: 0; top: calc(9px + var(--lh-body) * .5em);
-  width: 15px; height: 2px; border-radius: 2px;
+  width: 12px; height: 1px;
+  top: 50%; left: 50%;
+  background: currentColor;
+  transform: translate(-50%, -50%);
 }
-/* no colour-coding here — teal is never a success/error state */
-.fit__list--yes > li::before { background: var(--ink); }
-.fit__list--no  > li::before { background: var(--hairline); }
-.fit__list--no  > li { color: var(--stone); }
+.reach-stage__toggle::after {
+  transform: translate(-50%, -50%) rotate(90deg);
+  transition: transform var(--dur-ui) var(--ease);
+}
+.reach-stage[open] .reach-stage__toggle::after { transform: translate(-50%, -50%) rotate(0deg); }
+.reach-stage[open] .reach-stage__toggle { border-color: var(--teal); background: rgba(92, 178, 160, .12); }
+.reach-stage[open] .reach-stage__num { color: var(--teal); }
+.reach-stage__panel {
+  margin: 0 0 24px 50px;
+  padding: clamp(24px, 2.8vw, 36px);
+  border-radius: 18px;
+  background: rgba(246, 242, 232, .055);
+}
+.reach-stage__panel > p {
+  max-width: var(--measure);
+  color: var(--stone);
+  font-size: var(--fs-body);
+  line-height: var(--lh-compact);
+}
+.reach-stage__tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 22px; }
+.reach-stage__tags > li {
+  border: 1px solid var(--hairline);
+  border-radius: var(--r);
+  padding: 5px 13px;
+  font-size: var(--fs-meta);
+  line-height: 1.7;
+}
+.reach-note {
+  margin-top: 26px;
+  color: var(--stone);
+  font-size: var(--fs-meta);
+  line-height: var(--lh-compact);
+}
+@media (hover: hover) {
+  .reach-stage__head:hover .reach-stage__toggle { background: rgba(92, 178, 160, .18); border-color: var(--teal); }
+}
+@media (max-width: 540px) {
+  .reach-stage__head {
+    grid-template-columns: 28px minmax(0, 1fr) 36px;
+    gap: 6px 10px;
+    padding-block: 22px;
+  }
+  .reach-stage__num { grid-column: 1; grid-row: 1; font-size: var(--fs-meta); }
+  .reach-stage__label { grid-column: 2; grid-row: 1; }
+  .reach-stage__question { grid-column: 1 / 3; grid-row: 2; font-size: 1.25rem; }
+  .reach-stage__toggle { grid-column: 3; grid-row: 1 / 3; }
+  .reach-stage__panel { margin-left: 0; padding: 22px 20px; }
+  .reach-stage__tags { gap: 8px 6px; }
+  .reach-stage__tags > li { padding-inline: 11px; }
+}
 
 /* ============================================================
    06 WORK WITH ME
@@ -2139,10 +2226,6 @@ html:not(.js) .hero__line:first-child {
 /* ============================================================
    RESPONSIVE
    ============================================================ */
-@media (min-width: 1101px) {
-  .fit { grid-template-columns: 1.35fr 1fr; gap: clamp(32px, 4vw, 56px); }
-}
-
 @media (max-width: 1080px) {
   :root { --gutter-w: 132px; }
 }
