@@ -95,8 +95,9 @@
 
        MOMENT 01（.vfield）  五個領域站在同一圈上，讀完之後一起收回正中央
                              那顆圓，圓裡的提問換成那一句，最後插圖從圓的
-                             右下角浮出來、壓出圓外
-                             ＝ many industries → one recurring human need
+                             右下角浮出來、壓出圓外；八個需求依序浮現，
+                             再由同一組 bubble 原位轉成對應體驗策略
+                             ＝ industries → human needs → experience strategies
 
      做法是那一塊自己是一段比視窗高的「跑道」（CSS 的 height），
      裡面一格 sticky 的舞台。--p ＝ 跑道已經走完的比例，

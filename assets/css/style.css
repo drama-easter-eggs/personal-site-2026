@@ -883,14 +883,15 @@ html:not(.js) .hero__line:first-child {
    平分會有一站落在圓的正上方，那一塊得整個掛在圓上面，在 768 高的筆電上
    會頂到浮動的導覽列。現在圓的正上方是一段乾淨的空弧。
 
-   前段時間軸（--story = --p / .76；--p 由 JS 寫入，見 main.js 的 1b）：
+   前段時間軸（--story = --p / .46；--p 由 JS 寫入，見 main.js 的 1b）：
      .00 – .30   五站依序進場（每站錯開 .04，各自走 .14）
      .30 – .62   停住，這段是留給讀的
      .62 – .84   五站回到圓心、退掉；那一圈跟著淡出
      .62 – .72   圓裡的提問退場
      .74 – .86   圓裡的那一句進場
      .82 – .96   插圖從圓的右下角浮出來（那一句不動，它一直在圓心）
-   完整跑道 --p 的 .70 – .91 是需求標籤交錯彈出，.91 – 1 留給閱讀。
+   完整跑道：.46 – .624 八個需求依序浮現，.624 – .74 停留閱讀；
+   .74 – .901 同一組色紙原位轉成策略，.901 – 1 留給策略閱讀。
    ============================================================ */
 .vfield { --p: 0; }
 
@@ -1016,7 +1017,7 @@ html:not(.js) .hero__line:first-child {
   margin: clamp(6px, 1.2vw, 16px) calc(-1 * var(--pad-x)) 0 auto;
 }
 
-/* 共同需求：沿用內文字體，以輕微不規則的色紙形狀接住文字。 */
+/* 需求 → 策略：沿用內文字體與不規則色紙；正常流完整呈現每一組對照。 */
 .vfield__needs {
   display: flex;
   flex-wrap: wrap;
@@ -1028,6 +1029,10 @@ html:not(.js) .hero__line:first-child {
 .vfield__need {
   --paper: var(--teal-tint);
   position: relative;
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  max-width: 100%;
   padding: 12px 22px;
   border-radius: 48% 52% 45% 55% / 55% 43% 57% 45%;
   background: var(--paper);
@@ -1038,16 +1043,16 @@ html:not(.js) .hero__line:first-child {
   line-height: 1.6;
   text-align: center;
 }
+.vfield__need-arrow { color: var(--deep-teal, #267563); }
+.vfield__need-strategy { font-weight: 700; }
 .vfield__need:nth-child(1) { --n: 0; --x: -32; --y: -30; --paper: #f0d7ce; }
 .vfield__need:nth-child(2) { --n: 1; --x: 28; --y: -31; }
-.vfield__need:nth-child(3) { --n: 2; --x: -58; --y: -16; }
-.vfield__need:nth-child(4) { --n: 3; --x: 57; --y: -21; --paper: #f3d873; }
-.vfield__need:nth-child(5) { --n: 4; --x: -51; --y: 1; --paper: #f3d873; }
-.vfield__need:nth-child(6) { --n: 5; --x: 54; --y: -3; --paper: #f0d7ce; }
-.vfield__need:nth-child(7) { --n: 6; --x: -58; --y: 20; --paper: #e9e2d7; }
-.vfield__need:nth-child(8) { --n: 7; --x: 64; --y: 13; }
-.vfield__need:nth-child(9) { --n: 8; --x: -39; --y: 33; }
-.vfield__need:nth-child(10) { --n: 9; --x: 61; --y: 30; --paper: #e9e2d7; }
+.vfield__need:nth-child(3) { --n: 2; --x: -58; --y: -12; }
+.vfield__need:nth-child(4) { --n: 3; --x: 57; --y: -14; --paper: #f3d873; }
+.vfield__need:nth-child(5) { --n: 4; --x: -51; --y: 9; --paper: #f3d873; }
+.vfield__need:nth-child(6) { --n: 5; --x: 57; --y: 7; --paper: #f0d7ce; }
+.vfield__need:nth-child(7) { --n: 6; --x: -39; --y: 33; --paper: #e9e2d7; }
+.vfield__need:nth-child(8) { --n: 7; --x: 61; --y: 30; }
 
 @media (max-width: 640px) {
   .vfield__cluster { padding-left: 40px; }
@@ -1071,8 +1076,9 @@ html:not(.js) .hero__line:first-child {
    and (min-width: 75em) and (min-height: 48em) {
   .js .vfield {
     position: relative;
-    height: 340svh;              /* 100svh 的 pin ＋ 240svh 的行程，末段留給需求標籤 */
-    --story: clamp(0, calc(var(--p) / .76), 1);
+    height: 500svh;              /* 延長需求與策略的閱讀時間，前段領域動畫速度維持原樣 */
+    --story: clamp(0, calc(var(--p) / .46), 1);
+    --strategy: clamp(0, calc((var(--p) - .74) / .10), 1);
     /* 收斂量。五站進完場（.30）之後，停留到 .62 才開始收。 */
     --c: clamp(0, calc((var(--story) - .62) / .22), 1);
     /* 插圖浮出來的量。它同時驅動那一句往上讓位。 */
@@ -1162,6 +1168,13 @@ html:not(.js) .hero__line:first-child {
        讓路的是插圖（見下面 .vfield__fig 的座標）。 */
     transform: translate(-50%, calc(-50% + (1 - var(--in)) * 14px));
   }
+  /* 中央文字留在原位，螢光筆與字色把閱讀重心從第一句交給第二句。 */
+  .js .vfield__say-l:first-child { --emphasis: calc(1 - var(--strategy)); }
+  .js .vfield__say-l:last-child { --emphasis: var(--strategy); }
+  .js .vfield__say-l > mark {
+    color: color-mix(in srgb, var(--ink) calc(100% * var(--emphasis)), var(--stone));
+    background-size: 1em calc(.34em * var(--emphasis));
+  }
 
   /* 插圖：壓在白圓的右下角，右緣與下緣都刻意超出去（破框）。
      身體本身是留空的，白圓的邊線會從它身上穿過去——參考圖就是這樣，
@@ -1182,8 +1195,8 @@ html:not(.js) .hero__line:first-child {
     transform: translateY(calc((1 - var(--fig)) * 14px));
   }
 
-  /* 標籤先藏在白圓後，再左右交錯噴出。ease-out-back 曲線有一點回彈，
-     反向捲動會沿原路收回；.91 後保持完整構圖，讓文字有時間被讀到。 */
+  /* 先左右交錯浮現需求，再於原位淡出需求、淡入策略。
+     同一張色紙與同一個位置，grid 疊住兩面並預留文字高度，轉化不跳版。 */
   .js .vfield__needs {
     position: absolute;
     inset: 0;
@@ -1198,7 +1211,8 @@ html:not(.js) .hero__line:first-child {
   .js .vfield__label,
   .js .vfield__list { z-index: 1; }
   .js .vfield__need {
-    --burst: clamp(0, calc((var(--p) - .70 - var(--n) * .012) / .10), 1);
+    --burst: clamp(0, calc((var(--p) - .46 - var(--n) * .012) / .08), 1);
+    --turn: clamp(0, calc((var(--p) - .74 - var(--n) * .013) / .07), 1);
     --t: calc(var(--burst) - 1);
     --spread: calc(1 + 2.7 * var(--t) * var(--t) * var(--t) + 1.7 * var(--t) * var(--t));
     position: absolute;
@@ -1212,6 +1226,29 @@ html:not(.js) .hero__line:first-child {
       translate(calc(-50% + var(--x) * var(--u) * var(--spread)),
                 calc(-50% + var(--y) * var(--u) * var(--spread)))
       scale(calc(.35 + .65 * var(--spread)));
+  }
+  .js .vfield__need-source,
+  .js .vfield__need-strategy {
+    grid-area: 1 / 1;
+    align-self: center;
+  }
+  .js .vfield__need-source {
+    opacity: clamp(0, calc(1 - var(--turn) / .45), 1);
+    transform: translateY(calc(-6px * var(--turn)));
+  }
+  .js .vfield__need-strategy {
+    opacity: clamp(0, calc((var(--turn) - .55) / .45), 1);
+    transform: translateY(calc(6px * (1 - var(--turn))));
+  }
+  /* 箭頭只從畫面隱藏，讀屏仍能循序讀到「需求 → 策略」。 */
+  .js .vfield__need-arrow {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
   }
 
   .js .vfield__list { position: absolute; inset: 0; max-width: none; padding: 0; }

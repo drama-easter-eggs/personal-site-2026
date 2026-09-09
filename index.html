@@ -196,18 +196,49 @@
       <span class="vfield__say-l"><mark class="mark mark--b">轉化為未來體驗策略</mark></span>
     </p>
 
-    <!-- 收斂後，由圓心向外展開的共同需求；手機與減少動態效果時直接閱讀。 -->
-    <ul class="vfield__needs" aria-label="真實的需求">
-      <li class="vfield__need"><span>被理解</span></li>
-      <li class="vfield__need"><span>被看見</span></li>
-      <li class="vfield__need"><span>想確認<br>自己的選擇是對的</span></li>
-      <li class="vfield__need"><span>想讓喜歡的東西<br>繼續存在</span></li>
-      <li class="vfield__need"><span>找到跟我<br>一樣的人</span></li>
-      <li class="vfield__need"><span>增加安全感</span></li>
-      <li class="vfield__need"><span>想感覺自己<br>掌握得住</span></li>
-      <li class="vfield__need"><span>減少不確定感</span></li>
-      <li class="vfield__need"><span>知道自己<br>正在變得更好</span></li>
-      <li class="vfield__need"><span>成為某一群人<br>的一份子</span></li>
+    <!-- 同一張色紙的兩面：桌面隨捲動原位轉化；正常流直接呈現需求 → 策略。
+         讀屏保留完整對照，不用 aria-live 隨捲動反覆打斷閱讀。 -->
+    <ul class="vfield__needs" aria-label="從真實需求到體驗策略">
+      <li class="vfield__need">
+        <span class="vfield__need-source">想確認<br>自己的選擇是對的</span>
+        <span class="vfield__need-arrow">→</span>
+        <span class="vfield__need-strategy">讓選擇更有依據</span>
+      </li>
+      <li class="vfield__need">
+        <span class="vfield__need-source">想感覺事情<br>在掌握之中</span>
+        <span class="vfield__need-arrow">→</span>
+        <span class="vfield__need-strategy">讓狀態與進度<br>可被掌握</span>
+      </li>
+      <li class="vfield__need">
+        <span class="vfield__need-source">想看見自己的進步</span>
+        <span class="vfield__need-arrow">→</span>
+        <span class="vfield__need-strategy">讓成長被看見</span>
+      </li>
+      <li class="vfield__need">
+        <span class="vfield__need-source">想知道下一步<br>會發生什麼</span>
+        <span class="vfield__need-arrow">→</span>
+        <span class="vfield__need-strategy">讓下一步<br>清楚可預期</span>
+      </li>
+      <li class="vfield__need">
+        <span class="vfield__need-source">想找到<br>跟我一樣的人</span>
+        <span class="vfield__need-arrow">→</span>
+        <span class="vfield__need-strategy">創造彼此辨認<br>與連結的機會</span>
+      </li>
+      <li class="vfield__need">
+        <span class="vfield__need-source">想成為某一群人<br>的一份子</span>
+        <span class="vfield__need-arrow">→</span>
+        <span class="vfield__need-strategy">建立參與感<br>與歸屬感</span>
+      </li>
+      <li class="vfield__need">
+        <span class="vfield__need-source">想讓喜歡的東西<br>繼續存在</span>
+        <span class="vfield__need-arrow">→</span>
+        <span class="vfield__need-strategy">讓支持轉化成<br>可感知的影響</span>
+      </li>
+      <li class="vfield__need">
+        <span class="vfield__need-source">想被理解、被看見</span>
+        <span class="vfield__need-arrow">→</span>
+        <span class="vfield__need-strategy">讓回應更貼近<br>真實情境</span>
+      </li>
     </ul>
 
     <!-- 那一句落定之後才浮出來的人。純裝飾（alt 留空 + aria-hidden）：
