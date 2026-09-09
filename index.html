@@ -20,7 +20,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/style.css?v=20260909-layout-review">
+<link rel="stylesheet" href="assets/css/style.css?v=20260910-contact-2col">
 </head>
 <body>
 
@@ -779,20 +779,30 @@
 <section class="contact" id="contact">
   <div class="wrap">
     <div class="contact__panel">
-      <p class="eyebrow eyebrow--inline"><span>Contact</span>聯繫我</p>
+      <!-- 左邊是問句，右邊是回答與動作。上下堆疊時內文只吃到面板一半的寬度，
+           省下來的寬度全變成高度；並排之後面板的高度由較高的那一欄決定。 -->
+      <div class="contact__grid">
+        <p class="eyebrow eyebrow--inline"><span>Contact</span>聯繫我</p>
 
-      <h2 class="contact__head">聊聊你的問題，<br>或提出合作需求</h2>
-      <p class="contact__body">寫信和我分享你的需求，也歡迎預約時間一起聊聊。</p>
+        <h2 class="contact__head">有興趣和我<br>進一步聊聊嗎？</h2>
 
-      <!-- TODO 換成你的 email -->
-      <a class="contact__mail" href="mailto:hello@example.com">hello@example.com</a>
+        <div class="contact__act">
+          <p class="contact__body">如果你願意，我會陪你釐清問題本身、一起決定要從哪裡開始。</p>
+          <p class="contact__body">你不需要準備完整的簡報或明確的問題，只要能提出零碎想法，我們就能一起討論。</p>
 
-      <!-- TODO 換成你的社群連結 -->
-      <ul class="contact__social">
-        <li><a href="#" rel="noopener">Facebook</a></li>
-        <li><a href="#" rel="noopener">Instagram</a></li>
-        <li><a href="#" rel="noopener">Threads</a></li>
-      </ul>
+          <!-- 這一頁的主要動作是表單，形狀沿用原本 email 的大字＋ochre 底線，
+               字距換成中文的一套。 -->
+          <a class="contact__mail contact__mail--zh" href="https://meilingc.notion.site/cantact-me" target="_blank" rel="noopener">歡迎先到這邊填寫表單<span class="post__arrow" aria-hidden="true">↗</span></a>
+        </div>
+
+        <!-- 社群是次要出口，寬螢幕沉到左下角：標題底下空出來的那一塊由它收邊，
+             面板的四個角就都有東西站著。窄螢幕回到 DOM 順序，排在表單之後。 -->
+        <ul class="contact__social">
+          <li><a href="https://www.facebook.com/meiling0629" target="_blank" rel="noopener">Facebook</a></li>
+          <li><a href="https://www.instagram.com/mei.thinking/" target="_blank" rel="noopener">Instagram</a></li>
+          <li><a href="https://www.threads.com/@mei.thinking" target="_blank" rel="noopener">Threads</a></li>
+        </ul>
+      </div>
     </div>
   </div>
 </section>
@@ -806,6 +816,6 @@
   </div>
 </footer>
 
-<script src="assets/js/main.js?v=20260909-featured-case" defer></script>
+<script src="assets/js/main.js?v=20260910-contact-2col" defer></script>
 </body>
 </html>

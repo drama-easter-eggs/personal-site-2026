@@ -48,7 +48,9 @@
     '.cards > *',
     '.posts > *',
     '.reach-stages > *',
-    '.contact__panel > *'
+    '.contact__head',
+    '.contact__social',
+    '.contact__act > *'
   ].join(', ');
 
   var units = document.querySelectorAll(REVEAL);
