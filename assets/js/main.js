@@ -9,6 +9,28 @@
   var motionPreference = window.matchMedia('(prefers-reduced-motion: reduce)');
   var reduced = motionPreference.matches;
 
+  /* Count up once on entry; retain the final value without motion or JS. */
+  var countValues = document.querySelectorAll('[data-count]');
+  if (!reduced && 'IntersectionObserver' in window) {
+    var counts = new IntersectionObserver(function (entries, observer) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        observer.unobserve(entry.target);
+        var el = entry.target;
+        var target = Number(el.dataset.count);
+        var started;
+        function tick(now) {
+          if (started === undefined) started = now;
+          var progress = motionPreference.matches ? 1 : Math.min((now - started) / 1400, 1);
+          el.textContent = String(Math.round(target * (1 - Math.pow(1 - progress, 3))));
+          if (progress < 1) requestAnimationFrame(tick);
+        }
+        requestAnimationFrame(tick);
+      });
+    }, { threshold: 0.6 });
+    countValues.forEach(function (el) { counts.observe(el); });
+  }
+
   /* ---- 1. Scroll reveal ----
      這一串選擇器要跟 style.css 的 MOTION 區塊一致（兩邊都改）。
      :not() 的那些容器不自己進場，交給裡面的每一列。 */

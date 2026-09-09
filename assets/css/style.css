@@ -360,10 +360,9 @@ mark.mark--b {
   border-bottom: 1px solid var(--hairline);
 }
 
-.col { min-width: 0; max-width: 800px; }
+.col { min-width: 0; max-width: none; }
 
-/* Prose measure — capped in em so it tracks the font size and lands at
-   roughly 36 漢字 per line at every step of the scale. */
+/* Section copy shares the content column edge with lists and rules. */
 .lead,
 .col > p,
 .threads > li > p,
@@ -371,7 +370,7 @@ mark.mark--b {
 .cv__what > p,
 .care__note,
 .post__note,
-.contact__body { max-width: var(--measure); }
+.contact__body { max-width: 100%; }
 
 /* ============================================================
    CHAPTER TRANSITIONS — 首頁的四個章節
@@ -1636,7 +1635,7 @@ html:not(.js) .hero__line:first-child {
   border-bottom: 1px solid var(--hairline);
   margin-bottom: 16px;
 }
-.teaching__header p { max-width: var(--measure); }
+.teaching__header p { max-width: none; }
 .teaching__topics {
   display: grid;
   gap: 20px;
@@ -2343,4 +2342,95 @@ html:not(.js) .hero__line:first-child {
   .beat__k { font-weight: 700; color: var(--ink); margin-bottom: 4px; }
   .case__foot { gap: 14px; }
   .case__more { min-height: 44px; display: inline-flex; align-items: center; }
+}
+
+/* Review refinements: shared content edges and restrained subscriptions. */
+.counters__n { font-variant-numeric: tabular-nums; }
+.counters__n .counters__value { color: inherit; }
+
+/* In the unpinned layout, the statement and illustration form one row. */
+@media (max-width: 74.999em), (max-height: 47.999em), (prefers-reduced-motion: reduce) {
+  .vfield__stage {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(180px, 28%);
+    column-gap: clamp(24px, 4vw, 64px);
+    align-items: center;
+  }
+  .vfield__label, .vfield__list { grid-column: 1 / -1; }
+  .vfield__say {
+    grid-column: 1;
+    margin: clamp(32px, 5vw, 64px) 0;
+    font-size: clamp(25px, 3.2vw, 46px);
+    line-height: 1.55;
+  }
+  .vfield__fig { grid-column: 2; width: 100%; margin: 32px 0; }
+}
+@media (prefers-reduced-motion: no-preference) and (min-width: 75em) and (min-height: 48em) {
+  .js .vfield__say {
+    left: 44%;
+    width: min(60cqw, 720px);
+    font-size: clamp(32px, 3.4cqw, 52px);
+    text-align: left;
+  }
+  .js .vfield__fig {
+    left: 73%;
+    top: calc(var(--cy) - 10 * var(--u));
+    width: min(25cqw, 320px);
+  }
+}
+@media (max-width: 640px) {
+  .vfield__stage { grid-template-columns: minmax(0, 1fr); }
+  .vfield__say { margin: 32px 0 16px; font-size: clamp(24px, 5.4vw, 34px); }
+  .vfield__fig { grid-column: 1; width: min(52%, 220px); margin: 0 0 20px auto; }
+}
+
+.teaching .talk__body { min-width: 0; }
+.teaching .talk__meta {
+  display: grid;
+  grid-template-columns: 7.5rem max-content;
+  align-items: center;
+  gap: 8px 20px;
+  margin: 0;
+}
+.teaching .talk__when { padding: 0; line-height: 1.5; }
+.teaching .talk__link { justify-self: start; }
+@media (min-width: 541px) {
+  .teaching .talk { grid-template-columns: clamp(110px, 12vw, 160px) minmax(0, 1fr); gap: 8px 24px; }
+  .teaching .talk__cover { grid-column: 1; grid-row: 1 / 3; }
+  .teaching .talk__body { grid-column: 2; grid-row: 1; }
+  .teaching .talk__meta { grid-column: 2; grid-row: 2; }
+}
+@media (max-width: 540px) {
+  .teaching .talk { grid-template-columns: minmax(0, 1fr); }
+  .teaching .talk__meta { grid-column: 1; grid-template-columns: 7rem max-content; gap: 8px 12px; }
+}
+
+.newsletters {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: clamp(36px, 5vw, 64px);
+  border-top: 1px solid var(--hairline);
+  border-bottom: 1px solid var(--hairline);
+}
+.newsletters .sub-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 12px;
+  min-width: 0;
+  margin: 0;
+  padding: 28px 28px 28px 0;
+  background: transparent;
+  border-radius: 0;
+}
+.newsletters .sub-card + .sub-card { border-left: 1px solid var(--hairline); padding-left: 28px; padding-right: 0; }
+.newsletters .sub-card p, .newsletters .sub-card h3 { margin: 0; }
+.newsletters .sub-card__label { letter-spacing: .08em; }
+.sub-card__pending, .sub-card__link { margin-top: auto; padding-top: 16px; font-size: var(--fs-meta); }
+.sub-card__pending { color: var(--stone); }
+@media (max-width: 640px) {
+  .newsletters { grid-template-columns: minmax(0, 1fr); }
+  .newsletters .sub-card { padding: 24px 0; }
+  .newsletters .sub-card + .sub-card { border-left: 0; border-top: 1px solid var(--hairline); padding: 24px 0; }
 }

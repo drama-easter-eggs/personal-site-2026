@@ -20,7 +20,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/style.css?v=20260909-cream-featured">
+<link rel="stylesheet" href="assets/css/style.css?v=20260909-layout-review">
 </head>
 <body>
 
@@ -125,9 +125,6 @@
         </li>
       </ol>
 
-      <p class="care__note">
-        多年跨產業研究之後，我發現讓我真正感興趣的並非在同個產業中深度鑽研，而是跨入不同領域當中，快速進到陌生情境裡，找到人們真正重視、卻不一定說得清楚的那些事情。
-      </p>
     </div>
   </div>
 </section>
@@ -412,15 +409,15 @@
 
           <dl class="counters">
             <div class="counters__item">
-              <dt class="counters__n">8<span>+</span></dt>
+              <dt class="counters__n" aria-label="8+"><span class="counters__value" data-count="8" aria-hidden="true">8</span><span aria-hidden="true">+</span></dt>
               <dd>年研究與策略經驗</dd>
             </div>
             <div class="counters__item">
-              <dt class="counters__n">40<span>+</span></dt>
+              <dt class="counters__n" aria-label="40+"><span class="counters__value" data-count="40" aria-hidden="true">40</span><span aria-hidden="true">+</span></dt>
               <dd>個研究與策略專案</dd>
             </div>
             <div class="counters__item">
-              <dt class="counters__n">1000<span>+</span></dt>
+              <dt class="counters__n" aria-label="1000+"><span class="counters__value" data-count="1000" aria-hidden="true">1000</span><span aria-hidden="true">+</span></dt>
               <dd>演講、課程與教學影響人次</dd>
             </div>
           </dl>
@@ -706,15 +703,20 @@
         <a class="link post__link" href="https://medium.com/@meiling-c" target="_blank" rel="noopener">看全部文章<span class="post__arrow" aria-hidden="true">↗</span></a>
       </p>
 
-      <!-- TODO 換成你的 Substack 訂閱網址 -->
-      <div class="sub-card">
-        <div>
-          <p class="sub-card__label">電子報</p>
-          <h3>《伶魂洞察》電子報</h3>
-          <p>將知識與想法以更為柔軟的形式，用文字進行編織。</p>
-          <p>比起打造知識的生硬框架，我更希望增加它的親膚性。</p>
-        </div>
-        <a class="btn btn--ghost" href="#" rel="noopener">訂閱電子報<span class="btn__dot" aria-hidden="true"></span></a>
+      <div class="newsletters" aria-label="電子報訂閱">
+        <article class="sub-card">
+          <p class="sub-card__label">電子報 01</p>
+          <h3>《伶魂洞察》</h3>
+          <p>將知識與想法以更為柔軟的形式，用文字進行編織。比起打造知識的生硬框架，我更希望增加它的親膚性。</p>
+          <!-- TODO: 補上訂閱網址後，改為可點擊的連結。 -->
+          <span class="sub-card__pending">訂閱連結即將開放</span>
+        </article>
+        <article class="sub-card">
+          <p class="sub-card__label">電子報 02</p>
+          <h3>《讀劇巧思》</h3>
+          <p>關於影劇、文化產業內容相關之觀察</p>
+          <a class="link sub-card__link" href="https://oceanilla.substack.com/subscribe" target="_blank" rel="noopener">訂閱電子報 <span aria-hidden="true">↗</span></a>
+        </article>
       </div>
     </div>
   </div>
