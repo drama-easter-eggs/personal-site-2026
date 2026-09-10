@@ -890,8 +890,8 @@ html:not(.js) .hero__line:first-child {
      .62 – .72   圓裡的提問退場
      .74 – .86   圓裡的那一句進場
      .82 – .96   插圖從圓的右下角浮出來（那一句不動，它一直在圓心）
-   完整跑道：.46 – .624 八個需求依序浮現，.624 – .74 停留閱讀；
-   .74 – .901 同一組色紙原位轉成策略，.901 – 1 留給策略閱讀。
+   完整跑道：.46 – .56 需求與策略對照表整體浮現；
+   .56 – 1 保留完整對照閱讀，標題在左上、小幅插圖在右上。
    ============================================================ */
 .vfield { --p: 0; }
 
@@ -1017,49 +1017,75 @@ html:not(.js) .hero__line:first-child {
   margin: clamp(6px, 1.2vw, 16px) calc(-1 * var(--pad-x)) 0 auto;
 }
 
-/* 需求 → 策略：沿用內文字體與不規則色紙；正常流完整呈現每一組對照。 */
+/* 需求與策略並列閱讀：兩欄四列，共用整個 stage 的左右邊界。 */
 .vfield__needs {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 16px 12px;
-  max-width: var(--measure);
-  margin-top: 28px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: stretch;
+  gap: 0 32px;
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  list-style: none;
 }
 .vfield__need {
-  --paper: var(--teal-tint);
-  position: relative;
   display: grid;
-  justify-items: center;
-  align-content: center;
-  max-width: 100%;
-  padding: 12px 22px;
-  border-radius: 48% 52% 45% 55% / 55% 43% 57% 45%;
-  background: var(--paper);
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+  padding: 18px 0;
+  border-top: 1px solid var(--hairline);
   color: var(--ink);
   font-family: var(--sans);
   font-size: var(--fs-body);
-  font-weight: 500;
-  line-height: 1.6;
-  text-align: center;
+  font-weight: 400;
+  line-height: 1.75;
+  text-align: left;
 }
-.vfield__need-arrow { color: var(--deep-teal, #267563); }
+.vfield__need:nth-last-child(-n + 2) { border-bottom: 1px solid var(--hairline); }
+.vfield__need-source { color: var(--stone); }
+.vfield__need-arrow { color: var(--teal-deep); }
 .vfield__need-strategy { font-weight: 700; }
-.vfield__need:nth-child(1) { --n: 0; --x: -32; --y: -30; --paper: #f0d7ce; }
-.vfield__need:nth-child(2) { --n: 1; --x: 28; --y: -31; }
-.vfield__need:nth-child(3) { --n: 2; --x: -58; --y: -12; }
-.vfield__need:nth-child(4) { --n: 3; --x: 57; --y: -14; --paper: #f3d873; }
-.vfield__need:nth-child(5) { --n: 4; --x: -51; --y: 9; --paper: #f3d873; }
-.vfield__need:nth-child(6) { --n: 5; --x: 57; --y: 7; --paper: #f0d7ce; }
-.vfield__need:nth-child(7) { --n: 6; --x: -39; --y: 33; --paper: #e9e2d7; }
-.vfield__need:nth-child(8) { --n: 7; --x: 61; --y: 30; }
 
-@media (max-width: 640px) {
-  .vfield__cluster { padding-left: 40px; }
-  .vfield__icon { width: 30px; height: 30px; }
-  .vfield__keys { row-gap: 7px; line-height: 1.7; }
-  .vfield__keys > span:not(:last-child)::after { padding-inline: .5em; }
-  .vfield__fig { width: min(64%, 260px); }
+/* 標題與小幅插圖在同一列，下方對照表佔滿版寬。無 JS 也使用完整排版。 */
+.vfield__stage {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 180px;
+  column-gap: 40px;
+  align-items: center;
+}
+.vfield__label, .vfield__list { grid-column: 1 / -1; }
+.vfield__say {
+  grid-column: 1;
+  grid-row: 3;
+  margin: 48px 0 32px;
+  font-size: clamp(26px, 3.2vw, 38px);
+  line-height: 1.55;
+}
+.vfield__fig {
+  grid-column: 2;
+  grid-row: 3;
+  justify-self: end;
+  width: 156px;
+  height: auto;
+  margin: 40px 0 24px;
+}
+.vfield__needs { grid-column: 1 / -1; grid-row: 4; margin-bottom: 24px; }
+@media (max-width: 720px) {
+  .vfield__stage { grid-template-columns: minmax(0, 1fr) 100px; column-gap: 16px; }
+  .vfield__say { font-size: clamp(22px, 4.3vw, 30px); }
+  .vfield__say-l > mark { display: inline; }
+  .vfield__fig { width: 100px; }
+  .vfield__needs { grid-template-columns: minmax(0, 1fr); }
+  .vfield__need:nth-last-child(2) { border-bottom: 0; }
+}
+@media (max-width: 420px) {
+  .vfield__stage { grid-template-columns: minmax(0, 1fr); }
+  .vfield__say { grid-column: 1; grid-row: 3; margin: 36px 0 16px; font-size: 24px; }
+  .vfield__fig { grid-column: 1; grid-row: 4; width: 100px; margin: 0 0 24px; }
+  .vfield__needs { grid-row: 5; }
+  .vfield__need { gap: 10px; font-size: 16px; }
 }
 
 /* ---- ② 桌機的場：滿版、pin 一屏、繞著圓收回去 ----
@@ -1076,15 +1102,15 @@ html:not(.js) .hero__line:first-child {
    and (min-width: 75em) and (min-height: 48em) {
   .js .vfield {
     position: relative;
-    height: 500svh;              /* 延長需求與策略的閱讀時間，前段領域動畫速度維持原樣 */
+    height: 300svh;              /* 需求與策略同時呈現，不再保留兩次換面的行程 */
     --story: clamp(0, calc(var(--p) / .46), 1);
-    --strategy: clamp(0, calc((var(--p) - .74) / .10), 1);
     /* 收斂量。五站進完場（.30）之後，停留到 .62 才開始收。 */
     --c: clamp(0, calc((var(--story) - .62) / .22), 1);
     /* 插圖浮出來的量。它同時驅動那一句往上讓位。 */
     --fig: clamp(0, calc((var(--story) - .82) / .14), 1);
   }
   .js .vfield__stage {
+    display: block;
     position: sticky;
     top: 0;
     height: 100svh;
@@ -1115,7 +1141,7 @@ html:not(.js) .hero__line:first-child {
     margin: calc(var(--arc-r) * -1) 0 0 calc(var(--arc-r) * -1);
     border: 1px solid var(--hairline);
     border-radius: 50%;
-    opacity: calc(1 - .88 * var(--c));
+    opacity: calc(1 - var(--c));
   }
 
   /* 圓：整頁唯一一次讓白紙變成一個量體，站在畫面正中央。收乾時微微張開
@@ -1131,6 +1157,7 @@ html:not(.js) .hero__line:first-child {
     border-radius: 50%;
     background: var(--white);
     transform: scale(calc(1 + .05 * var(--c)));
+    opacity: calc(1 - var(--c));
   }
 
   /* 圓裡的兩個狀態疊在同一格：先是提問，收乾之後換成那一句。
@@ -1157,99 +1184,44 @@ html:not(.js) .hero__line:first-child {
     opacity: calc(1 - var(--out));
     transform: translate(-50%, -50%);
   }
+  /* 結語、插圖與對照表使用同一個閱讀版心，避免互相遮擋。 */
   .js .vfield__say {
-    font-size: clamp(19px, calc(3.6 * var(--u)), 36px);
+    left: max(var(--pad-x), calc((100% - var(--page)) / 2 + var(--pad-x)));
+    top: 142px;
+    width: min(calc(100% - 280px), 700px);
+    max-width: none;
+    font-size: clamp(28px, 3vw, 38px);
     line-height: 1.55;
-    /* 提問完全退掉（.72）之後才開始出現，所以讀起來是「收乾了才剩下這句」，
-       不是「一邊收一邊有人在旁邊講話」。 */
+    text-align: left;
     --in: clamp(0, calc((var(--story) - .74) / .12), 1);
     opacity: var(--in);
-    /* 它從頭到尾都釘在圓心：這一句就是這一整塊的答案，位置不讓給任何東西。
-       讓路的是插圖（見下面 .vfield__fig 的座標）。 */
-    transform: translate(-50%, calc(-50% + (1 - var(--in)) * 14px));
+    transform: translateY(calc((1 - var(--in)) * 14px));
+    z-index: 2;
   }
-  /* 中央文字留在原位，螢光筆與字色把閱讀重心從第一句交給第二句。 */
-  .js .vfield__say-l:first-child { --emphasis: calc(1 - var(--strategy)); }
-  .js .vfield__say-l:last-child { --emphasis: var(--strategy); }
-  .js .vfield__say-l > mark {
-    color: color-mix(in srgb, var(--ink) calc(100% * var(--emphasis)), var(--stone));
-    background-size: 1em calc(.34em * var(--emphasis));
-  }
-
-  /* 插圖：壓在白圓的右下角，右緣與下緣都刻意超出去（破框）。
-     身體本身是留空的，白圓的邊線會從它身上穿過去——參考圖就是這樣，
-     不是沒對齊。z 序靠 DOM 順序：它排在 core 後面，自然疊在圓上面。 */
   .js .vfield__fig {
     position: absolute;
-    /* 座標是從那一句反推的：它有兩行、共 11.2u 高，置中在圓心 ⇒ 字的底線在
-       +6u。插圖的框從 +3u 開始，但左側 30% 的範圍要到 +14u 才有筆畫（那裡是
-       手臂外緣），所以框雖然疊到字的那一列，畫面上不會碰到字。
-       往右移到 +10u 也是同一件事：字最寬的那一行只到 ±18u。 */
-    left: calc(50% + 10 * var(--u));
-    top: calc(var(--cy) + 3 * var(--u));
-    width: calc(33 * var(--u));   /* 高 38u：圓下緣 +21u，它一路長到 +41u */
+    right: max(var(--pad-x), calc((100% - var(--page)) / 2 + var(--pad-x)));
+    top: 116px;
+    width: 156px;
     height: auto;
     margin: 0;
     opacity: var(--fig);
-    /* 進場沿用全站唯一的那個手勢（上浮 14px），只是改由捲動位置驅動。 */
     transform: translateY(calc((1 - var(--fig)) * 14px));
+    z-index: 2;
   }
-
-  /* 先左右交錯浮現需求，再於原位淡出需求、淡入策略。
-     同一張色紙與同一個位置，grid 疊住兩面並預留文字高度，轉化不跳版。 */
   .js .vfield__needs {
     position: absolute;
-    inset: 0;
-    display: block;
-    max-width: none;
+    left: 50%;
+    top: 330px;
+    width: min(calc(100% - 2 * var(--pad-x)), calc(var(--page) - 2 * var(--pad-x)));
     margin: 0;
-    pointer-events: none;
+    --in: clamp(0, calc((var(--p) - .46) / .10), 1);
+    opacity: var(--in);
+    transform: translate(-50%, calc((1 - var(--in)) * 14px));
+    z-index: 2;
   }
-  .js .vfield__core { z-index: 1; }
-  .js .vfield__say,
-  .js .vfield__fig { z-index: 2; }
   .js .vfield__label,
   .js .vfield__list { z-index: 1; }
-  .js .vfield__need {
-    --burst: clamp(0, calc((var(--p) - .46 - var(--n) * .012) / .08), 1);
-    --turn: clamp(0, calc((var(--p) - .74 - var(--n) * .013) / .07), 1);
-    --t: calc(var(--burst) - 1);
-    --spread: calc(1 + 2.7 * var(--t) * var(--t) * var(--t) + 1.7 * var(--t) * var(--t));
-    position: absolute;
-    left: 50%;
-    top: var(--cy);
-    width: max-content;
-    padding: calc(1.4 * var(--u)) calc(2.7 * var(--u));
-    font-size: clamp(17px, calc(2.35 * var(--u)), 25px);
-    opacity: clamp(0, calc(var(--burst) * 4), 1);
-    transform:
-      translate(calc(-50% + var(--x) * var(--u) * var(--spread)),
-                calc(-50% + var(--y) * var(--u) * var(--spread)))
-      scale(calc(.35 + .65 * var(--spread)));
-  }
-  .js .vfield__need-source,
-  .js .vfield__need-strategy {
-    grid-area: 1 / 1;
-    align-self: center;
-  }
-  .js .vfield__need-source {
-    opacity: clamp(0, calc(1 - var(--turn) / .45), 1);
-    transform: translateY(calc(-6px * var(--turn)));
-  }
-  .js .vfield__need-strategy {
-    opacity: clamp(0, calc((var(--turn) - .55) / .45), 1);
-    transform: translateY(calc(6px * (1 - var(--turn))));
-  }
-  /* 箭頭只從畫面隱藏，讀屏仍能循序讀到「需求 → 策略」。 */
-  .js .vfield__need-arrow {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    overflow: hidden;
-    clip-path: inset(50%);
-    white-space: nowrap;
-  }
 
   .js .vfield__list { position: absolute; inset: 0; max-width: none; padding: 0; }
   .js .vfield__list::before { display: none; }
@@ -1656,6 +1628,130 @@ html:not(.js) .hero__line:first-child {
   font-size: var(--fs-meta);
   font-style: normal;
   color: var(--stone);
+}
+
+
+/* Research stories extend the existing collection cards and paper dialog.
+   All diagrams use real text in reading order; connector lines are decorative. */
+.case--story .case__head { min-height: 0; aspect-ratio: 5 / 7; padding: 22px; }
+.case--story .case__top { margin-bottom: 0; }
+.case--story .case__art { width: 64px; height: 64px; flex-shrink: 0; margin: 12px auto 16px; }
+.case--story .case__topic { font-size: .8125rem; letter-spacing: .07em; }
+.case--story .case__q { text-wrap: pretty; }
+.case--story .case__head .case__line {
+  display: block;
+  font-size: 15px;
+  line-height: 1.9;
+  color: var(--stone);
+  margin-bottom: 8px;
+}
+.case--story .case__line br { display: none; }
+.case--story .case__foot { align-items: flex-end; gap: 8px; padding-top: 8px; }
+.case--story .tags { margin: 0; gap: 6px; }
+.case--story .tags > span { font-size: 13px; padding: 3px 8px; }
+.case--story .case__more { flex-basis: 36px; width: 36px; height: 36px; font-size: 22px; }
+.research-story { font-size: var(--fs-body); line-height: 1.95; }
+.research-story p { max-width: var(--measure); }
+.story__opening > p + p, .story__reframe > p + p, .story__findings > p + p { margin-top: 1em; }
+.story__prelude, .story__label { font-size: var(--fs-meta); font-weight: 500; color: var(--stone); }
+.story__opening .story__assumption {
+  border-left: 1px solid var(--hairline);
+  padding: 8px 0 8px 22px;
+  margin-block: 16px 28px;
+  font-size: clamp(1.125rem, 2vw, 1.375rem);
+  line-height: 1.85;
+  color: var(--stone);
+  max-width: 28em;
+}
+.story__figure { margin-block: 40px 48px; padding-block: 24px; border-block: 1px solid var(--hairline); }
+.story__figure > figcaption { margin-bottom: 28px; }
+.story__figure h4 { font-size: var(--fs-head); font-weight: 700; line-height: 1.6; }
+.story__reframe { position: relative; padding-top: 24px; margin-top: 40px; }
+.story__reframe::before { content: ''; position: absolute; top: 0; left: 0; width: 48px; height: 3px; background: var(--teal); }
+.story__reframe h3 { font-size: clamp(1.375rem, 2.5vw, 1.75rem); line-height: 1.65; margin-bottom: 22px; text-wrap: pretty; }
+.story__questions { margin-block: 24px; padding-left: 22px; border-left: 2px solid var(--teal); }
+.story__questions p + p { margin-top: 6px; }
+.story__takeaway { font-size: clamp(1.25rem, 2.5vw, 1.625rem); line-height: 1.8; font-weight: 700; padding-block: 40px; text-wrap: pretty; }
+.story__metadata { display: grid; grid-template-columns: 1fr 1fr 1.25fr; gap: 24px; padding-top: 24px; border-top: 1px solid var(--hairline); color: var(--stone); font-size: var(--fs-meta); line-height: 1.85; }
+.story__metadata dt { font-weight: 500; margin-bottom: 10px; }
+.story__metadata dd { margin: 0; }
+.story__findings { padding-left: 22px; border-left: 1px solid var(--hairline); }
+.story__findings h3 { margin-bottom: 16px; }
+
+/* Different reasons connect to a shared relationship, not a one-to-one mapping. */
+.constellation__branches { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px; position: relative; padding-bottom: 28px; }
+.constellation__field { position: relative; min-width: 0; padding-bottom: 24px; }
+.constellation__field h4 { display: flex; gap: 10px; align-items: center; margin-bottom: 20px; }
+.constellation__field h4::before { content: ''; width: 9px; height: 9px; border: 2px solid var(--teal-deep); border-radius: 50%; flex-shrink: 0; }
+.constellation__reasons { padding-left: 18px; border-left: 1px solid var(--teal); }
+.constellation__reasons p { position: relative; font-size: var(--fs-sm); line-height: 1.85; }
+.constellation__reasons p + p { margin-top: 18px; }
+.constellation__reasons p::before { content: ''; position: absolute; left: -18px; top: .9em; width: 10px; border-top: 1px solid var(--teal); }
+.constellation__field::after { content: ''; position: absolute; bottom: -28px; height: 40px; left: 50%; border-left: 1px solid var(--teal); }
+.constellation__branches::after { content: ''; position: absolute; bottom: 0; left: calc((100% - 56px) / 6); right: calc((100% - 56px) / 6); border-top: 1px solid var(--teal); }
+.constellation__relationship { position: relative; width: fit-content; max-width: 100%; margin: 32px auto 0; padding: 20px 30px; border: 1px solid var(--teal); border-radius: 50%; text-align: center; }
+.constellation__relationship::before { content: ''; position: absolute; left: 50%; top: -33px; height: 32px; border-left: 1px solid var(--teal); }
+.constellation__relationship > span { font-size: var(--fs-meta); color: var(--stone); }
+.constellation__relationship p { margin-top: 6px; font-size: var(--fs-head); font-weight: 700; }
+
+/* Two complementary roles join the same service journey. */
+.service-roles__pair { display: grid; grid-template-columns: minmax(0, 1fr) 40px minmax(0, 1fr); gap: 12px; position: relative; padding-bottom: 28px; }
+.service-roles__role { display: flex; flex-direction: column; min-width: 0; padding: 22px; border-top: 2px solid var(--teal); background: var(--sand); border-radius: var(--r-sm); }
+.service-roles__role h4 { margin-bottom: 18px; }
+.service-roles__role ul { list-style: none; margin-block: 10px 24px; }
+.service-roles__role li { padding-block: 6px; border-bottom: 1px solid var(--hairline); }
+.service-roles__value { margin-top: auto; }
+.service-roles__value h5 { font-size: var(--fs-meta); font-weight: 500; color: var(--stone); margin-bottom: 8px; }
+.service-roles__exchange { align-self: center; justify-self: center; font-size: 30px; color: var(--teal-deep); }
+.service-roles__pair::after { content: ''; position: absolute; bottom: 0; left: 25%; right: 25%; height: 28px; border: 1px solid var(--teal); border-top: 0; border-radius: 0 0 12px 12px; }
+.service-roles__shared { position: relative; width: fit-content; max-width: 100%; margin: 28px auto 0; text-align: center; padding: 16px 30px; border: 1px solid var(--teal); border-radius: var(--r-sm); }
+.service-roles__shared::before { content: ''; position: absolute; top: -29px; left: 50%; height: 28px; border-left: 1px solid var(--teal); }
+.service-roles__shared p { font-size: var(--fs-head); font-weight: 700; }
+.service-roles__shared span { font-size: var(--fs-sm); color: var(--stone); }
+
+/* The growing scope is carried by expanding widths, independent of animation. */
+.system-layers__map { list-style: none; display: grid; gap: 26px; }
+.system-layers__map li { position: relative; display: flex; align-items: baseline; gap: 18px; width: 64%; margin-inline: auto; padding: 18px 22px; border: 1px solid var(--hairline); border-left: 2px solid var(--teal); border-radius: var(--r-sm); background: var(--sand); }
+.system-layers__map li:nth-child(2) { width: 73%; }
+.system-layers__map li:nth-child(3) { width: 82%; }
+.system-layers__map li:nth-child(4) { width: 91%; }
+.system-layers__map li:nth-child(5) { width: 100%; }
+.system-layers__map li + li::before { content: '↓'; position: absolute; top: -27px; left: 50%; transform: translateX(-50%); line-height: 26px; color: var(--teal-deep); }
+.system-layers__number { font-family: var(--latin); font-size: var(--fs-meta); color: var(--stone); }
+.system-layers__map li:first-child { background: transparent; }
+.system-layers__map li:last-child { border-color: var(--teal); }
+
+/* Native details fallback gets the full reading width on desktop, too. */
+.case--story:has(.case__disc[open]) { grid-column: 1 / -1; }
+.case--story .case__disc[open] .case__detail { padding: 24px 12px; }
+@media (max-width: 760px) {
+  .case--story .case__head { aspect-ratio: auto; }
+  .case--story .case__art { width: 64px; height: 64px; margin: 12px auto 16px; }
+  .case-modal__index { font-size: .75rem; letter-spacing: .06em; }
+}
+@media (max-width: 600px) {
+  .story__metadata { grid-template-columns: minmax(0, 1fr); gap: 20px; }
+  .story__metadata dt { margin-bottom: 4px; }
+  .story__figure { margin-block: 32px; padding-block: 22px; }
+  .constellation__branches { grid-template-columns: minmax(0, 1fr); gap: 26px; margin-left: 8px; padding: 0 0 0 22px; border-left: 1px solid var(--teal); }
+  .constellation__field { padding-bottom: 0; }
+  .constellation__field h4 { margin-bottom: 12px; }
+  .constellation__field::after { left: -23px; top: 15px; bottom: auto; width: 16px; height: 0; border-left: 0; border-top: 1px solid var(--teal); }
+  .constellation__reasons p + p { margin-top: 10px; }
+  .constellation__branches::after { left: -1px; right: 50%; bottom: -18px; height: 18px; border: 1px solid var(--teal); border-top: 0; border-right: 0; }
+  .constellation__relationship { margin-top: 48px; padding: 20px 16px; border-radius: 42px; }
+  .constellation__relationship p { font-size: 1.125rem; }
+  .service-roles__pair { grid-template-columns: minmax(0, 1fr); padding: 0 0 0 18px; border-left: 1px solid var(--teal); gap: 10px; }
+  .service-roles__role { padding: 20px; position: relative; }
+  .service-roles__role::before { content: ''; position: absolute; top: 26px; left: -19px; width: 18px; border-top: 1px solid var(--teal); }
+  .service-roles__exchange { transform: rotate(90deg); }
+  .service-roles__pair::after { left: -1px; right: 50%; bottom: -18px; height: 18px; border-right: 0; border-radius: 0; }
+  .service-roles__shared { margin-top: 46px; }
+  .system-layers__map li { padding: 16px 12px; gap: 10px; }
+  .system-layers__map li:nth-child(1) { width: 84%; }
+  .system-layers__map li:nth-child(2) { width: 88%; }
+  .system-layers__map li:nth-child(3) { width: 92%; }
+  .system-layers__map li:nth-child(4) { width: 96%; }
 }
 
 
@@ -2594,31 +2690,6 @@ html:not(.js) .hero__line:first-child {
 /* Review refinements: shared content edges and restrained subscriptions. */
 .counters__n { font-variant-numeric: tabular-nums; }
 .counters__n .counters__value { color: inherit; }
-
-/* In the unpinned layout, the statement and illustration form one row. */
-@media (max-width: 74.999em), (max-height: 47.999em), (prefers-reduced-motion: reduce) {
-  .vfield__stage {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(180px, 28%);
-    column-gap: clamp(24px, 4vw, 64px);
-    align-items: center;
-  }
-  .vfield__label, .vfield__list { grid-column: 1 / -1; }
-  .vfield__say {
-    grid-column: 1;
-    margin: clamp(32px, 5vw, 64px) 0;
-    font-size: clamp(25px, 3.2vw, 46px);
-    line-height: 1.55;
-  }
-  .vfield__say, .vfield__fig { grid-row: 3; }
-  .vfield__needs { grid-column: 1 / -1; grid-row: 4; margin: 0 0 24px; }
-  .vfield__fig { grid-column: 2; width: 100%; margin: 32px 0; }
-}
-@media (max-width: 640px) {
-  .vfield__stage { grid-template-columns: minmax(0, 1fr); }
-  .vfield__say { margin: 32px 0 16px; font-size: clamp(24px, 5.4vw, 34px); }
-  .vfield__fig { grid-column: 1; grid-row: 5; width: min(52%, 220px); margin: 0 0 20px auto; }
-}
 
 .teaching .talk__body { min-width: 0; }
 .teaching .talk__meta {

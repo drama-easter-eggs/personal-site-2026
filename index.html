@@ -196,8 +196,8 @@
       <span class="vfield__say-l"><mark class="mark mark--b">轉化為未來體驗策略</mark></span>
     </p>
 
-    <!-- 同一張色紙的兩面：桌面隨捲動原位轉化；正常流直接呈現需求 → 策略。
-         讀屏保留完整對照，不用 aria-live 隨捲動反覆打斷閱讀。 -->
+    <!-- 規律對照表：需求與策略同時可讀。桌面兩欄、手機單欄，
+         與上方結語、小幅插圖共用版心；不再使用有機色紙或原位換面。 -->
     <ul class="vfield__needs" aria-label="從真實需求到體驗策略">
       <li class="vfield__need">
         <span class="vfield__need-source">想確認<br>自己的選擇是對的</span>
@@ -265,7 +265,7 @@
     </div>
 
       <!-- 第一張以連結另開完整報告；其餘卡片以原生 details 保留無 JS 閱讀，JS 將內容移入 dialog。
-           TODO 以下三則細節目前是假文字，待正式案例文案替換。 -->
+           三則 research stories 整理跨研究現場反覆遇見的問題，保留既有深層連結。 -->
       <ol class="cases">
         <li class="case case--featured" id="case-bl-gl">
           <a class="case__head case__head--featured" href="https://bl-gl-unboxing.netlify.app/" target="_blank" rel="noopener noreferrer" aria-labelledby="case-bl-gl-title" aria-describedby="case-bl-gl-link-hint">
@@ -282,144 +282,163 @@
           </a>
         </li>
 
-        <li class="case" id="case-fandom">
-          <details class="case__disc" data-case>
+        <li class="case case--story" id="case-fandom">
+          <details class="case__disc" data-case data-story="01">
             <summary class="case__head">
-              <span class="case__top"><span class="case__no">CASE 02</span><span class="case__topic">CULTURE</span></span>
-              <img class="case__art" src="assets/img/fields/culture.svg" alt="" width="144" height="144">
-
-              <h3 class="case__q">從「喜歡」到<mark class="mark">真正付費</mark>的距離</h3>
-              <span class="case__line">人們花錢買漫畫、買周邊，除了收藏之外，背後還有哪些情感在支持？</span>
-              <span class="case__line">現今娛樂的選擇很多，粉絲為何狂熱、又為什麼願意對特定作品花錢。</span>
+              <span class="case__top"><span class="case__topic">CONTENT × VALUE</span></span>
+              <img class="case__art" src="assets/img/fields/culture.svg" alt="" width="112" height="112">
+              <h3 class="case__q">免費內容很多，<br>人們為什麼<mark class="mark">願意付費</mark>？</h3>
+              <span class="case__line">從新聞、漫畫到線上教育，<br>研究人們如何在免費選擇之外，<br>仍然找到值得付費的理由。</span>
               <span class="case__foot">
-                <span class="case__category">粉絲文化・使用者研究</span>
+                <span class="tags" role="list" aria-label="研究主題"><span role="listitem">內容服務</span><span role="listitem">付費</span><span role="listitem">長期關係</span></span>
                 <span class="case__more" aria-hidden="true">↗</span>
               </span>
             </summary>
-
             <div class="case__wrap">
-              <div class="case__detail">
-                <span class="tags" role="list"><span role="listitem">漫畫平台研究</span><span role="listitem">粉絲文化研究</span></span>
-                <p class="case__meta">2023 ｜ 深度訪談 14 位 ・ 平台行為資料分群 ・ 兩場共創工作坊</p>
-
-                <dl class="beats">
-                  <div class="beat">
-                    <dt class="beat__k">當時的問題</dt>
-                    <dd class="beat__v"><p>平台認為付費率低是因為「免費能看的太多」，找我來的時候，想討論的其實是免費章節要縮短幾話。</p></dd>
+              <article class="case__detail research-story">
+                <div class="story__opening">
+                  <p class="story__prelude">我們可能會以為：</p>
+                  <p class="story__assumption">當網路上已經有大量類似的免費內容，要讓讀者願意付費，本來就很困難。</p>
+                  <p>但當我們不只詢問「為什麼付費」，而是回頭理解一個人長期的使用習慣、情感、生活情境，以及他如何逐漸累積對平台的信任與期待，付費背後的理由就開始變得不一樣。</p>
+                </div>
+                <figure class="story__figure constellation" aria-labelledby="content-moments">
+                  <figcaption class="story__label" id="content-moments">研究現場</figcaption>
+                  <div class="constellation__branches">
+                    <section class="constellation__field">
+                      <h4>新聞媒體</h4>
+                      <div class="constellation__reasons"><p>支持品牌立場</p><p>理解媒體經營不易</p><p>希望支持高品質內容持續產出</p></div>
+                    </section>
+                    <section class="constellation__field">
+                      <h4>數位漫畫平台</h4>
+                      <div class="constellation__reasons"><p>支持作者</p><p>支持正版</p><p>想要完整收藏喜歡的作品</p></div>
+                    </section>
+                    <section class="constellation__field">
+                      <h4>線上教育</h4>
+                      <div class="constellation__reasons"><p>有人協助系統化整理資訊</p><p>實戰演練</p><p>獲得諮詢與專業服務</p></div>
+                    </section>
                   </div>
-                  <div class="beat">
-                    <dt class="beat__k">我做了什麼</dt>
-                    <dd class="beat__v"><p>訪談 14 位一年內有付費紀錄的讀者，請他們拿自己的手機，把「最近一次付錢」那個晚上重演一遍——當時在哪、剛剛做完什麼、付完之後第一件事是什麼。</p></dd>
-                  </div>
-                  <div class="beat beat--turn">
-                    <dt class="beat__k">翻轉</dt>
-                    <dd class="beat__v"><p>他們買的不是「接下來的劇情」。付費前一刻最常出現的情緒不是好奇，是<mark class="mark mark--b">怕自己被留在討論之外</mark>——錢買的是「跟作者和其他讀者站在同一個時間點」的位置。</p></dd>
-                  </div>
-                  <div class="beat">
-                    <dt class="beat__k">後來怎麼用</dt>
-                    <dd class="beat__v"><p>免費章節沒有縮短。改成把留言區、作者更新與追進度的提示移到付費動線前面，讓「還沒付費的人也看得到大家正在聊什麼」。訂閱制的命名從「解鎖」換成「支持」，三個月後續訂率的變化成為下一輪研究的題目。</p></dd>
-                  </div>
+                  <div class="constellation__relationship"><span>人們與平台的關係</span><p>陪伴感<span aria-hidden="true">・</span>認同感<span aria-hidden="true">・</span>歸屬感</p></div>
+                </figure>
+                <section class="story__reframe">
+                  <h3>真正被交換的，不一定只有「內容」。</h3>
+                  <p>走進這些人的實際情境後，我們才開始理解：<br>人們與一個平台建立的關係，可能還包含陪伴感、認同感與歸屬感。</p>
+                  <p>因此，「為什麼有人願意付費」不能只從內容本身或價格理解。<br>研究需要回到一段更長的關係裡，看見人們如何逐漸認識、使用、信任，最後決定留下來。</p>
+                </section>
+                <p class="story__takeaway">研究讓我們把「一次付費」，<br>重新放回一段<mark class="mark mark--b">長期關係</mark>裡理解。</p>
+                <dl class="story__metadata">
+                  <div><dt>研究方法</dt><dd>一對一訪談 / 焦點團體訪談</dd></div>
+                  <div><dt>研究產業</dt><dd>新聞媒體 / 漫畫平台 / 線上教育</dd></div>
+                  <div><dt>專案產出</dt><dd>顧客樣貌與付費動機分析<br>平台價值定位建議<br>付費機制與內容策略方向</dd></div>
                 </dl>
-
-                <blockquote class="case__quote">
-                  <p>「我不是急著看結局，我是不想等到大家都討論完了，我才一個人在後面追。」</p>
-                  <cite>受訪者・二十多歲・每月固定付費的讀者</cite>
-                </blockquote>
-              </div>
+              </article>
             </div>
           </details>
         </li>
 
-        <li class="case" id="case-worth">
-          <details class="case__disc" data-case>
+        <li class="case case--story" id="case-worth">
+          <details class="case__disc" data-case data-story="02">
             <summary class="case__head">
-              <span class="case__top"><span class="case__no">CASE 03</span><span class="case__topic">VALUE</span></span>
-              <img class="case__art" src="assets/img/fields/learning-health.svg" alt="" width="144" height="144">
-
-              <h3 class="case__q">人們如何判斷<mark class="mark mark--b">「是否值得」</mark></h3>
-              <span class="case__line">台灣人真的只追求 CP 值嗎？為什麼有時候願意高價付費。</span>
+              <span class="case__top"><span class="case__topic">DIGITAL × HUMAN</span></span>
+              <img class="case__art" src="assets/img/fields/learning-health.svg" alt="" width="112" height="112">
+              <h3 class="case__q">當什麼都數位化，<br>為什麼<mark class="mark mark--b">真人服務</mark>依然重要？</h3>
+              <span class="case__line">從金融、ESG 到公共服務，<br>重新理解數位工具與專業角色<br>各自無法取代的價值。</span>
               <span class="case__foot">
-                <span class="case__category">價值判斷・跨產業研究</span>
+                <span class="tags" role="list" aria-label="研究主題"><span role="listitem">數位服務</span><span role="listitem">專業角色</span><span role="listitem">信任</span></span>
                 <span class="case__more" aria-hidden="true">↗</span>
               </span>
             </summary>
-
             <div class="case__wrap">
-              <div class="case__detail">
-                <span class="tags" role="list"><span role="listitem">線上教育</span><span role="listitem">醫療健康</span><span role="listitem">收藏品研究</span></span>
-                <p class="case__meta">2022–2023 ｜ 橫跨三個產業共 21 位受訪者 ・ 陪同就診與上課的現場觀察</p>
-
-                <dl class="beats">
-                  <div class="beat">
-                    <dt class="beat__k">當時的問題</dt>
-                    <dd class="beat__v"><p>三個不同產業的客戶問了同一個問題：定價要壓到多低才有競爭力。他們都相信市場只看 CP 值。</p></dd>
+              <article class="case__detail research-story">
+                <div class="story__opening">
+                  <p class="story__prelude">我們可能會以為：</p>
+                  <p class="story__assumption">如果一項真人服務可以被數位化，不就代表我們可以把更多事情交給系統，讓流程更快、更省力嗎？</p>
+                  <p>但透過訪談顧客，以及不同領域中的專業角色，我們逐漸發現：</p>
+                  <p>問題並不是「真人能不能被數位取代」，<br>而是不同的事情，本來就適合由不同角色完成。</p>
+                </div>
+                <figure class="story__figure service-roles" aria-labelledby="digital-roles">
+                  <figcaption class="story__label" id="digital-roles">數位服務 ↔ 真人服務</figcaption>
+                  <div class="service-roles__pair">
+                    <section class="service-roles__role">
+                      <h4>數位服務</h4><p class="story__label">適合：</p>
+                      <ul><li>規則清楚</li><li>容易理解</li><li>可以標準化</li><li>適合自助完成</li></ul>
+                      <div class="service-roles__value"><h5>價值：</h5><p>讓大量、重複、規則明確的事情更有效率。</p></div>
+                    </section>
+                    <span class="service-roles__exchange" aria-hidden="true">↔</span>
+                    <section class="service-roles__role">
+                      <h4>真人服務</h4><p class="story__label">適合：</p>
+                      <ul><li>規則複雜</li><li>情境差異大</li><li>不能有所遺漏</li><li>需要現場理解</li><li>需要專業判斷</li></ul>
+                      <div class="service-roles__value"><h5>價值：</h5><p>進入具體情境，發現系統難以察覺的問題，協助判斷與補位。</p></div>
+                    </section>
                   </div>
-                  <div class="beat">
-                    <dt class="beat__k">我做了什麼</dt>
-                    <dd class="beat__v"><p>訪談裡完全不問價格。改成請受訪者回想兩件事：最近一次覺得「這錢花得很值得」，和最近一次覺得「我被坑了」，然後一路往回追到做決定的前一天。</p></dd>
-                  </div>
-                  <div class="beat beat--turn">
-                    <dt class="beat__k">翻轉</dt>
-                    <dd class="beat__v"><p>「值得」不是價格對品質的比值。三個產業指向同一件事：<mark class="mark">這筆錢有沒有幫我把不確定收掉</mark>。願意付高價的時刻，幾乎都是「我終於知道接下來會發生什麼」的時刻。</p></dd>
-                  </div>
-                  <div class="beat">
-                    <dt class="beat__k">後來怎麼用</dt>
-                    <dd class="beat__v"><p>高價方案不再比誰的內容多。改成把「你會知道什麼時候結束、結果大概長什麼樣、中間出問題找誰」寫進方案本身，變成可以被寫在頁面上的承諾。低價方案反而被重新定義成「試試看」，而不是「省錢版」。</p></dd>
-                  </div>
+                  <div class="service-roles__shared"><p>完整的服務流程</p><span>顧客對品牌的信任</span></div>
+                </figure>
+                <section class="story__reframe">
+                  <h3>真正需要設計的，不是「誰取代誰」。</h3>
+                  <p>在一個完整的服務流程中，數位工具與真人服務可能同時建立顧客對品牌的信任。</p>
+                  <p>因此，數位轉型真正需要釐清的，不只是「哪些服務可以搬到線上」，而是：</p>
+                  <div class="story__questions"><p>哪些事情適合交給系統？</p><p>哪些時刻需要人的專業？</p><p>兩者又要如何彼此銜接？</p></div>
+                </section>
+                <p class="story__takeaway">數位化不只是減少人的介入，<br>而是重新設計<mark class="mark mark--b">工具與人的分工</mark>。</p>
+                <dl class="story__metadata">
+                  <div><dt>研究方法</dt><dd>一對一訪談 / 焦點團體 / 利害關係人分析 / 生態系分析</dd></div>
+                  <div><dt>研究產業</dt><dd>金融業 / ESG 產業 / 政府服務</dd></div>
+                  <div><dt>專案產出</dt><dd>顧客服務流程分析<br>數位與真人服務價值定位</dd></div>
                 </dl>
-
-                <blockquote class="case__quote">
-                  <p>「貴不貴我其實不太會算，我算的是我還要再擔心多久。」</p>
-                  <cite>受訪者・四十多歲・自費療程使用者</cite>
-                </blockquote>
-              </div>
+              </article>
             </div>
           </details>
         </li>
 
-        <li class="case" id="case-loyalty">
-          <details class="case__disc" data-case>
+        <li class="case case--story" id="case-loyalty">
+          <details class="case__disc" data-case data-story="03">
             <summary class="case__head">
-              <span class="case__top"><span class="case__no">CASE 04</span><span class="case__topic">RELATIONSHIP</span></span>
-              <img class="case__art" src="assets/img/fields/finance.svg" alt="" width="144" height="144">
-
-              <h3 class="case__q">選擇很多，是什麼讓人<mark class="mark">願意留下</mark></h3>
-              <span class="case__line">真的是因為贈品多、好禮大放送，人們才留下來的嗎？</span>
+              <span class="case__top"><span class="case__topic">PUBLIC SERVICE × SYSTEM</span></span>
+              <img class="case__art" src="assets/img/fields/finance.svg" alt="" width="112" height="112">
+              <h3 class="case__q">一項公共服務，<br>真的只要把<mark class="mark">網站做好</mark>就夠了嗎？</h3>
+              <span class="case__line">從民眾眼前的一個介面，<br>一路走進組織流程、制度與不同角色，<br>重新理解服務為什麼這麼複雜。</span>
               <span class="case__foot">
-                <span class="case__category">會員關係・體驗策略</span>
+                <span class="tags" role="list" aria-label="研究主題"><span role="listitem">公共服務</span><span role="listitem">服務設計</span><span role="listitem">生態系</span></span>
                 <span class="case__more" aria-hidden="true">↗</span>
               </span>
             </summary>
-
             <div class="case__wrap">
-              <div class="case__detail">
-                <span class="tags" role="list"><span role="listitem">金融產品</span><span role="listitem">會員經營</span></span>
-                <p class="case__meta">2024 ｜ 訪談 16 位 ・ 會員資料分群 ・ 六個競品的體驗稽核</p>
-
-                <dl class="beats">
-                  <div class="beat">
-                    <dt class="beat__k">當時的問題</dt>
-                    <dd class="beat__v"><p>續留率連續兩季下滑，內部的共識是「對手的贈品給得比我們兇」，正在評估要不要加碼。</p></dd>
-                  </div>
-                  <div class="beat">
-                    <dt class="beat__k">我做了什麼</dt>
-                    <dd class="beat__v"><p>先從資料切出三群人，刻意不去訪已經離開的那一群，而是訪「還在、但已經不再使用」的那一群——他們最能說清楚維繫關係的東西什麼時候斷掉的。</p></dd>
-                  </div>
-                  <div class="beat beat--turn">
-                    <dt class="beat__k">翻轉</dt>
-                    <dd class="beat__v"><p>留下來的人講不出自己拿過什麼贈品。真正被反覆提起的是<mark class="mark mark--b">「我在這裡是不是一個被記得的人」</mark>——被記得的人會留下並且變得更活躍，沒被記得的人只是懶得搬家。</p></dd>
-                  </div>
-                  <div class="beat">
-                    <dt class="beat__k">後來怎麼用</dt>
-                    <dd class="beat__v"><p>贈品預算沒有加碼。權益改成累進的「關係進度」，讓使用者看得到自己一路走到哪裡；同時把客服與行銷共用的招呼語拆開，因為那句「親愛的貴賓」正好是受訪者最常拿出來笑的一句話。</p></dd>
-                  </div>
+              <article class="case__detail research-story">
+                <div class="story__opening">
+                  <p>身為民眾，我們很常遇到不好用的公部門網站。</p>
+                  <p>找不到資料、流程看不懂、系統不好操作時，很容易產生一個直覺：</p>
+                  <p class="story__assumption">「為什麼不把網站改好就好了？」</p>
+                  <p>真正進入研究現場之後，我們才發現，事情往往沒有這麼簡單。</p>
+                </div>
+                <figure class="story__figure system-layers" aria-labelledby="public-layers">
+                  <figcaption class="story__label" id="public-layers">從一個網站，到公共服務生態系</figcaption>
+                  <ol class="system-layers__map">
+                    <li><span class="system-layers__number" aria-hidden="true">01</span><p>民眾使用的網站 / 數位服務</p></li>
+                    <li><span class="system-layers__number" aria-hidden="true">02</span><p>民眾線上與線下的完整服務流程</p></li>
+                    <li><span class="system-layers__number" aria-hidden="true">03</span><p>第一線與內部行政人員的工作流程</p></li>
+                    <li><span class="system-layers__number" aria-hidden="true">04</span><p>不同政府資訊系統與外部廠商</p></li>
+                    <li><span class="system-layers__number" aria-hidden="true">05</span><p>法規、技術限制、行政決策與政策方向</p></li>
+                  </ol>
+                </figure>
+                <section class="story__findings">
+                  <h3 class="story__label">研究現場裡，逐漸浮現的問題</h3>
+                  <p>很多服務內容本身仍在數位化的過程中。</p>
+                  <p>民眾端的服務即使完成數位化，也必須考量內部人員如何承接工作，前台與後台需要真正串得起來。</p>
+                  <p>政府資訊系統可能由不同廠商負責，再加上既有技術與法規限制，系統之間並不一定能輕易串聯。</p>
+                  <p>行政首長與決策高層更換，也可能讓資訊系統與服務的發展重點隨之改變。</p>
+                </section>
+                <section class="story__reframe">
+                  <h3>研究的對象，逐漸從「一個網站」變成「一整個系統」。</h3>
+                  <p>因此，在公共服務設計裡，我們需要先看見不同角色位於整個生態系中的位置，盤點完整流程中的問題，再進一步辨認：</p>
+                  <div class="story__questions"><p>這是使用體驗問題？</p><p>工作流程問題？</p><p>技術限制？</p><p>法規限制？</p><p>還是組織與決策問題？</p></div>
+                  <p>只有先把不同性質的問題拆開，才知道哪些事情可以透過設計改善，哪些則需要從其他層次處理。</p>
+                </section>
+                <p class="story__takeaway">使用者經歷的是「一件事」，<br>組織提供的卻可能是許多<mark class="mark mark--b">彼此相連的服務</mark>。</p>
+                <dl class="story__metadata">
+                  <div><dt>研究方法</dt><dd>一對一訪談 / 焦點團體 / 利害關係人分析</dd></div>
+                  <div><dt>研究產業</dt><dd>政府服務 / 民間企業</dd></div>
+                  <div><dt>專案產出</dt><dd>服務藍圖分析<br>民眾體驗策略方向</dd></div>
                 </dl>
-
-                <blockquote class="case__quote">
-                  <p>「換一家也要重新來過，麻煩。但我留著也沒什麼感覺，就……放著。」</p>
-                  <cite>受訪者・三十多歲・使用滿五年的會員</cite>
-                </blockquote>
-              </div>
+              </article>
             </div>
           </details>
         </li>

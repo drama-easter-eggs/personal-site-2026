@@ -95,8 +95,8 @@
 
        MOMENT 01（.vfield）  五個領域站在同一圈上，讀完之後一起收回正中央
                              那顆圓，圓裡的提問換成那一句，最後插圖從圓的
-                             右下角浮出來、壓出圓外；八個需求依序浮現，
-                             再由同一組 bubble 原位轉成對應體驗策略
+                             上方與結語並排；八組需求與策略以規律對照表
+                             同時呈現，共用標題與插圖的閱讀版心
                              ＝ industries → human needs → experience strategies
 
      做法是那一塊自己是一段比視窗高的「跑道」（CSS 的 height），
@@ -408,7 +408,7 @@
       bar.className = 'case-modal__bar';
       var index = document.createElement('span');
       index.className = 'case-modal__index';
-      index.textContent = head.querySelector('.case__no').textContent + ' / SELECTED WORK';
+      index.textContent = 'RESEARCH STORY ' + disc.dataset.story + ' / ' + head.querySelector('.case__topic').textContent;
       var close = document.createElement('button');
       close.type = 'button';
       close.className = 'case-modal__close';
@@ -425,11 +425,7 @@
       title.innerHTML = head.querySelector('.case__q').innerHTML;
       var intro = document.createElement('div');
       intro.className = 'case-modal__intro';
-      head.querySelectorAll('.case__line').forEach(function (line) {
-        var p = document.createElement('p');
-        p.textContent = line.textContent;
-        intro.appendChild(p);
-      });
+      intro.textContent = '從多個研究現場中，整理出反覆遇見的一個問題。';
       body.append(title, intro, wrap);
       var panel = document.createElement('div');
       panel.className = 'case-modal__panel';
