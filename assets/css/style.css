@@ -892,7 +892,7 @@ html:not(.js) .hero__line:first-child {
      .82 – .96   插圖從圓的右下角浮出來（那一句不動，它一直在圓心）
    桌機完整跑道：.46 – .624 八個需求依序浮現，.624 – .74 停留閱讀；
    .74 – .901 同一組色紙原位轉成策略，.901 – 1 留給策略閱讀。
-   窄／矮視窗維持規律對照表，需求與策略同時顯示。
+   窄／矮視窗、無 JS 或減少動態效果時省略需求／策略，只保留結語與插圖。
    ============================================================ */
 .vfield { --p: 0; }
 
@@ -1018,17 +1018,8 @@ html:not(.js) .hero__line:first-child {
   margin: clamp(6px, 1.2vw, 16px) calc(-1 * var(--pad-x)) 0 auto;
 }
 
-/* 需求與策略並列閱讀：兩欄四列，共用整個 stage 的左右邊界。 */
-.vfield__needs {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  align-items: stretch;
-  gap: 0 32px;
-  width: 100%;
-  max-width: none;
-  margin: 0;
-  list-style: none;
-}
+/* 需求／策略只在大螢幕動畫中顯示，不再提供靜態對照表。 */
+.vfield__needs { display: none; list-style: none; }
 .vfield__need {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
@@ -1049,7 +1040,7 @@ html:not(.js) .hero__line:first-child {
 .vfield__need-arrow { color: var(--teal-deep); }
 .vfield__need-strategy { font-weight: 700; }
 
-/* 標題與小幅插圖在同一列，下方對照表佔滿版寬。無 JS 也使用完整排版。 */
+/* 正常流以結語與小幅插圖收尾。 */
 .vfield__stage {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 180px;
@@ -1072,21 +1063,16 @@ html:not(.js) .hero__line:first-child {
   height: auto;
   margin: 40px 0 24px;
 }
-.vfield__needs { grid-column: 1 / -1; grid-row: 4; margin-bottom: 24px; }
 @media (max-width: 720px) {
   .vfield__stage { grid-template-columns: minmax(0, 1fr) 100px; column-gap: 16px; }
   .vfield__say { font-size: clamp(22px, 4.3vw, 30px); }
   .vfield__say-l > mark { display: inline; }
   .vfield__fig { width: 100px; }
-  .vfield__needs { grid-template-columns: minmax(0, 1fr); }
-  .vfield__need:nth-last-child(2) { border-bottom: 0; }
 }
 @media (max-width: 420px) {
   .vfield__stage { grid-template-columns: minmax(0, 1fr); }
   .vfield__say { grid-column: 1; grid-row: 3; margin: 36px 0 16px; font-size: 24px; }
   .vfield__fig { grid-column: 1; grid-row: 4; width: 100px; margin: 0 0 24px; }
-  .vfield__needs { grid-row: 5; }
-  .vfield__need { gap: 10px; font-size: 16px; }
 }
 
 /* ---- ② 桌機的場：滿版、pin 一屏、繞著圓收回去 ----
@@ -2311,33 +2297,6 @@ html:not(.js) .hero__line:first-child {
    在 stone 的句子裡，出口要回到 ink 才看得出是可點的那一段。 */
 .posts__close .post__link { color: var(--ink); }
 
-.sub-card {
-  margin-top: clamp(28px, 3vw, 40px);
-  background: var(--teal-tint);
-  border-radius: var(--r);
-  padding: clamp(24px, 2.6vw, 32px);
-  display: flex; flex-wrap: wrap; align-items: center;
-  justify-content: space-between; gap: 22px;
-}
-.sub-card__label {
-  font-family: var(--latin);
-  font-size: var(--fs-micro); font-weight: 500;
-  letter-spacing: .19em; text-transform: uppercase;
-  color: var(--stone);
-  margin-bottom: 10px;
-}
-.sub-card h3 {
-  font-family: var(--display);
-  font-size: var(--fs-head);
-  font-weight: 700;
-  line-height: var(--lh-head);
-  margin-bottom: 8px;
-}
-.sub-card p { font-size: var(--fs-sm); color: var(--stone); }
-/* ghost pill sits on the teal tint — white reads cleaner than cream here */
-.sub-card .btn--ghost { background: var(--white); }
-.sub-card .btn--ghost:hover { background: var(--cream); }
-
 /* ============================================================
    08 CONTACT — the one loud surface
    ============================================================ */
@@ -2616,7 +2575,6 @@ html:not(.js) .hero__line:first-child {
   :root { --fs-body: 1.0625rem; }
   .cards { grid-template-columns: minmax(0, 1fr); }
   .card { border-radius: 34px; }
-  .sub-card { border-radius: 34px; }
   .contact__panel { border-radius: 34px; }
   .cv__row { grid-template-columns: minmax(0, 1fr); gap: 6px; }
   .cv__when { padding-top: 0; }
@@ -2749,9 +2707,8 @@ html:not(.js) .hero__line:first-child {
 .hero__role { display: block; }
 .hero__id { line-height: 1.65; }
 .case__line { line-height: 1.9; }
-.card p, .sub-card p { font-size: var(--fs-body); line-height: 1.9; }
+.card p { font-size: var(--fs-body); line-height: 1.9; }
 .teaching__topics p, #about .cv__what p, #about .teaching__header p { font-size: var(--fs-sm); }
-.sub-card .sub-card__label { font-size: var(--fs-meta); }
 .vfield__keys { column-gap: .15em; }
 .vfield__keys > span { max-width: 100%; white-space: normal; overflow-wrap: anywhere; }
 @media (min-width: 541px) and (max-width: 720px) {
@@ -2794,32 +2751,57 @@ html:not(.js) .hero__line:first-child {
   .teaching .talk__meta { grid-column: 1; grid-template-columns: 7rem max-content; gap: 8px 12px; }
 }
 
+/* 電子報保留細框線，使用較小內文與輕量標題。 */
 .newsletters {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  margin-top: clamp(36px, 5vw, 64px);
-  border-top: 1px solid var(--hairline);
-  border-bottom: 1px solid var(--hairline);
+  gap: 0;
+  margin-top: clamp(32px, 4vw, 48px);
+  border-block: 1px solid var(--hairline);
 }
-.newsletters .sub-card {
+.sub-card {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  justify-content: flex-start;
-  gap: 12px;
+  gap: 8px;
   min-width: 0;
-  margin: 0;
-  padding: 28px 28px 28px 0;
-  background: transparent;
-  border-radius: 0;
+  padding: 24px 28px 24px 0;
 }
-.newsletters .sub-card + .sub-card { border-left: 1px solid var(--hairline); padding-left: 28px; padding-right: 0; }
-.newsletters .sub-card p, .newsletters .sub-card h3 { margin: 0; }
-.newsletters .sub-card__label { letter-spacing: .08em; }
-.sub-card__pending, .sub-card__link { margin-top: auto; padding-top: 16px; font-size: var(--fs-meta); }
-.sub-card__pending { color: var(--stone); }
+.sub-card + .sub-card { border-left: 1px solid var(--hairline); padding-left: 28px; padding-right: 0; }
+.sub-card h3 {
+  margin: 0;
+  font-size: var(--fs-body);
+  font-weight: 500;
+  line-height: 1.6;
+}
+.sub-card p {
+  margin: 0;
+  max-width: 30em;
+  font-size: .9375rem;
+  line-height: 1.8;
+  color: var(--stone);
+}
+.sub-card__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  margin-top: auto;
+  border: 0;
+  padding: 0;
+  text-decoration: underline;
+  text-decoration-color: var(--hairline);
+  text-underline-offset: 4px;
+  font-size: var(--fs-meta);
+  font-weight: 400;
+  color: var(--stone);
+}
+.sub-card__link:hover, .sub-card__link:focus-visible {
+  color: var(--ink);
+  text-decoration-color: currentColor;
+}
 @media (max-width: 640px) {
   .newsletters { grid-template-columns: minmax(0, 1fr); }
-  .newsletters .sub-card { padding: 24px 0; }
-  .newsletters .sub-card + .sub-card { border-left: 0; border-top: 1px solid var(--hairline); padding: 24px 0; }
+  .sub-card { padding: 20px 0; }
+  .sub-card + .sub-card { border-left: 0; border-top: 1px solid var(--hairline); padding: 20px 0; }
 }
