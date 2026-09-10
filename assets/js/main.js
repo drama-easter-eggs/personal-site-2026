@@ -424,10 +424,7 @@
       title.id = row.id + '-title';
       title.tabIndex = -1;
       title.innerHTML = head.querySelector('.case__q').innerHTML;
-      var intro = document.createElement('div');
-      intro.className = 'case-modal__intro';
-      intro.textContent = '從多個研究現場中，整理出反覆遇見的一個問題。';
-      body.append(title, intro, wrap);
+      body.append(title, wrap);
       var panel = document.createElement('div');
       panel.className = 'case-modal__panel';
       panel.append(bar, body);

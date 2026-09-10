@@ -1567,9 +1567,7 @@ html:not(.js) .hero__line:first-child {
 .case-modal__close:hover { background: var(--teal-tint); }
 .case-modal__close:focus-visible { outline: 3px solid var(--teal-deep); outline-offset: 3px; }
 .case-modal__body { padding: clamp(24px, 5vw, 56px); }
-.case-modal__title { font-size: clamp(26px, 4vw, 38px); line-height: 1.55; margin-bottom: 20px; text-wrap: balance; }
-.case-modal__intro { color: var(--stone); margin-bottom: 28px; max-width: var(--measure); }
-.case-modal__intro p + p { margin-top: 10px; }
+.case-modal__title { font-size: clamp(26px, 4vw, 38px); line-height: 1.55; margin-bottom: 28px; text-wrap: balance; }
 .case-modal .case__wrap { margin-top: 0; }
 .case-modal .case__detail { padding: 0; }
 .case-modal .beat--turn { background: var(--teal-tint); padding: 22px; border-radius: 4px; }
