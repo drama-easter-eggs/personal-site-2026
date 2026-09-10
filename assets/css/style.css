@@ -1738,6 +1738,23 @@ html:not(.js) .hero__line:first-child {
 .story__questions { margin-block: 24px; padding-left: 22px; border-left: 2px solid var(--teal); }
 .story__questions p + p { margin-top: 6px; }
 .story__takeaway { font-size: clamp(1.25rem, 2.5vw, 1.625rem); line-height: 1.8; font-weight: 700; padding-block: 40px; text-wrap: pretty; }
+/* 專案產出縮圖：兩張並排，只證明產出的形狀與規模，不需要讀得懂內容
+   （客戶資訊已去識別化）。固定比例 + contain：圖表一律不裁切，
+   兩張比例不同的圖也不會把並排的節奏撐歪。 */
+.story__proof { margin-block: 40px 32px; }
+.story__proof > figcaption { margin-bottom: 14px; }
+.story__proof-pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.story__proof-pair img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 10;
+  object-fit: contain;
+  padding: 10px;
+  border: 1px solid var(--hairline);
+  border-radius: var(--r-sm);
+  background: var(--sand);
+}
 .story__metadata { display: grid; grid-template-columns: 1fr 1fr 1.25fr; gap: 24px; padding-top: 24px; border-top: 1px solid var(--hairline); color: var(--stone); font-size: var(--fs-meta); line-height: 1.85; }
 .story__metadata dt { font-weight: 500; margin-bottom: 10px; }
 .story__metadata dd { margin: 0; }
@@ -1799,6 +1816,9 @@ html:not(.js) .hero__line:first-child {
   .story__metadata { grid-template-columns: minmax(0, 1fr); gap: 20px; }
   .story__metadata dt { margin-bottom: 4px; }
   .story__figure { margin-block: 32px; padding-block: 22px; }
+  .story__proof { margin-block: 32px 26px; }
+  .story__proof-pair { gap: 10px; }
+  .story__proof-pair img { padding: 6px; }
   .constellation__branches { grid-template-columns: minmax(0, 1fr); gap: 26px; margin-left: 8px; padding: 0 0 0 22px; border-left: 1px solid var(--teal); }
   .constellation__field { padding-bottom: 0; }
   .constellation__field h4 { margin-bottom: 12px; }
