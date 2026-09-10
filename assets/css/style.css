@@ -890,8 +890,9 @@ html:not(.js) .hero__line:first-child {
      .62 – .72   圓裡的提問退場
      .74 – .86   圓裡的那一句進場
      .82 – .96   插圖從圓的右下角浮出來（那一句不動，它一直在圓心）
-   完整跑道：.46 – .56 需求與策略對照表整體浮現；
-   .56 – 1 保留完整對照閱讀，標題在左上、小幅插圖在右上。
+   桌機完整跑道：.46 – .624 八個需求依序浮現，.624 – .74 停留閱讀；
+   .74 – .901 同一組色紙原位轉成策略，.901 – 1 留給策略閱讀。
+   窄／矮視窗維持規律對照表，需求與策略同時顯示。
    ============================================================ */
 .vfield { --p: 0; }
 
@@ -1102,15 +1103,16 @@ html:not(.js) .hero__line:first-child {
    and (min-width: 75em) and (min-height: 48em) {
   .js .vfield {
     position: relative;
-    height: 300svh;              /* 需求與策略同時呈現，不再保留兩次換面的行程 */
+    height: 500svh;              /* 延長需求與策略的閱讀時間，前段領域動畫速度維持原樣 */
     --story: clamp(0, calc(var(--p) / .46), 1);
+    --strategy: clamp(0, calc((var(--p) - .74) / .10), 1);
     /* 收斂量。五站進完場（.30）之後，停留到 .62 才開始收。 */
     --c: clamp(0, calc((var(--story) - .62) / .22), 1);
     /* 插圖浮出來的量。它同時驅動那一句往上讓位。 */
     --fig: clamp(0, calc((var(--story) - .82) / .14), 1);
   }
   .js .vfield__stage {
-    display: block;
+    display: block; /* Regular reading layout below this breakpoint uses grid. */
     position: sticky;
     top: 0;
     height: 100svh;
@@ -1141,7 +1143,7 @@ html:not(.js) .hero__line:first-child {
     margin: calc(var(--arc-r) * -1) 0 0 calc(var(--arc-r) * -1);
     border: 1px solid var(--hairline);
     border-radius: 50%;
-    opacity: calc(1 - var(--c));
+    opacity: calc(1 - .88 * var(--c));
   }
 
   /* 圓：整頁唯一一次讓白紙變成一個量體，站在畫面正中央。收乾時微微張開
@@ -1157,7 +1159,6 @@ html:not(.js) .hero__line:first-child {
     border-radius: 50%;
     background: var(--white);
     transform: scale(calc(1 + .05 * var(--c)));
-    opacity: calc(1 - var(--c));
   }
 
   /* 圓裡的兩個狀態疊在同一格：先是提問，收乾之後換成那一句。
@@ -1184,44 +1185,99 @@ html:not(.js) .hero__line:first-child {
     opacity: calc(1 - var(--out));
     transform: translate(-50%, -50%);
   }
-  /* 結語、插圖與對照表使用同一個閱讀版心，避免互相遮擋。 */
   .js .vfield__say {
-    left: max(var(--pad-x), calc((100% - var(--page)) / 2 + var(--pad-x)));
-    top: 142px;
-    width: min(calc(100% - 280px), 700px);
-    max-width: none;
-    font-size: clamp(28px, 3vw, 38px);
+    font-size: clamp(19px, calc(3.6 * var(--u)), 36px);
     line-height: 1.55;
-    text-align: left;
+    /* 提問完全退掉（.72）之後才開始出現，所以讀起來是「收乾了才剩下這句」，
+       不是「一邊收一邊有人在旁邊講話」。 */
     --in: clamp(0, calc((var(--story) - .74) / .12), 1);
     opacity: var(--in);
-    transform: translateY(calc((1 - var(--in)) * 14px));
-    z-index: 2;
+    /* 它從頭到尾都釘在圓心：這一句就是這一整塊的答案，位置不讓給任何東西。
+       讓路的是插圖（見下面 .vfield__fig 的座標）。 */
+    transform: translate(-50%, calc(-50% + (1 - var(--in)) * 14px));
   }
+  /* 中央文字留在原位，螢光筆與字色把閱讀重心從第一句交給第二句。 */
+  .js .vfield__say-l:first-child { --emphasis: calc(1 - var(--strategy)); }
+  .js .vfield__say-l:last-child { --emphasis: var(--strategy); }
+  .js .vfield__say-l > mark {
+    color: color-mix(in srgb, var(--ink) calc(100% * var(--emphasis)), var(--stone));
+    background-size: 1em calc(.34em * var(--emphasis));
+  }
+
+  /* 插圖：壓在白圓的右下角，右緣與下緣都刻意超出去（破框）。
+     身體本身是留空的，白圓的邊線會從它身上穿過去——參考圖就是這樣，
+     不是沒對齊。z 序靠 DOM 順序：它排在 core 後面，自然疊在圓上面。 */
   .js .vfield__fig {
     position: absolute;
-    right: max(var(--pad-x), calc((100% - var(--page)) / 2 + var(--pad-x)));
-    top: 116px;
-    width: 156px;
+    /* 座標是從那一句反推的：它有兩行、共 11.2u 高，置中在圓心 ⇒ 字的底線在
+       +6u。插圖的框從 +3u 開始，但左側 30% 的範圍要到 +14u 才有筆畫（那裡是
+       手臂外緣），所以框雖然疊到字的那一列，畫面上不會碰到字。
+       往右移到 +10u 也是同一件事：字最寬的那一行只到 ±18u。 */
+    left: calc(50% + 10 * var(--u));
+    top: calc(var(--cy) + 3 * var(--u));
+    width: calc(33 * var(--u));   /* 高 38u：圓下緣 +21u，它一路長到 +41u */
     height: auto;
     margin: 0;
     opacity: var(--fig);
+    /* 進場沿用全站唯一的那個手勢（上浮 14px），只是改由捲動位置驅動。 */
     transform: translateY(calc((1 - var(--fig)) * 14px));
-    z-index: 2;
   }
+
+  /* 先左右交錯浮現需求，再於原位淡出需求、淡入策略。
+     同一張色紙與同一個位置，grid 疊住兩面並預留文字高度，轉化不跳版。 */
   .js .vfield__needs {
     position: absolute;
-    left: 50%;
-    top: 330px;
-    width: min(calc(100% - 2 * var(--pad-x)), calc(var(--page) - 2 * var(--pad-x)));
+    inset: 0;
+    display: block;
+    max-width: none;
     margin: 0;
-    --in: clamp(0, calc((var(--p) - .46) / .10), 1);
-    opacity: var(--in);
-    transform: translate(-50%, calc((1 - var(--in)) * 14px));
-    z-index: 2;
+    pointer-events: none;
   }
+  .js .vfield__core { z-index: 1; }
+  .js .vfield__say,
+  .js .vfield__fig { z-index: 2; }
   .js .vfield__label,
   .js .vfield__list { z-index: 1; }
+  .js .vfield__need {
+    --burst: clamp(0, calc((var(--p) - .46 - var(--n) * .012) / .08), 1);
+    --turn: clamp(0, calc((var(--p) - .74 - var(--n) * .013) / .07), 1);
+    --t: calc(var(--burst) - 1);
+    --spread: calc(1 + 2.7 * var(--t) * var(--t) * var(--t) + 1.7 * var(--t) * var(--t));
+    position: absolute;
+    left: 50%;
+    top: var(--cy);
+    width: max-content;
+    padding: calc(1.4 * var(--u)) calc(2.7 * var(--u));
+    font-size: clamp(17px, calc(2.35 * var(--u)), 25px);
+    opacity: clamp(0, calc(var(--burst) * 4), 1);
+    transform:
+      translate(calc(-50% + var(--x) * var(--u) * var(--spread)),
+                calc(-50% + var(--y) * var(--u) * var(--spread)))
+      scale(calc(.35 + .65 * var(--spread)));
+  }
+  .js .vfield__need-source,
+  .js .vfield__need-strategy {
+    grid-area: 1 / 1;
+    align-self: center;
+  }
+  .js .vfield__need-source {
+    opacity: clamp(0, calc(1 - var(--turn) / .45), 1);
+    transform: translateY(calc(-6px * var(--turn)));
+  }
+  .js .vfield__need-strategy {
+    opacity: clamp(0, calc((var(--turn) - .55) / .45), 1);
+    transform: translateY(calc(6px * (1 - var(--turn))));
+  }
+  /* 箭頭只從畫面隱藏，讀屏仍能循序讀到「需求 → 策略」。 */
+  .js .vfield__need-arrow {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
 
   .js .vfield__list { position: absolute; inset: 0; max-width: none; padding: 0; }
   .js .vfield__list::before { display: none; }
@@ -1313,6 +1369,32 @@ html:not(.js) .hero__line:first-child {
   .js .vfield__name { font-size: clamp(1.125rem, calc(2.2 * var(--u)), 1.375rem); }
   .js .vfield__keys { font-size: clamp(.9375rem, calc(1.7 * var(--u)), 1rem); line-height: 1.75; }
   .js .vfield__keys > span:not(:last-child)::after { padding-inline: .55em; }
+  /* Restore the original bubble geometry only in the animated desktop scene. */
+  .js .vfield__need {
+    --paper: var(--teal-tint);
+    grid-template-columns: none;
+    grid-template-rows: none;
+    gap: 0;
+    justify-items: center;
+    align-content: center;
+    max-width: 100%;
+    border: 0;
+    border-radius: 48% 52% 45% 55% / 55% 43% 57% 45%;
+    background: var(--paper);
+    font-weight: 500;
+    line-height: 1.6;
+    text-align: center;
+  }
+  .js .vfield__need-source { color: var(--ink); }
+  .js .vfield__need:nth-child(1) { --n: 0; --x: -32; --y: -30; --paper: #f0d7ce; }
+  .js .vfield__need:nth-child(2) { --n: 1; --x: 28; --y: -31; }
+  .js .vfield__need:nth-child(3) { --n: 2; --x: -58; --y: -12; }
+  .js .vfield__need:nth-child(4) { --n: 3; --x: 57; --y: -14; --paper: #f3d873; }
+  .js .vfield__need:nth-child(5) { --n: 4; --x: -51; --y: 9; --paper: #f3d873; }
+  .js .vfield__need:nth-child(6) { --n: 5; --x: 57; --y: 7; --paper: #f0d7ce; }
+  .js .vfield__need:nth-child(7) { --n: 6; --x: -39; --y: 33; --paper: #e9e2d7; }
+  .js .vfield__need:nth-child(8) { --n: 7; --x: 61; --y: 30; }
+
 }
 
 /* ============================================================
