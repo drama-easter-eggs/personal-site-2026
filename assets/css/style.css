@@ -2639,14 +2639,23 @@ html:not(.js) .hero__line:first-child {
   .post__meta { grid-column: 2; flex-direction: row; flex-wrap: wrap; gap: 12px 20px; }
 }
 
+/* 手機仍然是「縮圖 · 標題 · 外連」同一個形狀，只是縮圖按比例縮、外連掉到
+   整列寬的第二行。以前這裡把列改成單欄、縮圖固定 200px，結果縮圖右邊會空
+   出 150px 的死白——整頁其他東西都是齊左右兩邊的，只有這一塊看起來被推到
+   左邊。欄寬讓縮圖自己填滿第一欄，兩邊就都收在版心線上。 */
 @media (max-width: 540px) {
-  .talk { grid-template-columns: minmax(0, 1fr); gap: 16px; }
-  .talk__cover { width: min(200px, 100%); }
-  .talk__meta { grid-column: 1; gap: 12px 20px; }
+  .talk, .post {
+    grid-template-columns: clamp(96px, 29vw, 150px) minmax(0, 1fr);
+    gap: 12px clamp(12px, 3.6vw, 18px);
+    /* 窄欄的標題會長到三、四行，縮圖對中線會浮在字的中間；
+       兩欄改為頂線對齊，縮圖與標題第一行才讀成同一組。 */
+    align-items: start;
+  }
+  .talk__cover, .post__cover { grid-column: 1; grid-row: 1; }
+  .talk__body, .post__body { grid-column: 2; grid-row: 1; }
+  /* 日期與外連橫排在整列寬的第二行：留在窄欄裡會被擠成兩行。 */
+  .talk__meta, .post__meta { grid-column: 1 / -1; grid-row: 2; gap: 12px 20px; }
   .talk h5 { max-width: 24em; }
-  .post { grid-template-columns: minmax(0, 1fr); gap: 16px; }
-  .post__cover { width: min(200px, 100%); }
-  .post__meta { grid-column: 1; gap: 12px 20px; }
   .post h3 { max-width: 24em; }
 }
 
@@ -2663,7 +2672,10 @@ html:not(.js) .hero__line:first-child {
   .hero__intro { margin-bottom: 24px; }
   .hero__figure {
     grid-column: 1;
-    justify-self: start;
+    /* 插圖收在右緣——桌機與 541–720px 都是靠右（justify-self: end），
+       這裡原本是 start，同一張圖會在 540px 上下左右跳邊，而且齊左之後
+       右邊會空一塊比插圖還寬的白。 */
+    justify-self: end;
     width: min(280px, 68vw);
     margin: 20px 0 22px;
   }
@@ -2712,6 +2724,22 @@ html:not(.js) .hero__line:first-child {
     align-items: start;
   }
   .colophon__fig { max-width: none; width: 100%; }
+}
+/* 窄螢幕維持作者欄的構圖，只是換一個排法：作者像縮到頭像的尺度、跟那一行
+   說明並排，三個數字退到整欄寬的第二列。單純堆疊的話，210px 的圓會單獨
+   佔一列、右邊空掉四成，讀起來像被推到左邊而不是刻意的留白。 */
+@media (max-width: 900px) {
+  .colophon {
+    grid-template-columns: clamp(104px, 28vw, 148px) minmax(0, 1fr);
+    column-gap: clamp(16px, 4vw, 24px);
+    row-gap: clamp(18px, 2.6vw, 26px);
+    align-items: center;
+  }
+  /* 讓 lead 與 counters 直接成為 colophon 的格子，不動 HTML 結構。 */
+  .colophon__body { display: contents; }
+  .colophon__fig { grid-area: 1 / 1; width: 100%; max-width: none; }
+  #about .colophon .lead { grid-area: 1 / 2; margin-bottom: 0; }
+  .colophon .counters { grid-column: 1 / -1; }
 }
 #about .lead { margin-bottom: clamp(14px, 1.8vw, 20px); }
 #about .sub { font-size: var(--fs-head); margin-top: clamp(28px, 3.2vw, 40px); }
@@ -2765,8 +2793,9 @@ html:not(.js) .hero__line:first-child {
   .teaching .talk__meta { grid-column: 2; grid-row: 2; }
 }
 @media (max-width: 540px) {
-  .teaching .talk { grid-template-columns: minmax(0, 1fr); }
-  .teaching .talk__meta { grid-column: 1; grid-template-columns: 7rem max-content; gap: 8px 12px; }
+  .teaching .talk__cover { grid-column: 1; grid-row: 1; }
+  .teaching .talk__body { grid-column: 2; grid-row: 1; }
+  .teaching .talk__meta { grid-column: 1 / -1; grid-row: 2; grid-template-columns: 7rem max-content; gap: 8px 12px; }
 }
 
 /* 電子報保留細框線，使用較小內文與輕量標題。 */
