@@ -34,8 +34,24 @@ python3 -m http.server 4000
 
 ## 部署
 
-任何靜態空間都可以：Netlify、Cloudflare Pages、GitHub Pages、Vercel。
-不需要設定 build command，publish directory 填專案根目錄即可。
+上線的是 `gh-pages` 分支，不是 `main`。
+
+- `main`：原始碼，保留所有中文註解（為什麼這樣排版、為什麼換掉那個灰色）。
+- `gh-pages`：去掉註解的乾淨版，只含上線需要的檔案；`docs/`、`reference/`、`README.md` 不會上線。
+
+改完 `main` 之後重新產一次並部署：
+
+```bash
+node tools/build-clean.mjs /tmp/site-dist
+git worktree add /tmp/site-ghp gh-pages
+rsync -a --delete --exclude .git /tmp/site-dist/ /tmp/site-ghp/
+git -C /tmp/site-ghp add -A && git -C /tmp/site-ghp commit -m "更新" && git -C /tmp/site-ghp push
+git worktree remove /tmp/site-ghp
+```
+
+換到別的空間（Netlify、Cloudflare Pages、Vercel）的話，publish directory 填
+`tools/build-clean.mjs` 的輸出目錄；不設 build command 直接放專案根目錄也會動，
+只是註解會跟著上線。
 
 ## 設計系統
 
