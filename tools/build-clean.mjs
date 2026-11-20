@@ -11,7 +11,7 @@ const out = process.argv[2];
 if (!out) { console.error('usage: node tools/build-clean.mjs <outdir>'); process.exit(1); }
 
 /* 會被部署的東西；docs/、reference/、README.md、tools/ 都是工作材料，不上線。 */
-const COPY = ['assets', 'CNAME', 'favicon.ico', 'index.html', 'robots.txt', 'site.webmanifest', 'sitemap.xml'];
+const COPY = ['assets', 'CNAME', 'favicon.ico', 'index.html', 'project', 'robots.txt', 'site.webmanifest', 'sitemap.xml'];
 const STRIP = { '.html': stripHtml, '.css': stripCss, '.js': stripJs };
 
 /* ---- HTML：只吃真正的 <!-- -->，標籤屬性與 script/style 內文原樣帶過 ---- */

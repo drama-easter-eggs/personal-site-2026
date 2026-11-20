@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>寫給台灣創作者的話</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Huninn&family=Noto+Sans+TC:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#f6f1e7; --ink:#1c1915; --ghost:#b9b1a3; --ghost-hover:#5e5649;
+  --sun:#f6f1e7; --sun-ink:#8a7a5f; --grain:.45;
+  color-scheme:light;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --paper:#f6f1e7; --ink:#1c1915; --ghost:#b9b1a3; --ghost-hover:#5e5649;
+    --sun:#f6f1e7; --sun-ink:#8a7a5f; --grain:.45; color-scheme:light;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#f6f1e7; --ink:#1c1915; --ghost:#b9b1a3; --ghost-hover:#5e5649;
+  --sun:#f6f1e7; --sun-ink:#8a7a5f; --grain:.45; color-scheme:light;
+}
+*{box-sizing:border-box;margin:0}
+html,body{min-height:100%}
+#hero{position:relative;height:100vh;height:100svh;overflow:hidden;z-index:1}
+body{
+  background:var(--paper); overflow-x:hidden;
+  font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+}
+body::after{ /* paper grain */
+  content:"";position:fixed;inset:0;pointer-events:none;opacity:var(--grain);mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .5  0 0 0 0 .5  0 0 0 0 .5  0 0 0 .22 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+#stage{position:absolute;inset:0;overflow:hidden}
+.bullet{
+  position:absolute;left:0;white-space:nowrap;color:var(--ghost);
+  font-weight:500;letter-spacing:.04em;cursor:pointer;will-change:transform;
+  background:none;border:0;padding:.2em .3em;font-family:inherit;
+  transition:color .25s;
+}
+.bullet:hover,.bullet:focus-visible{color:var(--ghost-hover);outline:none;z-index:3}
+.bullet:focus-visible{text-decoration:underline;text-underline-offset:.25em}
+.bullet.behind{z-index:1}.bullet.front{z-index:3}
+
+#sun{
+  position:absolute;left:50%;top:50%;z-index:2;
+  width:min(1300px,96vw);height:min(54vh,520px);border-radius:50%;
+  background:radial-gradient(closest-side,var(--paper) 55%,transparent 100%);
+  transform:translate(-50%,-50%);pointer-events:none;
+}
+#quote{
+  position:absolute;left:50%;top:50%;z-index:4;transform:translate(-50%,-50%);
+  width:min(1500px,88vw);text-align:center;pointer-events:none;
+  transition:opacity .6s ease;
+}
+#quote.out{opacity:0}
+#qtext{
+  font-family:"Huninn","Noto Sans TC",sans-serif;color:var(--ink);
+  line-height:1.55;letter-spacing:.06em;text-wrap:balance;
+  font-size:clamp(22px,3.4vw,56px);
+}
+#qtext.mid{font-size:clamp(18px,2.4vw,38px)}
+#qtext.long{font-size:clamp(15px,1.55vw,25px);max-width:min(52vh,66vw);margin:0 auto;line-height:1.75}
+#qby{
+  margin-top:1.4em;font-family:"Huninn","Noto Sans TC",sans-serif;
+  color:var(--sun-ink);font-size:clamp(13px,1.1vw,17px);letter-spacing:.15em;
+}
+#credit{
+  position:absolute;left:clamp(16px,3vw,40px);bottom:calc(clamp(14px,2.5vh,28px) + env(safe-area-inset-bottom,0px));
+  z-index:5;color:var(--ghost-hover);font-size:13px;letter-spacing:.06em;line-height:1.6;
+}
+#credit b{font-weight:500;font-family:"Huninn","Noto Sans TC",sans-serif;font-size:15px;color:var(--ghost-hover)}
+#toggle{
+  position:absolute;right:clamp(16px,3vw,40px);bottom:calc(clamp(14px,2.5vh,28px) + env(safe-area-inset-bottom,0px));z-index:5;
+  font:500 13px/1 "Noto Sans TC",sans-serif;letter-spacing:.08em;color:var(--ghost-hover);
+  background:transparent;border:1px solid currentColor;border-radius:999px;padding:.7em 1.2em;cursor:pointer;
+}
+#toggle:focus-visible{outline:2px solid var(--sun);outline-offset:3px}
+.paused .bullet{animation-play-state:paused!important}
+@keyframes fly{from{transform:translateX(var(--from))}to{transform:translateX(var(--to))}}
+@media (max-width:600px){
+  #sun{width:84vw}
+  #qtext.long{max-width:76vw}
+  #credit{max-width:55vw}
+}
+#more{
+  position:absolute;left:50%;bottom:calc(clamp(14px,2.5vh,28px) + env(safe-area-inset-bottom,0px));z-index:5;transform:translateX(-50%);
+  font:500 13px/1 "Noto Sans TC",sans-serif;letter-spacing:.08em;color:var(--ghost-hover);text-decoration:none;padding:.7em 1em;text-align:center;
+}
+#more::after{content:"";display:block;width:1px;height:22px;margin:.7em auto 0;background:currentColor;opacity:.6}
+#more:focus-visible{outline:2px solid var(--ghost-hover);outline-offset:3px;border-radius:4px}
+#wall{position:relative;z-index:1;max-width:1180px;margin:0 auto;padding:clamp(56px,10vh,120px) clamp(20px,5vw,56px) 120px;color:var(--ink)}
+#wall>h2{font:400 clamp(28px,3.6vw,48px)/1.3 "Huninn","Noto Sans TC",sans-serif;letter-spacing:.06em}
+#wall>.lede{margin-top:.8em;color:var(--sun-ink);font-size:16px;line-height:1.8;max-width:38em}
+#toc{display:flex;flex-wrap:wrap;gap:.4em 1.6em;margin:2.2em 0 0;padding:0;list-style:none}
+#toc a{color:var(--ink);text-decoration:none;font-size:15px;line-height:2;border-bottom:1px solid var(--ghost)}
+#toc a:hover,#toc a:focus-visible{border-color:var(--ink);outline:none}
+#toc span{color:var(--sun-ink);font-size:13px;margin-left:.35em}
+.cat{margin-top:clamp(72px,11vh,128px);scroll-margin-top:24px}
+.cat-head{display:flex;align-items:baseline;gap:.7em;flex-wrap:wrap;padding-bottom:1em;border-bottom:1px solid var(--ghost)}
+.cat-head h3{font:400 clamp(24px,2.6vw,34px)/1.3 "Huninn","Noto Sans TC",sans-serif;letter-spacing:.06em}
+.cat-head .n{color:var(--sun-ink);font-size:14px}
+.cat-head p{flex-basis:100%;color:var(--sun-ink);font-size:15px;line-height:1.7}
+.msgs{columns:3 280px;column-gap:clamp(16px,2vw,24px);margin-top:2em}
+.msgs p{break-inside:avoid;margin:0 0 clamp(16px,2vw,24px);padding:1.15em 1.35em 1.25em;font-size:16px;line-height:1.85;letter-spacing:.03em;color:var(--ink);
+  background:#ece4d5;border-radius:4px 18px 18px 18px;}
+.msgs p.short{font-family:"Huninn","Noto Sans TC",sans-serif;font-size:20px;line-height:1.6}
+.cheers{display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin-top:2em}
+.cheers span{font-family:"Huninn","Noto Sans TC",sans-serif;color:var(--ink);line-height:1.4;background:#ece4d5;padding:.35em .9em;border-radius:4px 18px 18px 18px}
+@media (max-width:600px){#credit{bottom:calc(72px + env(safe-area-inset-bottom,0px))}}
+#foot{position:relative;z-index:1;max-width:1180px;margin:0 auto;padding:48px clamp(20px,5vw,56px) calc(64px + env(safe-area-inset-bottom,0px));
+  border-top:1px solid var(--ghost);color:var(--sun-ink);font-size:14px;line-height:2;letter-spacing:.04em}
+#foot .t{font-family:"Huninn","Noto Sans TC",sans-serif;font-size:17px;color:var(--ink)}
+#foot a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--ghost)}
+#foot a:hover,#foot a:focus-visible{border-color:var(--ink);outline:none}
+</style>
+</head>
+<body>
+<header id="hero">
+<div id="stage" aria-label="粉絲留給創作者的話，點一句放大閱讀"></div>
+<div id="sun" aria-hidden="true"></div>
+<figure id="quote" aria-live="polite">
+  <blockquote id="qtext"></blockquote>
+</figure>
+<p id="credit"><b>寫給台灣創作者的話</b><br>BL 與百合粉絲問卷　共 218 則留言</p>
+<button id="toggle" type="button" aria-pressed="false">暫停</button>
+<a id="more" href="#wall">看全部留言</a>
+</header>
+<main id="wall">
+  <h2>他們想對創作者說的話</h2>
+  <p class="lede">問卷最後一題問：「你有什麼想和台灣創作者們說的話？」以下是 218 則溫柔的回覆，依內容分成八類。</p>
+  <ul id="toc"></ul>
+  <div id="cats"></div>
+</main>
+<footer id="foot">
+  <p class="t">《這份愛，對你來說是什麼？》2026 調查</p>
+  <p>IG / Threads：<a href="https://www.instagram.com/drama.easter.eggs/" target="_blank" rel="noopener">@drama.easter.eggs</a>　海香草製作</p>
+  <p><a href="https://meilingc.com" target="_blank" rel="noopener">meilingc.com</a></p>
+</footer>
+<script>
+const MSGS = ["謝謝您們！", "很開心這個小圈圈越來越多人去了解去關注，也希望不同的選擇在以後都能成為普通且平凡的日常", "台灣的創作者其實很有潛力 雖然我本身比較多在看泰國的作品 但因為朋友也會一些些接觸到台灣的繪師或是插畫家 我覺得台灣一點也不輸 只是環境比較劣勢 台灣創作者加油👏 相信你們一定可以闖出一片天！ 我期待那一天大家都可以看到台灣的作品！", "謝謝你們", "謝謝每一個你們為我們帶來的每一份作品", "不知道這種創作是有關於劇還是文字 如果是劇的話，希望台灣的創作能夠更加進步、有更多多樣化的題材去傳達社會議題，如果是文字，希望文字創作者能夠知道自己的文字真的可以影響很多有愛的人 藝術創作是一個很重要的領域，能夠傳達出自己的思考以及表達我覺得是一種天賦和能力 請繼續創造出能給人力量的作品吧🫶", "希望可以讓大家知道喜歡一個人這件事是不會因為性別有什麼影響，那是一個人對另一個人的喜歡，僅此而已，自由是在這個世界上最美好的一件事", "你們很棒！希望你們在這條路上可以一直走下去，在這環境還是有許多人不理解，希望讓更多人看見～", "願創作者們在這份工作上有極大的熱忱及收穫，也謝謝你們的努力，讓我們能看見許多美好的作品。", "加油", "以小說的世界來說，真的很少能看見台灣的作品，謝謝你們一直努力著！真心希望台灣也能有個平台，讓這些作者們大放異彩", "謝謝你們努力的創作，讓我們能夠在平日繁忙的工作裡，身心能夠快樂", "謝謝目前在這個類別裡做出貢獻的各位，希望未來我們不需要被問為什麼喜歡嗑同性CP", "加油謝謝你們", "希望大家都有機會發表自己的作品，不拘於任何形式，但能做到百花齊放", "希望台灣也可以有更多元的百合劇誕生，而不再只是戲劇中的配角，百合劇有很多故事可以說🥹", "現階段的台灣環境很艱辛，謝謝你們就算扛著被罵一直做爛劇的惡名，還是一直堅持下去！對BL有沒有愛是可以讓人感覺得到的！其他國家也是一步一步走出屬於自己的路，只要是有心而不是刻意蹭！相信一定可以走出自己的一片天！", "無論如何，要讓角色保留能撐開一個宇宙、且能讓眾人盡興解讀的人性。", "加油！讓BL GL被更多人發現 理解 愛上 讓一些不尊重不理解 出口狠毒的人不再有惡言", "想看更多兩個人開心談戀愛的故事", "謝謝你們堅持自己想做的事，讓更多人被看見。也恭喜你們完成了自己想做的事", "我相信台灣的影視產業不會輸給國外，希望未來能多看到些台灣的作品，加油～你們可以的！", "BL是救贖！", "你們正在做的事非常有意義，請不要放棄。", "感謝每一個創作團隊用心製作讓作品成為我的心靈港灣，在低潮、無助、徬徨時，可以從作品中重新獲得力量", "感謝每天花心思和精神在給我們更好的創作，永遠支持！好好照顧身體和心靈，祝願身體健康，事事順心順利順意😊", "謝謝你們，辛苦了❤️", "我會支持正版的", "不論是不是會繼續選擇創作，謝謝你們帶給我的快樂。", "做自己 累了就多休息 但休息完要繼續往前走", "台灣還是有一群喜歡BL/GL多元題材的觀眾，因為國內作品比較少，所以蠻常看國外的，如果發現本國有這類作品，能用自己熟悉的語言閱讀/觀看，當然願意支持", "想看更多的百合作品！！！", "謝謝你們將想像具體化成作品，讓我能感受到其中能量與因此產生生活期待", "可以有更多不同題目的GL劇/電影帶給觀眾。", "加油！", "謝謝你們豐富了臺灣的風景", "是金子一定會發光，優質的作品勝於一切。", "謝謝你們的創作！加油👏一定大力支持你們", "希望台灣也可以創作出甜甜戀愛GL的劇，不要老是在演現實……我已經在現實生活中覺得很累很想逃離了……", "大家好棒，大家加油", "謝謝大大們，創作者是最珍貴的寶物！", "加油 及謝謝你們", "辛苦你們了，希望你們可以把同性影集這部分更加普及到社會裡，希望未來可以看到更多同性影集", "外界眼光一點都不重要,不需要符合別人的期待,只要是自己喜歡的、熱愛的就是對的(但還是要符合道德觀念)", "請多多寫出或拍攝出好的作品吧！麻煩你們了", "謝謝各位自耕農，是您們的愛與堅持讓我更了解自己，更有勇氣活著，我愛大家~", "加油，台灣原創萬歲", "創作是一條辛苦的道路，願所付出的辛苦都能看到期望的果實。", "謝謝老師們燒肝燒肺燃燒生命和熱忱創作這麼多美麗的作品，每個畫面都令人感動又喜悅，真的很謝謝您們願意將一部分的靈魂（？）跟大家分享😭能做ㄉ不多但會繼續用新台幣支援老師ㄉ", "現在檯面上許多活躍的台灣創作者，很多都是10-15年前就在同人場活躍的攤主們，長大後看到這些作者繼續在漫畫市場耕耘，從二次創作走到原創漫畫真的很不容易，每次看到都會覺得很感動，也常會因為10年前的緣分購入他們的商業作，我想說的是從以前堅持繼續畫畫的你們，在台灣會有像這樣的讀者繼續默默支持著你們，在變動快速的世代，很感謝還有你們的新作品。", "謝謝各位文字創作者、繪師，所有努力創作、和世界分享這份光芒的人們。 這些來自各種不同的思想、成長背景、創意與喜愛深深療癒了我的世界。", "加油", "謝謝你們，加油", "近年來台灣本土的漫畫產業愈來愈蓬勃，好作品愈來愈多，謝謝你們！加油！！", "你們很棒！", "感謝你們傾瀉心血、燃燒靈魂創作美麗的作品，希望創作一直使你們快樂。", "繼續產糧，加油👏", "希望你們靈感不斷，也希望你們在創作的同時要照顧好自己的身體", "希望創作更多的作品", "相信大家會更努力創作更好的作品。", "如果是好作品，不怕沒人看", "每一次點開你們的作品都是帶著開心又期待的心情來的喔(๑•̀ㅂ•́)و ✧ 然後乖乖再滾回去當社畜", "或許在創作台劇的過程中，或多或少會有否定的聲音，但請你們知道，會有那麼一群人在背後默默地支持著，要持續勇敢前行！ 我相信每一種形式的愛，都是值得被看見的。", "期望像韓國條漫一樣蓬勃發展，然後不腰斬", "加油，期待百花盛放", "謝謝你們分享的一切！", "台灣文創的軟實力與創意度是很高的，別太在乎罵聲，往心之所好前進吧～💕", "多畫點，愛看，像韓漫一樣的也很讚啊，課金派戀愛熱度就還不錯？", "百合不好賣，尤其越真越難，感謝所有創作者的嘗試。", "加油", "台灣創作者們都很棒，希望投資方能夠看到臺灣的百合界有千百萬種機會，對於「女同志」的身分不需要只拘泥在主觀地覺得會不會賺錢（雖然很難啦），很多漂亮的女演員互動上都十分地有火花。除此之外，我們想看到女人更五花八門的慾望、個性、特質，我們一點都不介意角色到底是不是「同志好寶寶」，大家辛苦了！", "台灣需要更多GL作品！", "Just do it", "請多多創作🙇🏻‍♀️🙇🏻‍♀️希望能看到愈來愈多元的題材！", "百合相比早些年已經慢慢有越來越多人投入創作，非常謝謝每一位願意創造這個世界的夥伴", "永遠謝謝努力創作的人賜糧，或許讓很多讀者都更加了解自己，也離夢想更加接近了，真是感謝", "謝謝你們的努力 讓社會對我們有更多的理解跟了解", "希望台灣有更多百合的作品出現", "加油", "辛苦了，是作品的存在告訴我不是孤身一人", "辛苦了，近年有發現在台灣能看到的百合作品數量明顯變多，希望未來能看到更多百合商業作品讓我買買買", "你喜歡的內容再冷門，總會有第二個人有共鳴，不要放棄創作出來。", "台灣原創絕對都是加倍支持的，你敢出我就買^ ^", "謝謝你們，成為了我們情感的出口 我不會畫畫也不會寫作，我內心有很多複雜的想法和感受，卻時常找不到合適的詞彙去描述，是透過你們的筆觸，那些微小且細膩的情緒才得以被具象化地表達出來，請繼續畫下去、寫下去！ 我會用新台幣支持你們的！！！！", "百合創作者加油！", "加油", "多創作百合吧，我會買的", "加油，我會願意支持，希望產業可以永續發展", "真的非常感謝你們創造出百合作品，相信被百合拯救的人不只我一個。", "謝謝你們願意持續創作，帶給台灣更豐富的色彩與活力", "快畫/寫，我會買", "愛臺灣，愛本土創作者，加油", "有看一些台灣的百合作品，小說跟漫畫都很好看", "希望可以看到台百呈現更豐富多元的面貌，不要一直被困在處理認同的議題上", "謝謝你們！聽過這麼一句話「虛構作品的價值在提供人們想像的方向」，謝謝你們讓過去的我認識到情感關係的多重面貌，讓情感傾向非主流期待的我，獲得「也能幸福」的勇氣。", "感謝你們產出各式各樣的作品！很幸運能夠在自由的時代遇見你們！", "辛苦了", "百合作品感覺還是比BL難推廣，但請相信有人一直在追一直在等待新作品，你們的創作是有意義的！", "加油", "请继续创作吧！", "希望（沒有審查的）華語百合圈可以更加壯大！！！", "加油！希望能看到更多作品，我會一直支持下去", "加油，我自己也收了幾套台灣作家的百合漫，很優秀", "希望能發展BL/GL更多樣貌~", "希望我能看到作者用心刻劃百合細膩的感情", "支持每個熱愛", "請加油，你們辛苦了", "加油", "希望台灣的百合，不論是漫畫或小說、動漫、影視能夠越來越強大，我會繼續支持下去💪", "百合很棒，BL也很ㄅㄧㄤˋ，加油OWOb", "有時候沒辦帳號沒辦法留言，但都有在看的，請持續創作吧！", "能夠做自己喜歡的事，很厲害！", "你們很棒👍", "祈禱大家讓這份愛能夠繼續發光發熱", "老師們辛苦了❤️請好好休息後再創作", "感謝各位漫畫家的創作！", "辛苦了", "希望台灣的GL作品可以更多，絕對支持🙏😭", "加油，期待更多好看的作品！", "加油！要讓更多人看見他們才行！", "希望能推廣百合，不要再讓實體書店、遊戲各類作品只佔了一小角落，讓更多人能看見它的美！讓百合作品普遍化希望能跟bl作品一樣能大方搬出檯面，加油", "我愛課金派戀愛🫶", "感謝你們的創作讓我找到可以承載情緒的機會", "可以勇於嘗試各類題材，題材的多樣性與在地性我認為可以作為台灣創作者的特色之一。在閱覽台灣的作品時，經常因為貼合實際生命經驗而會心一笑，相對日韓作品會給人多一份親切。", "我看到有很多高品質的台漫，佩服所有堅持著創作的作者們。", "百合 征服世界", "你們很厲害，創作這條路一直都不好走。 我自己只是利用工作以外的時間，在進行喜歡的寫作興趣，偶爾都還會感受到靈感枯竭時的無力。 你們卻是將泰半時間心力投資在上面，非常佩服！ 我也會努力支持的！", "謝謝你們 我不知道這是什麼情緒 這是一種無以名狀的感謝 謝謝你們創造了這個讓我休息的港灣 謝謝你們創造了這個讓我有歸屬感的房間 謝謝你們創造了一個讓我不再懷疑自己的世界 謝謝你們的付出 謝謝", "台灣是一個能自由創作的國度，願我們能打造一個最棒的百合國度。", "台灣的百合一定會越開越多的！謝謝你們的努力！", "希望可以看到更多GL作品，我認為這其實是有一定市場的，但作品一直都很少", "謝謝你們把我們的故事呈現出來，對我來說那是認識自己的重要媒介。“百合”這詞雖然聽起來有種很香很輕鬆愜意的感覺，但實際上卻往往平淡而深刻。", "加油！", "拜託擴大百合市場！！！！", "各位加油！", "希望臺灣有更多好看的百合漫畫、動畫甚至是手遊。如果有台灣出的百合手遊，一定會花錢支持！", "期待臺灣各式類型的作品都長出自己的樣子！可以從中獲得屬於臺灣人的認同與記憶～", "哪怕未來陷入了瓶頸，我也很開心你們願意為我們帶來喜悅。創意和熱愛，我相信這些是無法用價值衡量的。以後也會支持你們。", "雖然有很多像我一樣不擅長留言表達自身想法的人，但我們其實都在背後支持你們！請繼續為熱愛創作下去吧！！！", "各位老師辛苦啦，希望可以看到更多優質的作品。", "需要更多百合作品!!!!跟BL比起來 太少了不夠吃", "很開心臺灣能有更多元的創作類型！作為百合世界的愛好者，也好希望可以看到與家鄉文化脈絡有更多共鳴的好作品。謝謝各位創作者！", "加油堅持自己熱愛的事情", "願意創作的人都是活佛。讚啦。", "各位加油！希望各位能產出更好的作品！", "台灣是一個相較於其他地域，更包容、更自由的環境此類創作還是太少，請更勇敢的讓我看見獨屬於台百的浪漫。", "加油！", "謝謝你們存在", "顧好自己唷！！比起作品我更希望作者們好好的🫶", "台灣的創作者都辛苦了！謝謝您們創作出許多療癒人心的作品。", "加油！", "請多創作出更多的好故事吧，非常期待 私心希望能有更多題材的GL影視類作品", "謝謝你們", "如果你們是同樣喜歡並選擇創作LGBTQ+主題的話 相信一定會有人會因你們的作品而感同身受/被治癒 或許因為曾經有著難以言喻的傷痛，在看到作品裡面的角色也面臨到相同的困境時 便也會抱以期待，期待他能跨過困境邁向幸福 也可能正因為有些是日常生活中難以實現卻心生嚮往的理想，所以變成了文學作品，讓身為讀者的我們在此其中和這樣的理想世界（劇情）相遇，填補了失去/希冀這樣的自己", "一直都會有人支持你們的，加油", "多寫、多畫，我會努力看的！", "保持妳/你們對創作的熱情 謝謝妳/你們的付出", "加油！ 百合就是讚！", "加油！", "辛苦了，也謝謝你們。", "謝謝你們的努力🫶🏻", "你們真的很棒！ 讓BL/GL 在台灣 慢慢有被看見❤️ 只可惜 台灣很少在養CP.... 二搭少之又少..", "其實我覺得台灣很多作者很棒，希望大家一起繼續加油；他們筆下的故事有的時候會很有共鳴，會感覺那些人物跟我們一樣生活在台灣這塊可愛的土地上，也許有一天我會跟他們在吃同一家麵店", "加油加油❗️", "讚喔", "謝謝台腐的創作者、演員、工作人員，一起合力完成鼓舞人心的作品👍🏻", "感謝所有的人都在為這份文化做出貢獻，我很自豪自己生在如此自由且擁有各種文化融合的地方，我們不需要隱藏自己；相反地，我們因為有你們的推廣，認識到更多種愛意，非常謝謝你們。", "希望可以多發展出屬於臺灣的bl文化", "很謝謝各位創作者帶給我們這麼多好看的作品", "非常感謝你們投入的心力，打造出一部部的作品，讓我的生活更有活下去的動力", "在台灣的市場這一塊還是有很多的空間，希望能看到更多不同的可能性，也更能夠創造出屬於台灣獨有的元素，畢竟我們可是亞洲第一個同婚通過的國家欸~", "感恩有你們，為世界帶來更多的愛與包容，這些在我心目中，便是人類最偉大的魔法。", "加油！！！請多多創作，我會努力拿錢砸你們！！！", "請捍衛能合法同性結婚的台灣，這個得來不易的公平和自由，是讓其他地方羨慕不已的", "加油！", "所有美好的相遇和凝聚一定是因為其中有愛！相信台灣的創作環境都是因為有一群人在默默努力和付出才會越來越好，衷心感謝每一位創造出美好作品的人們！我們這些觀眾、讀者都非常非常幸福，出生在台灣然後有幸欣賞這些美好！沉溺在作品的故事情節裡、為角色們動容、跟著情緒跌宕起伏的每個瞬間，真的都很感謝創作者們把一部分的自己掏出來，我一直都覺得作品是很直接很赤裸的自我介紹，也是我身為讀者覺得在閱讀、觀看的當下覺得和創作者們心靠得最近的時候，比起任何話語和見面，可以說是坦誠相見，包括想藏卻藏不住的、想說但說不出口的，或是希望可以傳遞出來的意義都無比珍貴。", "一個好的BL/GL真的能改變一個人的人生觀與看法。有些在BG劇裡面無法呈現的情緒、情感、社會背景等，在BL/GL劇裡可以有更深層次的發揮與感受", "感謝每一位創作者辛苦出產這些作品，陪伴了我，讓我更有勇氣繼續活下去。", "加油", "加油", "希望你們能創作出更多優秀的作品，讓大眾可以更了解BL或百合文化", "加油❤️", "謝謝台灣的創作者帶來許多美好的作品，也有很多是有別於中國的刻畫，而是聚焦在這片土地上的情感。 希望在未來可以看到更多這樣的作品，謝謝所有願意為愛發電的創作者💖", "每位創作者所畫的圖，出的漫畫和小說，都是非常美好非常珍貴的東西，希望你們能持續創作好的作品，對自己的工作對BL和GL保持熱情！", "希望他們能為台灣帶入更多元的作品和更優秀的人們", "謝謝你們的創作，讓我可以在文字、劇情間點滴地體驗、體會到不同的心境，感同身受的與角色走一遭~（有種神仙下凡歷劫的感覺XD", "希望可以看到更多台百 然後可以結合生活 然後真的不喜歡再看到各種糾結與社會框架的成分了 愛就是愛 自由無懼的愛！ （不只有侷限性Lesbian 還可以有跨女&非二元取向女性的劇集）", "謝謝這些創作者，帶給我們滿滿的心靈糧食", "各位加油！雖然我是最近才開始看BL漫，但其他類型的webtoon我也大概看了5年了，我覺得現在的台灣創作者比起我剛開始看的時候成長很多～", "性向並不能代表什麼，傳統觀念根深蒂固，但希望能多一點力量讓這個世界可以更多元化一點，世界上有很多可能都是人們親手創造的", "可以將臺灣的風土民情融入劇本創作中，這樣劇情會更貼近真實生活，能夠觸動人心。", "加油，你們是台灣進步不可或缺的一份子！", "謝謝你們的創作，讓我能接觸到不同的愛與世界！ 除了常見的BL和GL題材，也希望創作者能多關注其他LGBTQ+的族群，讓更多元的經驗與故事被呈現出來！", "無論是什麼形式的作品 都很高興有你們延續、支撐這個群體和文化 為很多人帶來不一樣的世界 謝謝你們", "謝謝你們願意用心創作這些故事讓大家能看到，希望每位創作者的作品都不要被盜用。", "台灣是亞洲第一個實現同性婚姻合法化的國家，雖然說不是最理想的法律條文，但感覺大家（很大一部分的國民）都願意理解、接納同性戀者甚至是更廣闊的LGBTQ+概念，希望有更多的機會讓大家接受Love is equal，希望台灣可以走得更遠", "拜託百合作品多一點啦（哭", "加油🫶🏻祝福你們", "感謝創作者們創作出許多美好的作品", "開心最重要", "這是一件非常偉大，卻同時很辛苦的一件事，希望在你們感到疲累 厭倦的時候，往身後看看 那些一直支持你的人，或許對你有一些的慰藉。", "加油～～～～～～！台灣粉絲支持你們555555", "加油！繼續做自己想做的事，縱使可能沒察覺，但一定會有一群人在身後默默支持著🫶", "希望可以繼續產出大量的作品，我都會繼續支持！", "謝謝老師們創造出這麼多的世界，讓我和很多很多人有了更多活下去的理由、動力，讓我又對世界有了希望。謝謝老師們。", "謝謝你們持續在台灣創作出多元的作品！", "大家請加油  讓台灣變成東亞同仁文化輸出大國~", "希望能有更多跳脫浪漫愛框架的作品，讓朋友不一定是關係的中繼站，愛情也不一定是親密關係的終點。", "謝謝各位老師創作出各種令人感動又好看的故事，也辛苦老師花許多心力時間去創作這些作品，讓我們讀者可以在痛苦的日常中獲得一點安慰。", "希望台灣的創作團體 可以再更創新跳出框框地發展下去 令大家看見不亞於日泰的作品", "雖然這行無法讓你賺大錢，但如果真的喜歡，最後還是會走上這條路的，不如從一開始就在這條賽道上耕耘吧", "謝謝！", "套句我老爸老媽（cp ）常說的：好好吃飯 好好睡覺 祝你隨便買的蘋果都很甜喔💖💖🫶", "謝謝創作者們跟創作產業的每一個工作者♡你們每一個人都好珍貴♡。謝謝你們為創作貢獻♡。謝謝你們喜歡創作♡。我希望台灣的創作環境能越來越友善，希望你們的努力都能有相對應的回報♡。然後我們一起守護擁有創作自由的台灣♡♡♡。", "我希望可以再創作一些有深度的作品，令更多人認識到LGBT，打破一些刻板印象。", "加油～～", "有你們真好", "大家加油！！能夠創作這方面作品的創作者都很堅強，希望大家能對圈子更包容"];
+const FEATURED = [
+  "是作品的存在告訴我不是孤身一人。",
+  "你喜歡的內容再冷門，總會有第二個人有共鳴，不要放棄創作出來。",
+  "比起作品，我更希望作者們好好的。",
+  "謝謝你們創造了一個讓我不再懷疑自己的世界。",
+  "雖然有很多像我一樣不擅長留言的人，但我們其實都在背後支持你們。",
+  "他們筆下的故事有的時候會很有共鳴，會感覺那些人物跟我們一樣生活在台灣這塊可愛的土地上，也許有一天我會跟他們在吃同一家麵店。",
+  "讓朋友不一定是關係的中繼站，愛情也不一定是親密關係的終點。",
+  "謝謝你們讓情感傾向非主流期待的我，獲得「也能幸福」的勇氣。",
+  "在你們感到疲累厭倦的時候，往身後看看那些一直支持你的人。",
+  "好好吃飯，好好睡覺，祝你隨便買的蘋果都很甜喔。",
+  "愛與包容，在我心目中便是人類最偉大的魔法。",
+  "有時候沒帳號沒辦法留言，但都有在看的，請持續創作吧！"
+];
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const stage = document.getElementById('stage');
+const qtext = document.getElementById('qtext'), quote = document.getElementById('quote');
+let paused=false, fi=0, rotateTimer=null;
+
+function setQuote(t){
+  quote.classList.add('out');
+  setTimeout(()=>{
+    qtext.textContent = '「' + t + '」';
+    qtext.className = t.length>70 ? 'long' : t.length>34 ? 'mid' : '';
+    quote.classList.remove('out');
+  }, 450);
+}
+function startRotate(){
+  clearInterval(rotateTimer);
+  rotateTimer = setInterval(()=>{ if(!paused){ fi=(fi+1)%FEATURED.length; setQuote(FEATURED[fi]); } }, 9000);
+}
+
+// shuffle-bag so every message appears before repeats
+let bag=[];
+function nextMsg(){ if(!bag.length) bag = MSGS.map((_,i)=>i).sort(()=>Math.random()-.5); return MSGS[bag.pop()]; }
+function short(t){ return t.length>46 ? t.slice(0,44)+'…' : t; }
+
+let lanes=[], laneH=0;
+function layout(){
+  const H = innerHeight;
+  laneH = Math.max(44, Math.min(70, H/13));
+  const n = Math.floor((H-40)/laneH);
+  lanes = Array.from({length:n},(_,i)=>lanes[i]||{free:0, speed:36+Math.random()*34});
+}
+function spawn(lane, idx){
+  const t = nextMsg();
+  const b = document.createElement('button');
+  b.className='bullet behind';
+  b.type='button';
+  b.textContent = short(t);
+  b.title = t;
+  const size = 15 + Math.random()*11;
+  b.style.fontSize = size+'px';
+  b.style.top = (20 + idx*laneH + Math.random()*(laneH-size*1.6)) + 'px';
+  b.addEventListener('click',()=>{ setQuote(t); startRotate(); });
+  stage.appendChild(b);
+  const w = b.offsetWidth, W = innerWidth;
+  const speed = lane.speed; // px per second, fixed per lane so nothing overtakes
+  const dur = (W + w) / speed;
+  b.style.setProperty('--from', W+'px');
+  b.style.setProperty('--to', (-w)+'px');
+  b.style.animation = `fly ${dur}s linear forwards`;
+  if(paused) b.style.animationPlayState='paused';
+  b.addEventListener('animationend',()=>b.remove());
+  // lane frees once tail has entered plus a gap
+  lane.free = performance.now() + ((w + 60 + Math.random()*260)/speed)*1000;
+}
+function tick(){
+  const now = performance.now();
+  if(!paused) lanes.forEach((l,i)=>{ if(now>l.free) spawn(l,i); });
+  requestAnimationFrame(tick);
+}
+function staticLayout(){ // reduced motion: scatter once
+  stage.innerHTML='';
+  lanes.forEach((l,i)=>{
+    const t=nextMsg(), b=document.createElement('button');
+    b.className='bullet'; b.type='button'; b.textContent=short(t); b.title=t;
+    b.style.fontSize=(15+Math.random()*9)+'px';
+    b.style.top=(20+i*laneH)+'px'; b.style.left=(Math.random()*55)+'vw';
+    b.addEventListener('click',()=>setQuote(t));
+    stage.appendChild(b);
+  });
+}
+
+document.getElementById('toggle').addEventListener('click',e=>{
+  paused=!paused;
+  document.body.classList.toggle('paused',paused);
+  e.currentTarget.textContent = paused ? '繼續' : '暫停';
+  e.currentTarget.setAttribute('aria-pressed',paused);
+});
+stage.addEventListener('mouseover',e=>{ if(e.target.classList.contains('bullet')) e.target.style.animationPlayState='paused'; });
+stage.addEventListener('mouseout',e=>{ if(e.target.classList.contains('bullet') && !paused) e.target.style.animationPlayState='running'; });
+addEventListener('resize',()=>{ layout(); if(reduce) staticLayout(); });
+
+layout();
+qtext.textContent='「'+FEATURED[0]+'」';
+startRotate();
+if(reduce){ staticLayout(); document.getElementById('toggle').hidden=true; }
+else {
+  // pre-fill the screen so it doesn't start empty
+  lanes.forEach((l,i)=>{ spawn(l,i); const b=stage.lastChild;
+    const dur=parseFloat(b.style.animation.split(' ')[1]), entered=(b.offsetWidth+120)/l.speed;
+    const lead=entered+Math.random()*Math.max(0,dur*.85-entered);
+    b.style.animationDelay=(-lead)+'s'; l.free=performance.now(); });
+  requestAnimationFrame(tick);
+}
+const CATS = [{"t": "你們的作品接住了我", "d": "在低潮的時候、在懷疑自己的時候，是這些故事陪著他們。", "m": ["BL是救贖！", "感謝每一個創作團隊用心製作讓作品成為我的心靈港灣，在低潮、無助、徬徨時，可以從作品中重新獲得力量", "謝謝你們將想像具體化成作品，讓我能感受到其中能量與因此產生生活期待", "謝謝各位自耕農，是您們的愛與堅持讓我更了解自己，更有勇氣活著，我愛大家~", "謝謝各位文字創作者、繪師，所有努力創作、和世界分享這份光芒的人們。 這些來自各種不同的思想、成長背景、創意與喜愛深深療癒了我的世界。", "每一次點開你們的作品都是帶著開心又期待的心情來的喔(๑•̀ㅂ•́)و ✧ 然後乖乖再滾回去當社畜", "永遠謝謝努力創作的人賜糧，或許讓很多讀者都更加了解自己，也離夢想更加接近了，真是感謝", "辛苦了，是作品的存在告訴我不是孤身一人", "謝謝你們，成為了我們情感的出口 我不會畫畫也不會寫作，我內心有很多複雜的想法和感受，卻時常找不到合適的詞彙去描述，是透過你們的筆觸，那些微小且細膩的情緒才得以被具象化地表達出來，請繼續畫下去、寫下去！ 我會用新台幣支持你們的！！！！", "真的非常感謝你們創造出百合作品，相信被百合拯救的人不只我一個。", "謝謝你們！聽過這麼一句話「虛構作品的價值在提供人們想像的方向」，謝謝你們讓過去的我認識到情感關係的多重面貌，讓情感傾向非主流期待的我，獲得「也能幸福」的勇氣。", "感謝你們的創作讓我找到可以承載情緒的機會", "謝謝你們 我不知道這是什麼情緒 這是一種無以名狀的感謝 謝謝你們創造了這個讓我休息的港灣 謝謝你們創造了這個讓我有歸屬感的房間 謝謝你們創造了一個讓我不再懷疑自己的世界 謝謝你們的付出 謝謝", "謝謝你們把我們的故事呈現出來，對我來說那是認識自己的重要媒介。“百合”這詞雖然聽起來有種很香很輕鬆愜意的感覺，但實際上卻往往平淡而深刻。", "如果你們是同樣喜歡並選擇創作LGBTQ+主題的話 相信一定會有人會因你們的作品而感同身受/被治癒 或許因為曾經有著難以言喻的傷痛，在看到作品裡面的角色也面臨到相同的困境時 便也會抱以期待，期待他能跨過困境邁向幸福 也可能正因為有些是日常生活中難以實現卻心生嚮往的理想，所以變成了文學作品，讓身為讀者的我們在此其中和這樣的理想世界（劇情）相遇，填補了失去/希冀這樣的自己", "非常感謝你們投入的心力，打造出一部部的作品，讓我的生活更有活下去的動力", "一個好的BL/GL真的能改變一個人的人生觀與看法。有些在BG劇裡面無法呈現的情緒、情感、社會背景等，在BL/GL劇裡可以有更深層次的發揮與感受", "感謝每一位創作者辛苦出產這些作品，陪伴了我，讓我更有勇氣繼續活下去。", "謝謝你們的創作，讓我可以在文字、劇情間點滴地體驗、體會到不同的心境，感同身受的與角色走一遭~（有種神仙下凡歷劫的感覺XD", "謝謝這些創作者，帶給我們滿滿的心靈糧食", "無論是什麼形式的作品 都很高興有你們延續、支撐這個群體和文化 為很多人帶來不一樣的世界 謝謝你們", "謝謝老師們創造出這麼多的世界，讓我和很多很多人有了更多活下去的理由、動力，讓我又對世界有了希望。謝謝老師們。", "謝謝各位老師創作出各種令人感動又好看的故事，也辛苦老師花許多心力時間去創作這些作品，讓我們讀者可以在痛苦的日常中獲得一點安慰。"]}, {"t": "謝謝你們，辛苦了", "d": "最多人想說的，是一句謝謝，還有一句要照顧好自己。", "m": ["謝謝您們！", "謝謝你們", "謝謝每一個你們為我們帶來的每一份作品", "願創作者們在這份工作上有極大的熱忱及收穫，也謝謝你們的努力，讓我們能看見許多美好的作品。", "謝謝你們努力的創作，讓我們能夠在平日繁忙的工作裡，身心能夠快樂", "謝謝你們堅持自己想做的事，讓更多人被看見。也恭喜你們完成了自己想做的事", "感謝每天花心思和精神在給我們更好的創作，永遠支持！好好照顧身體和心靈，祝願身體健康，事事順心順利順意😊", "謝謝你們，辛苦了❤️", "不論是不是會繼續選擇創作，謝謝你們帶給我的快樂。", "做自己 累了就多休息 但休息完要繼續往前走", "謝謝大大們，創作者是最珍貴的寶物！", "加油 及謝謝你們", "創作是一條辛苦的道路，願所付出的辛苦都能看到期望的果實。", "謝謝你們，加油", "感謝你們傾瀉心血、燃燒靈魂創作美麗的作品，希望創作一直使你們快樂。", "希望你們靈感不斷，也希望你們在創作的同時要照顧好自己的身體", "謝謝你們分享的一切！", "辛苦了", "請加油，你們辛苦了", "老師們辛苦了❤️請好好休息後再創作", "感謝各位漫畫家的創作！", "辛苦了", "各位老師辛苦啦，希望可以看到更多優質的作品。", "謝謝你們存在", "顧好自己唷！！比起作品我更希望作者們好好的🫶", "台灣的創作者都辛苦了！謝謝您們創作出許多療癒人心的作品。", "謝謝你們", "保持妳/你們對創作的熱情 謝謝妳/你們的付出", "辛苦了，也謝謝你們。", "謝謝你們的努力🫶🏻", "謝謝台腐的創作者、演員、工作人員，一起合力完成鼓舞人心的作品👍🏻", "很謝謝各位創作者帶給我們這麼多好看的作品", "感恩有你們，為世界帶來更多的愛與包容，這些在我心目中，便是人類最偉大的魔法。", "所有美好的相遇和凝聚一定是因為其中有愛！相信台灣的創作環境都是因為有一群人在默默努力和付出才會越來越好，衷心感謝每一位創造出美好作品的人們！我們這些觀眾、讀者都非常非常幸福，出生在台灣然後有幸欣賞這些美好！沉溺在作品的故事情節裡、為角色們動容、跟著情緒跌宕起伏的每個瞬間，真的都很感謝創作者們把一部分的自己掏出來，我一直都覺得作品是很直接很赤裸的自我介紹，也是我身為讀者覺得在閱讀、觀看的當下覺得和創作者們心靠得最近的時候，比起任何話語和見面，可以說是坦誠相見，包括想藏卻藏不住的、想說但說不出口的，或是希望可以傳遞出來的意義都無比珍貴。", "每位創作者所畫的圖，出的漫畫和小說，都是非常美好非常珍貴的東西，希望你們能持續創作好的作品，對自己的工作對BL和GL保持熱情！", "謝謝你們願意用心創作這些故事讓大家能看到，希望每位創作者的作品都不要被盜用。", "感謝創作者們創作出許多美好的作品", "謝謝！", "套句我老爸老媽（cp ）常說的：好好吃飯 好好睡覺 祝你隨便買的蘋果都很甜喔💖💖🫶", "謝謝創作者們跟創作產業的每一個工作者♡你們每一個人都好珍貴♡。謝謝你們為創作貢獻♡。謝謝你們喜歡創作♡。我希望台灣的創作環境能越來越友善，希望你們的努力都能有相對應的回報♡。然後我們一起守護擁有創作自由的台灣♡♡♡。", "有你們真好"]}, {"t": "我們一直都在", "d": "不一定會留言，但會買、會看、會默默支持。", "m": ["我會支持正版的", "台灣還是有一群喜歡BL/GL多元題材的觀眾，因為國內作品比較少，所以蠻常看國外的，如果發現本國有這類作品，能用自己熟悉的語言閱讀/觀看，當然願意支持", "謝謝你們的創作！加油👏一定大力支持你們", "謝謝老師們燒肝燒肺燃燒生命和熱忱創作這麼多美麗的作品，每個畫面都令人感動又喜悅，真的很謝謝您們願意將一部分的靈魂（？）跟大家分享😭能做ㄉ不多但會繼續用新台幣支援老師ㄉ", "現在檯面上許多活躍的台灣創作者，很多都是10-15年前就在同人場活躍的攤主們，長大後看到這些作者繼續在漫畫市場耕耘，從二次創作走到原創漫畫真的很不容易，每次看到都會覺得很感動，也常會因為10年前的緣分購入他們的商業作，我想說的是從以前堅持繼續畫畫的你們，在台灣會有像這樣的讀者繼續默默支持著你們，在變動快速的世代，很感謝還有你們的新作品。", "或許在創作台劇的過程中，或多或少會有否定的聲音，但請你們知道，會有那麼一群人在背後默默地支持著，要持續勇敢前行！ 我相信每一種形式的愛，都是值得被看見的。", "加油，我會願意支持，希望產業可以永續發展", "快畫/寫，我會買", "加油！希望能看到更多作品，我會一直支持下去", "支持每個熱愛", "有時候沒辦帳號沒辦法留言，但都有在看的，請持續創作吧！", "我愛課金派戀愛🫶", "你們很厲害，創作這條路一直都不好走。 我自己只是利用工作以外的時間，在進行喜歡的寫作興趣，偶爾都還會感受到靈感枯竭時的無力。 你們卻是將泰半時間心力投資在上面，非常佩服！ 我也會努力支持的！", "哪怕未來陷入了瓶頸，我也很開心你們願意為我們帶來喜悅。創意和熱愛，我相信這些是無法用價值衡量的。以後也會支持你們。", "雖然有很多像我一樣不擅長留言表達自身想法的人，但我們其實都在背後支持你們！請繼續為熱愛創作下去吧！！！", "一直都會有人支持你們的，加油", "多寫、多畫，我會努力看的！", "加油！！！請多多創作，我會努力拿錢砸你們！！！", "這是一件非常偉大，卻同時很辛苦的一件事，希望在你們感到疲累 厭倦的時候，往身後看看 那些一直支持你的人，或許對你有一些的慰藉。", "加油～～～～～～！台灣粉絲支持你們555555", "加油！繼續做自己想做的事，縱使可能沒察覺，但一定會有一群人在身後默默支持著🫶", "希望可以繼續產出大量的作品，我都會繼續支持！", "雖然這行無法讓你賺大錢，但如果真的喜歡，最後還是會走上這條路的，不如從一開始就在這條賽道上耕耘吧"]}, {"t": "讓更多人看見這份愛", "d": "希望有一天，喜歡同性 CP 不再需要被解釋。", "m": ["很開心這個小圈圈越來越多人去了解去關注，也希望不同的選擇在以後都能成為普通且平凡的日常", "希望可以讓大家知道喜歡一個人這件事是不會因為性別有什麼影響，那是一個人對另一個人的喜歡，僅此而已，自由是在這個世界上最美好的一件事", "你們很棒！希望你們在這條路上可以一直走下去，在這環境還是有許多人不理解，希望讓更多人看見～", "謝謝目前在這個類別裡做出貢獻的各位，希望未來我們不需要被問為什麼喜歡嗑同性CP", "加油！讓BL GL被更多人發現 理解 愛上 讓一些不尊重不理解 出口狠毒的人不再有惡言", "辛苦你們了，希望你們可以把同性影集這部分更加普及到社會裡，希望未來可以看到更多同性影集", "外界眼光一點都不重要,不需要符合別人的期待,只要是自己喜歡的、熱愛的就是對的(但還是要符合道德觀念)", "謝謝你們的努力 讓社會對我們有更多的理解跟了解", "加油！要讓更多人看見他們才行！", "你們真的很棒！ 讓BL/GL 在台灣 慢慢有被看見❤️ 只可惜 台灣很少在養CP.... 二搭少之又少..", "希望你們能創作出更多優秀的作品，讓大眾可以更了解BL或百合文化", "性向並不能代表什麼，傳統觀念根深蒂固，但希望能多一點力量讓這個世界可以更多元化一點，世界上有很多可能都是人們親手創造的", "我希望可以再創作一些有深度的作品，令更多人認識到LGBT，打破一些刻板印象。", "大家加油！！能夠創作這方面作品的創作者都很堅強，希望大家能對圈子更包容"]}, {"t": "請給我們更多百合", "d": "百合迷的呼聲，熱烈到可以單獨成一類。", "m": ["希望台灣也可以有更多元的百合劇誕生，而不再只是戲劇中的配角，百合劇有很多故事可以說🥹", "想看更多的百合作品！！！", "可以有更多不同題目的GL劇/電影帶給觀眾。", "希望台灣也可以創作出甜甜戀愛GL的劇，不要老是在演現實……我已經在現實生活中覺得很累很想逃離了……", "百合不好賣，尤其越真越難，感謝所有創作者的嘗試。", "台灣創作者們都很棒，希望投資方能夠看到臺灣的百合界有千百萬種機會，對於「女同志」的身分不需要只拘泥在主觀地覺得會不會賺錢（雖然很難啦），很多漂亮的女演員互動上都十分地有火花。除此之外，我們想看到女人更五花八門的慾望、個性、特質，我們一點都不介意角色到底是不是「同志好寶寶」，大家辛苦了！", "台灣需要更多GL作品！", "百合相比早些年已經慢慢有越來越多人投入創作，非常謝謝每一位願意創造這個世界的夥伴", "希望台灣有更多百合的作品出現", "辛苦了，近年有發現在台灣能看到的百合作品數量明顯變多，希望未來能看到更多百合商業作品讓我買買買", "百合創作者加油！", "多創作百合吧，我會買的", "有看一些台灣的百合作品，小說跟漫畫都很好看", "希望可以看到台百呈現更豐富多元的面貌，不要一直被困在處理認同的議題上", "百合作品感覺還是比BL難推廣，但請相信有人一直在追一直在等待新作品，你們的創作是有意義的！", "希望（沒有審查的）華語百合圈可以更加壯大！！！", "加油，我自己也收了幾套台灣作家的百合漫，很優秀", "希望我能看到作者用心刻劃百合細膩的感情", "希望台灣的百合，不論是漫畫或小說、動漫、影視能夠越來越強大，我會繼續支持下去💪", "百合很棒，BL也很ㄅㄧㄤˋ，加油OWOb", "希望台灣的GL作品可以更多，絕對支持🙏😭", "希望能推廣百合，不要再讓實體書店、遊戲各類作品只佔了一小角落，讓更多人能看見它的美！讓百合作品普遍化希望能跟bl作品一樣能大方搬出檯面，加油", "百合 征服世界", "台灣是一個能自由創作的國度，願我們能打造一個最棒的百合國度。", "台灣的百合一定會越開越多的！謝謝你們的努力！", "希望可以看到更多GL作品，我認為這其實是有一定市場的，但作品一直都很少", "拜託擴大百合市場！！！！", "希望臺灣有更多好看的百合漫畫、動畫甚至是手遊。如果有台灣出的百合手遊，一定會花錢支持！", "需要更多百合作品!!!!跟BL比起來 太少了不夠吃", "台灣是一個相較於其他地域，更包容、更自由的環境此類創作還是太少，請更勇敢的讓我看見獨屬於台百的浪漫。", "請多創作出更多的好故事吧，非常期待 私心希望能有更多題材的GL影視類作品", "加油！ 百合就是讚！", "希望可以看到更多台百 然後可以結合生活 然後真的不喜歡再看到各種糾結與社會框架的成分了 愛就是愛 自由無懼的愛！ （不只有侷限性Lesbian 還可以有跨女&非二元取向女性的劇集）", "拜託百合作品多一點啦（哭"]}, {"t": "想看見更多樣的故事", "d": "更多題材、更多在地、更多不同的愛的樣子。", "m": ["不知道這種創作是有關於劇還是文字 如果是劇的話，希望台灣的創作能夠更加進步、有更多多樣化的題材去傳達社會議題，如果是文字，希望文字創作者能夠知道自己的文字真的可以影響很多有愛的人 藝術創作是一個很重要的領域，能夠傳達出自己的思考以及表達我覺得是一種天賦和能力 請繼續創造出能給人力量的作品吧🫶", "希望大家都有機會發表自己的作品，不拘於任何形式，但能做到百花齊放", "無論如何，要讓角色保留能撐開一個宇宙、且能讓眾人盡興解讀的人性。", "想看更多兩個人開心談戀愛的故事", "期望像韓國條漫一樣蓬勃發展，然後不腰斬", "多畫點，愛看，像韓漫一樣的也很讚啊，課金派戀愛熱度就還不錯？", "請多多創作🙇🏻‍♀️🙇🏻‍♀️希望能看到愈來愈多元的題材！", "希望能發展BL/GL更多樣貌~", "可以勇於嘗試各類題材，題材的多樣性與在地性我認為可以作為台灣創作者的特色之一。在閱覽台灣的作品時，經常因為貼合實際生命經驗而會心一笑，相對日韓作品會給人多一份親切。", "期待臺灣各式類型的作品都長出自己的樣子！可以從中獲得屬於臺灣人的認同與記憶～", "很開心臺灣能有更多元的創作類型！作為百合世界的愛好者，也好希望可以看到與家鄉文化脈絡有更多共鳴的好作品。謝謝各位創作者！", "希望他們能為台灣帶入更多元的作品和更優秀的人們", "可以將臺灣的風土民情融入劇本創作中，這樣劇情會更貼近真實生活，能夠觸動人心。", "謝謝你們的創作，讓我能接觸到不同的愛與世界！ 除了常見的BL和GL題材，也希望創作者能多關注其他LGBTQ+的族群，讓更多元的經驗與故事被呈現出來！", "希望能有更多跳脫浪漫愛框架的作品，讓朋友不一定是關係的中繼站，愛情也不一定是親密關係的終點。", "希望台灣的創作團體 可以再更創新跳出框框地發展下去 令大家看見不亞於日泰的作品"]}, {"t": "在台灣，自由地創作", "d": "對這片土地的創作自由，有驕傲，也有期待。", "m": ["台灣的創作者其實很有潛力 雖然我本身比較多在看泰國的作品 但因為朋友也會一些些接觸到台灣的繪師或是插畫家 我覺得台灣一點也不輸 只是環境比較劣勢 台灣創作者加油👏 相信你們一定可以闖出一片天！ 我期待那一天大家都可以看到台灣的作品！", "以小說的世界來說，真的很少能看見台灣的作品，謝謝你們一直努力著！真心希望台灣也能有個平台，讓這些作者們大放異彩", "現階段的台灣環境很艱辛，謝謝你們就算扛著被罵一直做爛劇的惡名，還是一直堅持下去！對BL有沒有愛是可以讓人感覺得到的！其他國家也是一步一步走出屬於自己的路，只要是有心而不是刻意蹭！相信一定可以走出自己的一片天！", "我相信台灣的影視產業不會輸給國外，希望未來能多看到些台灣的作品，加油～你們可以的！", "謝謝你們豐富了臺灣的風景", "加油，台灣原創萬歲", "近年來台灣本土的漫畫產業愈來愈蓬勃，好作品愈來愈多，謝謝你們！加油！！", "台灣文創的軟實力與創意度是很高的，別太在乎罵聲，往心之所好前進吧～💕", "台灣原創絕對都是加倍支持的，你敢出我就買^ ^", "謝謝你們願意持續創作，帶給台灣更豐富的色彩與活力", "愛臺灣，愛本土創作者，加油", "感謝你們產出各式各樣的作品！很幸運能夠在自由的時代遇見你們！", "我看到有很多高品質的台漫，佩服所有堅持著創作的作者們。", "其實我覺得台灣很多作者很棒，希望大家一起繼續加油；他們筆下的故事有的時候會很有共鳴，會感覺那些人物跟我們一樣生活在台灣這塊可愛的土地上，也許有一天我會跟他們在吃同一家麵店", "感謝所有的人都在為這份文化做出貢獻，我很自豪自己生在如此自由且擁有各種文化融合的地方，我們不需要隱藏自己；相反地，我們因為有你們的推廣，認識到更多種愛意，非常謝謝你們。", "希望可以多發展出屬於臺灣的bl文化", "在台灣的市場這一塊還是有很多的空間，希望能看到更多不同的可能性，也更能夠創造出屬於台灣獨有的元素，畢竟我們可是亞洲第一個同婚通過的國家欸~", "請捍衛能合法同性結婚的台灣，這個得來不易的公平和自由，是讓其他地方羨慕不已的", "謝謝台灣的創作者帶來許多美好的作品，也有很多是有別於中國的刻畫，而是聚焦在這片土地上的情感。 希望在未來可以看到更多這樣的作品，謝謝所有願意為愛發電的創作者💖", "各位加油！雖然我是最近才開始看BL漫，但其他類型的webtoon我也大概看了5年了，我覺得現在的台灣創作者比起我剛開始看的時候成長很多～", "加油，你們是台灣進步不可或缺的一份子！", "台灣是亞洲第一個實現同性婚姻合法化的國家，雖然說不是最理想的法律條文，但感覺大家（很大一部分的國民）都願意理解、接納同性戀者甚至是更廣闊的LGBTQ+概念，希望有更多的機會讓大家接受Love is equal，希望台灣可以走得更遠", "謝謝你們持續在台灣創作出多元的作品！", "大家請加油  讓台灣變成東亞同仁文化輸出大國~"]}, {"t": "加油！", "d": "最短，也最直接。", "m": ["加油", "加油謝謝你們", "你們正在做的事非常有意義，請不要放棄。", "加油！", "是金子一定會發光，優質的作品勝於一切。", "大家好棒，大家加油", "請多多寫出或拍攝出好的作品吧！麻煩你們了", "加油", "你們很棒！", "繼續產糧，加油👏", "希望創作更多的作品", "相信大家會更努力創作更好的作品。", "如果是好作品，不怕沒人看", "加油，期待百花盛放", "加油", "Just do it", "加油", "你喜歡的內容再冷門，總會有第二個人有共鳴，不要放棄創作出來。", "加油", "加油", "请继续创作吧！", "加油", "能夠做自己喜歡的事，很厲害！", "你們很棒👍", "祈禱大家讓這份愛能夠繼續發光發熱", "加油，期待更多好看的作品！", "加油！", "各位加油！", "加油堅持自己熱愛的事情", "願意創作的人都是活佛。讚啦。", "各位加油！希望各位能產出更好的作品！", "加油！", "加油！", "加油！", "加油加油❗️", "讚喔", "加油！", "加油", "加油", "加油❤️", "加油🫶🏻祝福你們", "開心最重要", "加油～～"]}];
+(function(){
+  const toc=document.getElementById('toc'), box=document.getElementById('cats');
+  CATS.forEach((c,i)=>{
+    const id='c'+(i+1);
+    const li=document.createElement('li'), a=document.createElement('a');
+    a.href='#'+id; a.textContent=c.t;
+    const s=document.createElement('span'); s.textContent=c.m.length; a.appendChild(s);
+    li.appendChild(a); toc.appendChild(li);
+    const sec=document.createElement('section'); sec.className='cat'; sec.id=id;
+    sec.innerHTML='<div class="cat-head"><h3></h3><span class="n"></span><p></p></div>';
+    sec.querySelector('h3').textContent=c.t;
+    sec.querySelector('.n').textContent=c.m.length+' 則';
+    sec.querySelector('p').textContent=c.d;
+    const isCheer = i===CATS.length-1;
+    const list=document.createElement('div'); list.className=isCheer?'cheers':'msgs';
+    c.m.forEach(t=>{
+      const el=document.createElement(isCheer?'span':'p'); el.textContent=t;
+      if(isCheer) el.style.fontSize=(16+Math.max(0,16-t.length)*0.9)+'px';
+      else if(t.length<=16) el.className='short';
+      list.appendChild(el);
+    });
+    sec.appendChild(list); box.appendChild(sec);
+  });
+})();
+</script>
+</body>
+</html>
