@@ -28,7 +28,11 @@ function stripHtml(src) {
       const tag = raw[1].toLowerCase();
       const close = src.toLowerCase().indexOf('</' + tag, i);
       const end = close === -1 ? src.length : close + tag.length + 3;
-      res += src.slice(i, end); i = end; continue;
+      // 內嵌的 <style>/<script> 也要去註解（project/ 的單檔頁面把 CSS、JS 都寫在 HTML 裡）
+      const open = src.indexOf('>', i) + 1;
+      const inner = src.slice(open, close === -1 ? src.length : close);
+      res += src.slice(i, open) + STRIP[tag === 'style' ? '.css' : '.js'](inner) + src.slice(open + inner.length, end);
+      i = end; continue;
     }
     if (src[i] === '<') {
       let j = i + 1;
@@ -134,7 +138,7 @@ for (const item of COPY) {
 }
 
 let n = 0;
-for (const rel of ['index.html', 'assets/css/style.css', 'assets/js/main.js']) {
+for (const rel of ['index.html', 'project/to-creators-tw.html', 'assets/css/style.css', 'assets/js/main.js']) {
   const file = join(out, rel);
   const before = readFileSync(file, 'utf8');
   const after = tidy(STRIP['.' + rel.split('.').pop()](before));
