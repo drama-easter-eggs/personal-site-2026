@@ -32,7 +32,7 @@ body{
   background:var(--paper); overflow-x:hidden;
   font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
 }
-body::after{ /* paper grain */
+body::after{
   content:"";position:fixed;inset:0;pointer-events:none;opacity:var(--grain);mix-blend-mode:multiply;
   background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .5  0 0 0 0 .5  0 0 0 0 .5  0 0 0 .22 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
 }
@@ -176,7 +176,6 @@ function startRotate(){
   rotateTimer = setInterval(()=>{ if(!paused){ fi=(fi+1)%FEATURED.length; setQuote(FEATURED[fi]); } }, 9000);
 }
 
-// shuffle-bag so every message appears before repeats
 let bag=[];
 function nextMsg(){ if(!bag.length) bag = MSGS.map((_,i)=>i).sort(()=>Math.random()-.5); return MSGS[bag.pop()]; }
 function short(t){ return t.length>46 ? t.slice(0,44)+'…' : t; }
@@ -201,14 +200,14 @@ function spawn(lane, idx){
   b.addEventListener('click',()=>{ setQuote(t); startRotate(); });
   stage.appendChild(b);
   const w = b.offsetWidth, W = innerWidth;
-  const speed = lane.speed; // px per second, fixed per lane so nothing overtakes
+  const speed = lane.speed;
   const dur = (W + w) / speed;
   b.style.setProperty('--from', W+'px');
   b.style.setProperty('--to', (-w)+'px');
   b.style.animation = `fly ${dur}s linear forwards`;
   if(paused) b.style.animationPlayState='paused';
   b.addEventListener('animationend',()=>b.remove());
-  // lane frees once tail has entered plus a gap
+
   lane.free = performance.now() + ((w + 60 + Math.random()*260)/speed)*1000;
 }
 function tick(){
@@ -216,7 +215,7 @@ function tick(){
   if(!paused) lanes.forEach((l,i)=>{ if(now>l.free) spawn(l,i); });
   requestAnimationFrame(tick);
 }
-function staticLayout(){ // reduced motion: scatter once
+function staticLayout(){
   stage.innerHTML='';
   lanes.forEach((l,i)=>{
     const t=nextMsg(), b=document.createElement('button');
@@ -243,7 +242,7 @@ qtext.textContent='「'+FEATURED[0]+'」';
 startRotate();
 if(reduce){ staticLayout(); document.getElementById('toggle').hidden=true; }
 else {
-  // pre-fill the screen so it doesn't start empty
+
   lanes.forEach((l,i)=>{ spawn(l,i); const b=stage.lastChild;
     const dur=parseFloat(b.style.animation.split(' ')[1]), entered=(b.offsetWidth+120)/l.speed;
     const lead=entered+Math.random()*Math.max(0,dur*.85-entered);
