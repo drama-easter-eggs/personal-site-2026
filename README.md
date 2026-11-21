@@ -22,6 +22,26 @@ reference/            外部素材原檔（不會部署）
   Loader cat.json       前一版 hero 那隻貓的 lottie 原檔，已不使用
 ```
 
+## project/ 底下的專題頁
+
+```
+project/to-creators-tw.html   寫給台灣創作者的話（原生頁面，直接改這裡）
+project/bl-gl-survey/         解碼 BL 與百合的情感經濟（鏡像，不要手改）
+```
+
+`project/bl-gl-survey/` 是從「2026 BL百合研究網站」那個 repo 同步過來的，
+要改內容請改那邊的 `site/`，然後在那個專案跑：
+
+```bash
+node tools/sync-to-meilingc.mjs
+```
+
+同步時會自動做三件事：網址換成 `https://meilingc.com/project/bl-gl-survey/`
+（canonical、og、JSON-LD 一起換）、關掉隨堂考投票（GitHub Pages 沒有 Netlify Functions）、
+不複製子目錄用不到的 `robots.txt` 與 `sitemap.xml`。
+
+這一份是正式網址，Netlify 上的 https://bl-gl-unboxing.netlify.app/ 的 canonical 已改成指向這裡。
+
 ## 本機預覽
 
 直接用瀏覽器打開 `index.html` 就可以，或：
